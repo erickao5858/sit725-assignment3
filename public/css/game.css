@@ -1,0 +1,22 @@
+.height200{
+    height: 200px;
+}
+.height500{
+    height: 500px;
+}
+.m0{
+    margin: 0px;
+}
+.p0{
+    padding: 0px;
+}
+.m2{
+    margin: 2px;
+}
+.p2{
+    padding: 2px;
+}
+.borderLR{
+    border-left: 2px solid gray;
+    border-right: 2px solid gray;
+}
