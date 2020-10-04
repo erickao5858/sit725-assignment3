@@ -1,8 +1,11 @@
 .height200{
-    height: 200px;
+    height: 220px;
 }
 .height500{
     height: 500px;
+}
+.height50{
+    height: 50px;
 }
 .m0{
     margin: 0px;
@@ -13,10 +16,19 @@
 .m2{
     margin: 2px;
 }
+.mt5{
+    margin-top: 5px;
+}
 .p2{
     padding: 2px;
 }
 .borderLR{
     border-left: 2px solid gray;
     border-right: 2px solid gray;
+}
+.textarea{
+    height: 145px;
+}
+.message{
+    height: 30px;
 }
