@@ -2,10 +2,19 @@
     height: 220px;
 }
 .height500{
+    height: 450px;
+}
+.height500{
     height: 500px;
 }
 .height50{
     height: 50px;
+}
+.playerImage{
+    width: 150px;
+}
+.width50{
+    width: 50px;
 }
 .m0{
     margin: 0px;
@@ -13,7 +22,7 @@
 .p0{
     padding: 0px;
 }
-.m2{
+.m-2{
     margin: 2px;
 }
 .mt5{
