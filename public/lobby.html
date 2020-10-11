@@ -1,1 +1,153 @@
-lobby
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>bang game lobby</title>
+
+    <!-- Compiled and minified CSS -->
+    <!-- Materialze-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Materialize icons-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="../css/lobby.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lobby-wrap">
+    <nav>
+        <div class="nav-wrapper">
+            <a href="index.html" class="brand-logo">Bang</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="rules.html">Rules</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="lobby-container">
+        <a class="btn btn-secondary">Back</a>
+        <!-- room list -->
+        <div class="box-wrap">
+            <div class="box-title">Room List</div>
+            <div class="room-list">
+                <div class="room-item">
+                    <div class="item-left row">
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">airplay</i>
+                            <div class="player-name">Bot</div>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="room-number">Room No : 1522</span>
+                        <a class="btn disabled">Full</a>
+                    </div>
+                </div>
+                <div class="room-item">
+                    <div class="item-left row">
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                        <div class="col s1">
+                            <i class="small material-icons">account_circle</i>
+                            <div class="player-name">player 1</div>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="room-number">Room No : 1523</span>
+                        <a class="btn btn-primary">Join</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- join a game and send message -->
+        <div class="lobby-bottom-content row">
+            <div class="lobby-bottom-left col s7">
+                <div class="bottom-left-cont">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="icon_prefix" type="text" class="validate">
+                            <label for="icon_prefix">Your Name</label>
+                        </div>
+                    </div>
+                    <div class="notice-text">Create a room or join a random room.</div>
+                    <div class="bottom-left-btns">
+                        <a class="btn btn-primary">create a room</a>
+                        <a class="btn btn-primary">match a room</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lobby-bottom-right col s5">
+                <div class="box-wrap">
+                    <div class="box-title">History</div>
+                    <div class="box-body">
+                        <div class="history-list">
+                            <div class="history-item">
+                                <span><b>Simon:</b></span>
+                                <span>we need more player in room 1234.</span>
+                            </div>
+                            <div class="history-item">
+                                <span><b>Ahxsn:</b></span>
+                                <span>we need more player in room 1234.we need more player in room 1234.we need more player in room 1234.we need more player in room 1234.</span>
+                            </div>
+                        </div>
+                        <div class="history-form">
+                            <div class="input-field history-input">
+                                <input id="input_text" type="text">
+                                <label for="input_text">Messages</label>
+                            </div>
+                            <a class="btn btn-secondary">send</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- socket IO Served by the server -->
+<script src="/socket.io/socket.io.js"></script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+
+    // connect to the socket
+    let socket = io();
+
+</script>
+
+</body>
+
+</html>

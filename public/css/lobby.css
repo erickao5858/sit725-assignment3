@@ -1,0 +1,150 @@
+/**
+  * @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+ **/
+.lobby-wrap{
+    background-color: #ECCFAD;
+    padding-bottom: 30px;
+}
+.lobby-container{
+    padding: 20px 50px;
+}
+.box-wrap{
+    margin: 20px 0px;
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.15);
+    border-radius: 6px;
+    background-color: #ededed;
+}
+.box-title{
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background-color: #cc9966;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.15);
+}
+.box-body{
+    padding: 10px 20px;
+}
+.room-list{
+    height:300px;
+    padding: 0px 20px 20px 20px;
+    overflow-y: auto;
+}
+.room-item{
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    padding-top: 10px;
+    border-bottom: 1px solid #d7d7d7;
+}
+.room-item .item-left{
+    flex: 1;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.room-item .item-left .player-name{
+    font-size: 16px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.room-item .item-right{
+    padding-top: 10px;
+}
+.room-item .item-right .room-number{
+    vertical-align: middle;
+    margin-right: 15px;
+}
+/* the scroll bar style */
+::-webkit-scrollbar {
+    width : 5px;
+    height: 1px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius   : 5px;
+    background-color: #cc9966;
+}
+::-webkit-scrollbar-track {
+    box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background   : #ededed;
+    border-radius: 10px;
+}
+.bottom-left-cont{
+    padding: 50px;
+}
+.notice-text{
+    font-size: 18px;
+    font-weight: bold;
+}
+.bottom-left-btns{
+    padding: 30px 0px;
+}
+.bottom-left-btns .btn-primary{
+    margin-right: 20px;
+}
+.history-list{
+    height: 300px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+}
+.history-form{
+    display: flex;
+    justify-content: space-between;
+    justify-items: baseline;
+}
+.history-list .history-item{
+    padding: 5px 0px;
+    font-size: 14px;
+}
+.history-form .history-input{
+    flex: 1;
+    margin: 0px 10px 0px 0px;
+    padding: 0px;
+}
+.history-form .btn-secondary{
+    margin-top: 10px;
+}
+/* overwrite the css from Materialze */
+.input-field>label{
+    font-size: 18px;
+}
+.input-field .prefix.active{
+    color: #cc9966;
+}
+/* input field */
+input[type=text]:not(.browser-default){
+    border-bottom: 1px solid #2B2301;
+}
+/* label color */
+.input-field label {
+    color: rgba(0,0,0,.25);
+    font-size: 16px;
+}
+/* label focus color */
+.input-field input[type=text]:not(.browser-default):focus + label {
+    color: #000;
+}
+/* label underline focus color */
+.input-field input[type=text]:not(.browser-default):focus {
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+nav{
+    background-color: #333333;
+}
+nav .brand-logo{
+    margin-left: 20px;
+    font-style: italic;
+}
+.btn{
+    border-radius: 5px;
+}
+.btn.btn-primary{
+    background-color: #999966;
+}
+.btn.btn-secondary{
+    background-color: #cc9966;
+}
