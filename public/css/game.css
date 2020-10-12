@@ -37,6 +37,8 @@
 }
 .textarea{
     height: 145px;
+    overflow-y:visible;
+    resize: none;
 }
 .message{
     height: 30px;
