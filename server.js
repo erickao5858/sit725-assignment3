@@ -7,6 +7,8 @@ const PORT = 3000;
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
+const { addUser, removeUser, getUser, listUser } = require('./controllers/userController');
+
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
 
@@ -16,17 +18,36 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-//socket test
+//socket connection
 io.on('connection', (socket) => {
+
     console.log('a user connected');
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
+
     setInterval(()=>{
         socket.emit('number', parseInt(Math.random()*10));
     }, 1000);
 
+
+    /**
+     *  new user connected
+     *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+     */
+    socket.on('newUser', (name) => {
+
+        const user = addUser({ id: socket.id,name});
+
+        let userList = listUser();
+
+        console.log(userList);
+
+    })
+
 });
+
 
 // setup the DB
 mongo.startDB()

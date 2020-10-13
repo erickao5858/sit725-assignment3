@@ -107,6 +107,9 @@
 .history-form .btn-secondary{
     margin-top: 10px;
 }
+.link-button{
+    margin-top: 24px;
+}
 /* overwrite the css from Materialze */
 .input-field>label{
     font-size: 18px;
