@@ -32,6 +32,7 @@
         <div class="box-wrap">
             <div class="box-title">Room List</div>
             <div class="room-list">
+                <div id="rooms"></div>
                 <div class="room-item">
                     <div class="item-left row">
                         <div class="col s1">
@@ -68,26 +69,6 @@
                         <a class="btn disabled">Full</a>
                     </div>
                 </div>
-                <div class="room-item">
-                    <div class="item-left row">
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                    </div>
-                    <div class="item-right">
-                        <span class="room-number">Room No : 1523</span>
-                        <a class="btn btn-primary">Join</a>
-                    </div>
-                </div>
             </div>
         </div>
         <!-- join a game and send message -->
@@ -106,8 +87,8 @@
                     </div>
                     <div class="notice-text">Create a room or join a random room.</div>
                     <div class="bottom-left-btns">
-                        <a class="btn btn-primary">create a room</a>
-                        <a class="btn btn-primary">match a room</a>
+                        <a id="createRoom" class="btn btn-primary">create a room</a>
+                        <a id="matchRoom" class="btn btn-primary">match a room</a>
                     </div>
                 </div>
             </div>
@@ -144,29 +125,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script>
 
-    // connect to the socket
-    let socket;
-
-    $('.link-button .btn').on('click',function () {
-
-        // connect to the socket
-        socket = io();
-
-        let userName = $('#userName').val();
-
-        if(userName){
-            socket.emit('newUser', userName);
-            $(".link-button .btn").attr("disabled", true);
-        }
-        else {
-            alert('please enter your name !');
-        }
-
-    })
-
-</script>
+<script src="js/lobby-client.js"></script>
 
 </body>
 

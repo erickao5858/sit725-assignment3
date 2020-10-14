@@ -151,3 +151,9 @@ nav .brand-logo{
 .btn.btn-secondary{
     background-color: #cc9966;
 }
+#toast-container{
+    margin: auto;
+    left: 0;
+    right: 0;
+    max-width: 50%;
+}

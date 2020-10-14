@@ -7,7 +7,8 @@ const PORT = 3000;
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
-const { addUser, removeUser, getUser, listUser } = require('./controllers/userController');
+const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
+const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
@@ -33,17 +34,32 @@ io.on('connection', (socket) => {
 
 
     /**
-     *  new user connected
+     *  users and rooms connected
      *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
      */
+
+    let roomList = listRooms();
+
+    setInterval(()=>{
+        socket.emit('listRooms', roomList);
+    }, 1000);
+
+
     socket.on('newUser', (name) => {
 
         const user = addUser({ id: socket.id,name});
 
-        let userList = listUser();
+        socket.emit('currentUser',user);
 
-        console.log(userList);
 
+        console.log(user);
+
+    })
+
+    socket.on('createRoom',() =>{
+
+        const roomOwner = getUser(socket.id);
+        const room = createRoom(socket.id,roomOwner);
     })
 
 });
