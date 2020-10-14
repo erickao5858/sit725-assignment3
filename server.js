@@ -21,13 +21,15 @@ app.use(bodyParser.json());
 
 //socket connection
 io.on('connection', (socket) => {
-
     console.log('a user connected');
-
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-
+    //function for game chat
+    //author:zilin
+    socket.on('chat_message', function (data) {
+        io.sockets.emit('chat_message', data);
+        });
     setInterval(()=>{
         socket.emit('number', parseInt(Math.random()*10));
     }, 1000);
@@ -63,7 +65,6 @@ io.on('connection', (socket) => {
     })
 
 });
-
 
 // setup the DB
 mongo.startDB()

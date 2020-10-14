@@ -1,0 +1,45 @@
+.height200{
+    height: 220px;
+}
+.height500{
+    height: 450px;
+}
+.height500{
+    height: 500px;
+}
+.height50{
+    height: 50px;
+}
+.playerImage{
+    width: 150px;
+}
+.width50{
+    width: 50px;
+}
+.m0{
+    margin: 0px;
+}
+.p0{
+    padding: 0px;
+}
+.m-2{
+    margin: 2px;
+}
+.mt5{
+    margin-top: 5px;
+}
+.p2{
+    padding: 2px;
+}
+.borderLR{
+    border-left: 2px solid gray;
+    border-right: 2px solid gray;
+}
+.textarea{
+    height: 145px;
+    overflow-y:visible;
+    resize: none;
+}
+.message{
+    height: 30px;
+}
