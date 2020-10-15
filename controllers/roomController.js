@@ -27,9 +27,9 @@ const createRoom = (id,owner) =>{
 
     roomUsers = [];
 
-    userJoinRoom(owner);
-
     const room = {id,roomNumber,roomUsers};
+
+    userJoinRoom(room,owner);
 
     rooms.push(room);
 
@@ -58,9 +58,8 @@ const isActive =() =>{
     return (new Date().getTime() - lastActivityTimeStamp.getTime()) > idleLimit;
 }
 
-const userJoinRoom =(user) =>{
-
-    roomUsers.push(user);
+const userJoinRoom =(room,user) =>{
+    room.roomUsers.push(user);
 }
 
 

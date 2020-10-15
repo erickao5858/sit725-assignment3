@@ -26,6 +26,7 @@ $(function() {
 
             $(this).attr('disabled', true);
             $userName.attr('disabled', true);
+            $createRoombtn.attr('disabled', false);
 
             socket.on('currentUser', (user) => {
                 console.log('currentUser: ' + JSON.stringify(user));
@@ -51,9 +52,23 @@ $(function() {
         }
     })
 
+    $('body').on('click','.join-room',function () {
+
+        let roomId = $(this).data().id;
+        socket.emit('joinRoom',roomId);
+    })
+
     socket.on('listRooms', (rooms) => {
         console.log('rooms: ' + JSON.stringify(rooms));
         renderRooms(rooms);
+    })
+
+    socket.on('errNotice',(err)=>{
+
+        if(err.code ==1){
+
+            M.toast({html: 'You are already in the Room!', classes: 'rounded'});
+        }
     })
 
     renderRooms = (rooms)=>{
@@ -77,7 +92,7 @@ $(function() {
                     <div class="item-left row" id="players">${userList}</div>
                     <div class="item-right">
                         <span class="room-number">Room No : ${room.roomNumber}</span>
-                        <a class="btn btn-primary">Join</a>
+                        <a class="join-room btn btn-primary" data-id=${room.id}>Join</a>
                     </div>
                 </div>`)
         })

@@ -8,7 +8,7 @@ let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
-const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
+const { createRoom, removeRoom, getRoom, listRooms,userJoinRoom } = require('./controllers/roomController');
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
      */
 
     let roomList = listRooms();
-
+    let err ={};
     setInterval(()=>{
         socket.emit('listRooms', roomList);
     }, 1000);
@@ -53,7 +53,6 @@ io.on('connection', (socket) => {
 
         socket.emit('currentUser',user);
 
-
         console.log(user);
 
     })
@@ -62,6 +61,21 @@ io.on('connection', (socket) => {
 
         const roomOwner = getUser(socket.id);
         const room = createRoom(socket.id,roomOwner);
+    })
+
+    socket.on('joinRoom',(roomId)=>{
+
+        const currentRoom = getRoom(roomId);
+        const user = getUser(socket.id);
+
+        let existingRoomUser = currentRoom.roomUsers.find((user) => user.id === socket.id);
+
+        if(!existingRoomUser){
+            currentRoom.roomUsers.push(user);
+        }else {
+            err = {code:1,content:'Existing roomUser'};
+            socket.emit('errNotice',err);
+        }
     })
 
 });
