@@ -11,6 +11,10 @@ $(function() {
           $createRoombtn = $('#createRoom'),
           $matchRoomBtn = $('#matchRoom');
 
+    let roomList;
+    /**
+     * get user name
+     */
     let userNameVal;
 
     $userName.blur(function(){
@@ -18,6 +22,9 @@ $(function() {
         userNameVal =$(this).val();
     })
 
+    /**
+     *  link the user to socket
+     */
     $linkBtn.on('click', function () {
 
         if (userNameVal){
@@ -27,6 +34,7 @@ $(function() {
             $(this).attr('disabled', true);
             $userName.attr('disabled', true);
             $createRoombtn.attr('disabled', false);
+            $matchRoomBtn.attr('disabled',false);
 
             socket.on('currentUser', (user) => {
                 console.log('currentUser: ' + JSON.stringify(user));
@@ -39,38 +47,65 @@ $(function() {
 
     })
 
-
+    /**
+     * user create a room
+     */
     $createRoombtn.on('click', function () {
 
         if (userNameVal) {
 
             socket.emit('createRoom');
             $(this).attr("disabled", true);
+            $matchRoomBtn.attr('disabled',true);
 
         } else {
             M.toast({html: 'Please enter your name!', classes: 'rounded'});
         }
     })
 
+    /**
+     *  user join a room
+     */
     $('body').on('click','.join-room',function () {
-
         let roomId = $(this).data().id;
         socket.emit('joinRoom',roomId);
     })
 
+    /**
+     *  user match a room
+     */
+    $matchRoomBtn.on('click',function () {
+        if (roomList.length > 0){
+            socket.emit('matchRoom');
+        }else {
+            M.toast({html: 'Not a room is available, You can create a room!', classes: 'rounded'});
+        }
+    })
+
+    /**
+     *  get room list
+     */
     socket.on('listRooms', (rooms) => {
         console.log('rooms: ' + JSON.stringify(rooms));
+        roomList = rooms;
         renderRooms(rooms);
     })
 
+    /**
+     *  get error content
+     */
     socket.on('errNotice',(err)=>{
 
         if(err.code ==1){
 
-            M.toast({html: 'You are already in the Room!', classes: 'rounded'});
+            M.toast({html: 'You are already in a Room!', classes: 'rounded'});
         }
     })
 
+    /**
+     * render rooms
+     * @param rooms
+     */
     renderRooms = (rooms)=>{
 
         const $roomList = document.getElementById("rooms");

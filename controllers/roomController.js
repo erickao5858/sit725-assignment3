@@ -12,6 +12,12 @@ let lastActivityTimeStamp;
 // The maximum time that a room can be idle.
 let idleLimit = 10 * 60 * 1000;
 
+/**
+ * create a room
+ * @param id
+ * @param owner
+ * @returns {{room: {id: *, roomNumber: number, roomUsers: Array}}}
+ */
 const createRoom = (id,owner) =>{
 
     let roomNumber = getNextRoomNumber();
@@ -29,13 +35,18 @@ const createRoom = (id,owner) =>{
 
     const room = {id,roomNumber,roomUsers};
 
-    userJoinRoom(room,owner);
+    ownerJoinRoom(room,owner);
 
     rooms.push(room);
 
     return { room };
 }
 
+/**
+ * remove a room by id
+ * @param id
+ * @returns {*}
+ */
 const removeRoom = (id) =>{
 
     const index = rooms.findIndex((room) => room.id === id);
@@ -43,13 +54,25 @@ const removeRoom = (id) =>{
     if (index !== -1) return rooms.splice(index,1)[0];
 }
 
+/**
+ * get a room by id
+ * @param id
+ * @returns {*}
+ */
 const getRoom = (id) => rooms.find((room) => room.id === id);
 
-
+/**
+ * list all rooms
+ * @returns {Array}
+ */
 const listRooms = () =>{
     return rooms;
 }
 
+/**
+ * create room number
+ * @returns {number}
+ */
 const getNextRoomNumber = () =>{
     return number ++;
 }
@@ -57,9 +80,15 @@ const getNextRoomNumber = () =>{
 const isActive =() =>{
     return (new Date().getTime() - lastActivityTimeStamp.getTime()) > idleLimit;
 }
-
-const userJoinRoom =(room,user) =>{
-    room.roomUsers.push(user);
+/**
+ * The room owner join room
+ * @param room
+ * @param user
+ */
+const ownerJoinRoom =(room,user) =>{
+    let joinUser = user;
+    joinUser.isInRoom = true;
+    room.roomUsers.push(joinUser);
 }
 
 
@@ -68,5 +97,4 @@ module.exports ={
     removeRoom,
     getRoom,
     listRooms,
-    userJoinRoom
 }

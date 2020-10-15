@@ -8,7 +8,7 @@ let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
-const { createRoom, removeRoom, getRoom, listRooms,userJoinRoom } = require('./controllers/roomController');
+const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
@@ -36,48 +36,64 @@ io.on('connection', (socket) => {
 
 
     /**
-     *  users and rooms connected
+     *  users and rooms management
      *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
      */
-
     let roomList = listRooms();
     let err ={};
+
     setInterval(()=>{
         socket.emit('listRooms', roomList);
     }, 1000);
 
-
     socket.on('newUser', (name) => {
 
-        const user = addUser({ id: socket.id,name});
+        const user = addUser({ id: socket.id,name,isInRoom:false});
 
         socket.emit('currentUser',user);
-
-        console.log(user);
 
     })
 
     socket.on('createRoom',() =>{
-
         const roomOwner = getUser(socket.id);
-        const room = createRoom(socket.id,roomOwner);
+        if (!roomOwner.isInRoom) {
+            const room = createRoom(socket.id,roomOwner);
+        }else {
+            err = {code:1,content:'Existing roomUser'};
+            socket.emit('errNotice',err);
+        }
     })
-
-    socket.on('joinRoom',(roomId)=>{
+    joinRoom =(roomId)=>{
 
         const currentRoom = getRoom(roomId);
         const user = getUser(socket.id);
 
         let existingRoomUser = currentRoom.roomUsers.find((user) => user.id === socket.id);
 
-        if(!existingRoomUser){
+        if(!existingRoomUser && !user.isInRoom){
+
+            user.isInRoom = true;
             currentRoom.roomUsers.push(user);
+
         }else {
             err = {code:1,content:'Existing roomUser'};
             socket.emit('errNotice',err);
         }
+    }
+    socket.on('joinRoom',(roomId)=>{
+        joinRoom(roomId);
     })
+    socket.on('matchRoom',()=>{
 
+        let user = getUser(socket.id);
+        roomList.forEach((room)=>{
+            if(room.roomUsers.length <7){
+                if (!user.isInRoom){
+                    joinRoom(room.id);
+                }
+            }
+        })
+    })
 });
 
 // setup the DB
