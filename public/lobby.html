@@ -85,16 +85,31 @@
                             <input type="button" class="btn btn-secondary" value="Link"/>
                         </div>
                     </div>
-                    <div class="notice-text">Create a room or join a random room.</div>
-                    <div class="bottom-left-btns">
-                        <a id="createRoom" class="btn btn-primary" disabled>create a room</a>
-                        <a id="matchRoom" class="btn btn-primary" disabled>match a room</a>
+                    <div class="room-details" id="room">
+                        <!--<div class="user-operator">-->
+                            <!--<div class="room-users">-->
+                                <!--<div class="user-item owner"> <i class="material-icons medium" >account_box</i> <div class="player-name">player1</div></div>-->
+                                <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player2</div></div>-->
+                                <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player3</div></div>-->
+                                <!--<div class="user-item bot"><i class="material-icons medium">airplay</i> <div class="player-name">Bot</div></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<a class="add-bot-btn btn btn-secondary">add a bot</a>-->
+                        <!--<a class="start-game btn btn-primary">start game</a>-->
+                    </div>
+                    <div class="lobby-operator-box">
+                        <div class="notice-text">Create a room or join a random room.</div>
+                        <div class="bottom-left-btns">
+                            <a id="createRoom" class="btn btn-primary" disabled>create a room</a>
+                            <a id="matchRoom" class="btn btn-primary" disabled>match a room</a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="lobby-bottom-right col s5">
                 <div class="box-wrap">
                     <div class="box-title">History</div>
+                    <!-- chat history box--->
                     <div class="box-body">
                         <div class="history-list">
                             <div class="history-item">
@@ -114,6 +129,7 @@
                             <a class="btn btn-secondary">send</a>
                         </div>
                     </div>
+                    <!-- chat history box--->
                 </div>
             </div>
         </div>

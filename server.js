@@ -39,41 +39,66 @@ io.on('connection', (socket) => {
      *  users and rooms management
      *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
      */
+
     let roomList = listRooms();
+    let currentRoom;
     let err ={};
 
     setInterval(()=>{
         socket.emit('listRooms', roomList);
     }, 1000);
 
+    setInterval(()=>{
+        socket.emit('currentRoom',currentRoom);
+    }, 1000);
+
     socket.on('newUser', (name) => {
 
-        const user = addUser({ id: socket.id,name,isInRoom:false});
-
+        const user = addUser({ id: socket.id,name,isInRoom:false,isBot:false});
         socket.emit('currentUser',user);
 
+    })
+    socket.on('addBot',(roomId)=>{
+        let botId = Math.random() * 1000;
+        const bot = addUser({id:`Bot${botId}`,name:'Bot',isInRoom:false,isBot:true});
+        joinRoom(roomId,bot);
     })
 
     socket.on('createRoom',() =>{
         const roomOwner = getUser(socket.id);
+
         if (!roomOwner.isInRoom) {
+
             const room = createRoom(socket.id,roomOwner);
+            currentRoom = room.room;
+
+            socket.emit('currentRoom',currentRoom);
+
         }else {
             err = {code:1,content:'Existing roomUser'};
             socket.emit('errNotice',err);
         }
     })
-    joinRoom =(roomId)=>{
+    joinRoom =(roomId,bot)=>{
 
-        const currentRoom = getRoom(roomId);
-        const user = getUser(socket.id);
+        const curRoom = getRoom(roomId);
 
-        let existingRoomUser = currentRoom.roomUsers.find((user) => user.id === socket.id);
+        let user = bot ? bot.user : getUser(socket.id);
+        let existingRoomUser;
+
+        if (user.isBot){
+            existingRoomUser = false;
+        } else {
+            existingRoomUser = curRoom.roomUsers.find((user) => user.id === socket.id);
+        }
 
         if(!existingRoomUser && !user.isInRoom){
 
             user.isInRoom = true;
-            currentRoom.roomUsers.push(user);
+            curRoom.roomUsers.push(user);
+            currentRoom = curRoom;
+
+            socket.emit('currentRoom',currentRoom);
 
         }else {
             err = {code:1,content:'Existing roomUser'};

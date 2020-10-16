@@ -1,5 +1,6 @@
 /**
-  * @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+  * lobby page style
+  * @Author: Qiaoli Wang (wangqiao@deakin.edu.au)
  **/
 .lobby-wrap{
     background-color: #ECCFAD;
@@ -45,7 +46,7 @@
     text-align: center;
     margin-bottom: 10px;
 }
-.room-item .item-left .player-name{
+.player-name{
     font-size: 16px;
     overflow:hidden;
     white-space:nowrap;
@@ -109,6 +110,29 @@
 }
 .link-button{
     margin-top: 24px;
+}
+.room-details,.lobby-operator-box{
+    margin-left: 40px;
+}
+.user-operator{
+    margin-bottom: 20px;
+}
+.user-operator .room-users{
+    display: flex;
+}
+.user-operator .room-users .user-item{
+    text-align: center;
+    border:1px solid #cc9966;
+    padding: 0px 5px 5px 5px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px #cc9966;
+    margin-right: 10px;
+}
+.user-item .player-name{
+    font-size: 14px;
+}
+.add-bot-btn{
+    margin-right: 20px;
 }
 /* overwrite the css from Materialze */
 .input-field>label{

@@ -9,9 +9,12 @@ $(function() {
     const $userName = $('#userName'),
           $linkBtn = $('.link-button .btn'),
           $createRoombtn = $('#createRoom'),
-          $matchRoomBtn = $('#matchRoom');
+          $matchRoomBtn = $('#matchRoom'),
+          $lobbyOperatorBox = $('.lobby-operator-box'),
+          $roomDetails = $('.room-details'),
+          $addBot = $(' #addBot');
 
-    let roomList;
+    let roomList,currentUser;
     /**
      * get user name
      */
@@ -37,6 +40,7 @@ $(function() {
             $matchRoomBtn.attr('disabled',false);
 
             socket.on('currentUser', (user) => {
+                currentUser = user;
                 console.log('currentUser: ' + JSON.stringify(user));
             })
 
@@ -62,13 +66,23 @@ $(function() {
             M.toast({html: 'Please enter your name!', classes: 'rounded'});
         }
     })
-
+    /**
+     * add a bot
+     */
+    $('body').on('click','.add-bot-btn',function(){
+        let roomId = $(this).data().id;
+        socket.emit('addBot',roomId);
+    })
     /**
      *  user join a room
      */
     $('body').on('click','.join-room',function () {
-        let roomId = $(this).data().id;
-        socket.emit('joinRoom',roomId);
+        if (userNameVal && currentUser) {
+            let roomId = $(this).data().id;
+            socket.emit('joinRoom', roomId);
+        }else {
+            M.toast({html: 'Please enter your name! and click Link to connect', classes: 'rounded'});
+        }
     })
 
     /**
@@ -82,6 +96,15 @@ $(function() {
         }
     })
 
+    /**
+     *  get current room
+     */
+    socket.on('currentRoom',(room) =>{
+        if (room){
+            $lobbyOperatorBox.hide();
+            renderRoom(room);
+        }
+    })
     /**
      *  get room list
      */
@@ -110,29 +133,75 @@ $(function() {
 
         const $roomList = document.getElementById("rooms");
         let roomList = [];
-        let userList = [];
+        let userList = [],$userListHtml;
+        let userNumber,$joinBtnHtml;
+        let $userIcon;
 
         rooms.forEach((room) =>{
 
             userList = [];
+            userNumber = room.roomUsers.length;
+
+            $joinBtnHtml = userNumber >= 7
+                ? `<a class="join-room btn btn-primary" disabled>Full</a>`
+                : `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
 
             room.roomUsers.forEach((user)=>{
+
+                $userIcon = user.isBot ? `<i class="small material-icons">airplay</i>` : `<i class="material-icons small">account_circle</i>`;
                 userList.push(`<div class="col s1">
-                            <i class="small material-icons">account_circle</i>
+                            ${$userIcon}
                             <div class="player-name">${user.name}</div>
                         </div>`)
             })
 
+            $userListHtml = userList.join('');
+
             roomList.push(`<div class="room-item">
-                    <div class="item-left row" id="players">${userList}</div>
+                    <div class="item-left row" id="players">${$userListHtml}</div>
                     <div class="item-right">
                         <span class="room-number">Room No : ${room.roomNumber}</span>
-                        <a class="join-room btn btn-primary" data-id=${room.id}>Join</a>
+                        ${$joinBtnHtml}
                     </div>
                 </div>`)
         })
 
 
-        $roomList.innerHTML = roomList.join("");
+        $roomList.innerHTML = roomList.join(" ");
+    }
+    /**
+     * display room
+     * @param room
+     */
+    renderRoom = (room) =>{
+
+        const $room = document.getElementById("room");
+        let playerList = [],$playersHtml;
+        let currentRoom =room;
+        let userNumber = currentRoom.roomUsers.length;
+        let $userIcon;
+        let $addBotBtn;
+
+        $addBotBtn = userNumber >= 7
+            ? `<a id="addBot" disabled class="add-bot-btn btn btn-secondary">add a bot</a>`
+            : `<a id="addBot" class="add-bot-btn btn btn-secondary" data-id =${room.id}>add a bot</a>`;
+
+        currentRoom.roomUsers.forEach((user)=>{
+            $userIcon = user.isBot ? `<i class="medium material-icons">airplay</i>` : `<i class="material-icons medium">account_box</i>`;
+            playerList.push(`<div class="user-item player">${$userIcon} <div class="player-name">${user.name}</div></div>`)
+
+        })
+
+        $playersHtml = playerList.join('');
+
+        let $roomHtml = `<div class="user-operator">
+                            <div class="room-users">
+                                ${$playersHtml}
+                            </div>
+                        </div>
+                       ${$addBotBtn}
+                       <a class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
+
+        $room.innerHTML = $roomHtml;
     }
 })

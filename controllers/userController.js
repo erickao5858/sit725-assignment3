@@ -8,13 +8,14 @@ const users = [];
  * @param id
  * @param name
  * @param isInRoom
- * @returns {{user: {id: *, name: String.name | *, isInRoom: *}}}
+ * @param isBot
+ * @returns {{user: {id: *, name: String.name | *, isInRoom: *, isBot: *}}}
  */
-const addUser = ({id,name,isInRoom}) =>{
+const addUser = ({id,name,isInRoom,isBot}) =>{
 
     name = name.trim();
 
-    const user = {id,name,isInRoom};
+    const user = {id,name,isInRoom,isBot};
 
     users.push(user);
 
