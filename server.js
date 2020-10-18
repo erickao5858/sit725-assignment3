@@ -53,7 +53,6 @@ io.on('connection', (socket) => {
     }, 1000);
 
     socket.on('newUser', (name) => {
-
         const user = addUser({ id: socket.id,name,isInRoom:false,isBot:false});
         socket.emit('currentUser',user);
 
@@ -118,6 +117,26 @@ io.on('connection', (socket) => {
                 }
             }
         })
+    })
+
+    socket.on('leaveRoom',(roomId)=>{
+
+        let room = getRoom(roomId);
+        let users = room.roomUsers;
+
+        let userIndex = users.findIndex((user) => user.id === socket.id);
+
+        if (userIndex !== -1){
+            if(users.length ==1){
+                removeRoom(roomId);
+            }
+            users[userIndex].isInRoom = false;
+            currentRoom = null;
+
+            socket.emit('currentRoom',currentRoom);
+
+            return users.splice(userIndex,1)[0];
+        }
     })
 });
 

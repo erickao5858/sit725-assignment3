@@ -84,7 +84,13 @@ $(function() {
             M.toast({html: 'Please enter your name! and click Link to connect', classes: 'rounded'});
         }
     })
-
+    /**
+     * user leave room
+     */
+    $('body').on('click','.leave-btn',function () {
+        let roomId = $(this).data().id;
+        socket.emit('leaveRoom',roomId);
+    })
     /**
      *  user match a room
      */
@@ -102,7 +108,15 @@ $(function() {
     socket.on('currentRoom',(room) =>{
         if (room){
             $lobbyOperatorBox.hide();
+            $roomDetails.show();
             renderRoom(room);
+        }else {
+            if(currentUser){
+                $createRoombtn.attr('disabled',false);
+                $matchRoomBtn.attr('disabled',false);
+            }
+            $lobbyOperatorBox.show();
+            $roomDetails.hide();
         }
     })
     /**
@@ -195,12 +209,14 @@ $(function() {
         $playersHtml = playerList.join('');
 
         let $roomHtml = `<div class="user-operator">
+                           
                             <div class="room-users">
                                 ${$playersHtml}
                             </div>
                         </div>
                        ${$addBotBtn}
-                       <a class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
+                       <a class="start-game btn btn-primary" data-id =${room.id}>start game</a>
+                       <a class="leave-btn btn btn-secondary" data-id =${room.id}>Leave</a>`
 
         $room.innerHTML = $roomHtml;
     }
