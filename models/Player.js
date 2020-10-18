@@ -15,19 +15,3 @@ const playerSchema = new Schema({
 const Player = mongoose.model('Player', playerSchema)
 
 export default Player
-
-const mongoose = require('mongoose')
-
-// connect to database
-const uri = "mongodb+srv://user:pass@sit725.facdb.mongodb.net/<dbname>?retryWrites=true&w=majority";
-const options = {
-    user: 'sit725',
-    pass: 'sit725',
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}
-mongoose.connect(uri, options, () => {
-    console.log('Connected to MongoDB')
-})
-const db = mongoose.connection
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
