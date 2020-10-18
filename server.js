@@ -32,15 +32,50 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-//socket test
+//socket connection
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
+    //function for game chat
+    //author:zilin
+    socket.on('chat_message', function (data) {
+        io.sockets.emit('chat_message', data);
+        });
     setInterval(()=>{
         socket.emit('number', parseInt(Math.random()*10));
     }, 1000);
+
+
+    /**
+     *  users and rooms connected
+     *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+     */
+
+    let roomList = listRooms();
+
+    setInterval(()=>{
+        socket.emit('listRooms', roomList);
+    }, 1000);
+
+
+    socket.on('newUser', (name) => {
+
+        const user = addUser({ id: socket.id,name});
+
+        socket.emit('currentUser',user);
+
+
+        console.log(user);
+
+    })
+
+    socket.on('createRoom',() =>{
+
+        const roomOwner = getUser(socket.id);
+        const room = createRoom(socket.id,roomOwner);
+    })
 
 });
 
