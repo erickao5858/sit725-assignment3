@@ -195,6 +195,11 @@ $(function() {
         let userNumber = currentRoom.roomUsers.length;
         let $userIcon;
         let $addBotBtn;
+        let $startGameBtn;
+
+        $startGameBtn = userNumber >=4
+            ? `<a href="/room?id=${room.id}" class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
+            : `<a href="/room?id=${room.id}" class="start-game btn btn-primary" data-id =${room.id} disabled="">start game</a>`
 
         $addBotBtn = userNumber >= 7
             ? `<a id="addBot" disabled class="add-bot-btn btn btn-secondary">add a bot</a>`
@@ -215,7 +220,7 @@ $(function() {
                             </div>
                         </div>
                        ${$addBotBtn}
-                       <a class="start-game btn btn-primary" data-id =${room.id}>start game</a>
+                       ${$startGameBtn}
                        <a class="leave-btn btn btn-secondary" data-id =${room.id}>Leave</a>`
 
         $room.innerHTML = $roomHtml;

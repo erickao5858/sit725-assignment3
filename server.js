@@ -4,6 +4,8 @@ const app = express()
 const mongo = require('./services/MongoService')
 const PORT = 3000;
 
+const gameRouter = require('./routers/gameRouter');
+
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
@@ -12,6 +14,9 @@ const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/ro
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
+
+// setup the routes
+app.use('/room',gameRouter.gameRouter);
 
 // need to add the body parser so that we can extract the body data
 app.use(bodyParser.urlencoded({
@@ -138,6 +143,14 @@ io.on('connection', (socket) => {
             return users.splice(userIndex,1)[0];
         }
     })
+
+    socket.on('startGame',(roomId)=>{
+
+        let room = getRoom(roomId);
+        currentRoom = room;
+        socket.emit('currentRoom',currentRoom);
+    })
+    /** -----------------------------------------**/
 });
 
 // setup the DB
