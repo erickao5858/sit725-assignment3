@@ -1,45 +1,65 @@
-.height200{
-    height: 220px;
-}
-.height500{
-    height: 450px;
-}
-.height500{
-    height: 500px;
-}
-.height50{
-    height: 50px;
-}
-.playerImage{
-    width: 150px;
-}
-.width50{
-    width: 50px;
-}
-.m0{
+body {
     margin: 0px;
+    height: 100%;
 }
-.p0{
-    padding: 0px;
+
+.lobby-wrap {
+    background-color: #ECCFAD;
+    height: 100vh;
 }
-.m-2{
-    margin: 2px;
+
+nav {
+    background-color: #333333;
 }
-.mt5{
-    margin-top: 5px;
+
+nav .brand-logo {
+    margin-left: 20px;
+    font-style: italic;
 }
-.p2{
-    padding: 2px;
+
+.upper-row {
+    margin-top: 0.3%;
+    height: 27%;
 }
-.borderLR{
-    border-left: 2px solid gray;
-    border-right: 2px solid gray;
+
+.middle-row {
+    margin-top: 3%;
+    height: 27%;
+    background-color: blue;
 }
-.textarea{
-    height: 145px;
-    overflow-y:visible;
-    resize: none;
+
+.lower-row {
+    margin-top: 3%;
+    height: 27%;
+    background-color: yellow;
 }
-.message{
-    height: 30px;
+
+.extra-info {
+    height: 100%;
+}
+
+.extra-info .row {
+    background-color: aqua;
+    height: 20%;
+}
+
+.player-grid {
+    height: 100%;
+}
+
+.player-container {
+    height: 100%;
+    width: 70%;
+    border: black 3px solid;
+}
+
+.player-name {
+    height: 10%;
+    border-bottom: black 3px solid;
+    text-align: center;
+}
+
+.player-container .row {
+    margin-left: 0;
+    margin-right: 0;
 }
