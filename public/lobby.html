@@ -111,22 +111,15 @@
                     <div class="box-title">History</div>
                     <!-- chat history box--->
                     <div class="box-body">
-                        <div class="history-list">
-                            <div class="history-item">
-                                <span><b>Simon:</b></span>
-                                <span>we need more player in room 1234.</span>
-                            </div>
-                            <div class="history-item">
-                                <span><b>Ahxsn:</b></span>
-                                <span>we need more player in room 1234.we need more player in room 1234.we need more player in room 1234.we need more player in room 1234.</span>
-                            </div>
+                        <div class="history-list" id="chatArea">
+                            
                         </div>
                         <div class="history-form">
                             <div class="input-field history-input">
-                                <input id="input_text" type="text">
+                                <input id="input_text" type="text" onfocus="this.value=''">
                                 <label for="input_text">Messages</label>
                             </div>
-                            <a class="btn btn-secondary">send</a>
+                            <a class="btn btn-secondary" id="sendMessageButton">send</a>
                         </div>
                     </div>
                     <!-- chat history box--->

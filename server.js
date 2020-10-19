@@ -1,6 +1,5 @@
 const express = require('express')
 const bodyParser = require('body-parser');
-const path = require('path');
 const app = express()
 const PORT = 3000;
 
@@ -14,17 +13,6 @@ const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/ro
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
-
-app.set('view engine', 'html'); 
-app.all('/rules',function(req,res){
-    res.sendFile(path.join(__dirname + '/public/rules.html'));
-    
-});
-
-app.all('/lobby',function(req,res){
-    res.sendFile(path.join(__dirname + '/public/lobby.html'));
-    
-});
 
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
@@ -43,8 +31,10 @@ io.on('connection', (socket) => {
     });
     //function for game chat
     //author:zilin
+    //function for lobby chat
+    //author:sibbi
     socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data);
+        io.sockets.emit('chat_message', data); //author:sibbi changed data.message to data inorder to receive user name.
     });
     setInterval(() => {
         socket.emit('number', parseInt(Math.random() * 10));

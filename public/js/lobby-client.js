@@ -4,7 +4,7 @@
 $(function() {
 
     // connect to the socket
-    let socket; socket = io();
+    // let socket; socket = io();
 
     const $userName = $('#userName'),
           $linkBtn = $('.link-button .btn'),
@@ -42,6 +42,9 @@ $(function() {
             socket.on('currentUser', (user) => {
                 currentUser = user;
                 console.log('currentUser: ' + JSON.stringify(user));
+                //variable username_chat is used to display username in lobby chat
+                //author:sibbi
+                username_chat = currentUser.user.name;
             })
 
         } else {
@@ -226,3 +229,32 @@ $(function() {
         $room.innerHTML = $roomHtml;
     }
 })
+
+//author:sibbi
+// connect to the socket
+let socket = io();
+
+//variable used to get username
+let username_chat = null;
+
+//funciton to get message and emit to socket
+const sendMessage=()=>{
+    let message = $('#input_text').val()
+        let payload = {
+          "msg" : message,
+          "sender" : username_chat
+        }
+    socket.emit("chat_message",payload);
+  }
+
+$(document).ready(function(){ 
+    $("#players").html("<img src=\"assets/test.jpg\" class=\"playerImage\"><img src=\"assets/test.jpg\" class=\"playerImage\">");
+    //bind the button
+    $('#sendMessageButton').click(sendMessage);
+
+    //socket to listen chat_message
+    socket.on('chat_message',data=>{
+        $('#chatArea').append($('<li>').text(data.sender+': '+data.msg));
+    });
+    
+}); 
