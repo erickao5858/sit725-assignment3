@@ -1,0 +1,65 @@
+body {
+    margin: 0px;
+    height: 100%;
+}
+
+.lobby-wrap {
+    background-color: #ECCFAD;
+    height: 100vh;
+}
+
+nav {
+    background-color: #333333;
+}
+
+nav .brand-logo {
+    margin-left: 20px;
+    font-style: italic;
+}
+
+.upper-row {
+    margin-top: 0.3%;
+    height: 27%;
+}
+
+.middle-row {
+    margin-top: 3%;
+    height: 27%;
+    background-color: blue;
+}
+
+.lower-row {
+    margin-top: 3%;
+    height: 27%;
+    background-color: yellow;
+}
+
+.extra-info {
+    height: 100%;
+}
+
+.extra-info .row {
+    background-color: aqua;
+    height: 20%;
+}
+
+.player-grid {
+    height: 100%;
+}
+
+.player-container {
+    height: 100%;
+    width: 70%;
+    border: black 3px solid;
+}
+
+.player-name {
+    height: 10%;
+    border-bottom: black 3px solid;
+    text-align: center;
+}
+
+.player-container .row {
+    margin-left: 0;
+    margin-right: 0;
+}
