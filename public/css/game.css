@@ -1,3 +1,7 @@
+html {
+    user-select: none;
+}
+
 body {
     margin: 0px;
     height: 100%;
@@ -22,10 +26,13 @@ nav .brand-logo {
     height: 27%;
 }
 
+.player-grid .player-container {
+    padding: 0;
+}
+
 .middle-row {
     margin-top: 3%;
     height: 27%;
-    background-color: blue;
 }
 
 .lower-row {
@@ -37,6 +44,9 @@ nav .brand-logo {
 .extra-info {
     height: 100%;
 }
+
+
+/*TODO*/
 
 .extra-info .row {
     background-color: aqua;
@@ -51,6 +61,13 @@ nav .brand-logo {
     height: 100%;
     width: 70%;
     border: black 3px solid;
+    background-color: white;
+}
+
+.player-container .row {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
 }
 
 .player-name {
@@ -59,7 +76,48 @@ nav .brand-logo {
     text-align: center;
 }
 
-.player-container .row {
-    margin-left: 0;
-    margin-right: 0;
+.player-status {
+    height: 40%;
+}
+
+.player-counters {
+    height: 50%;
+    border-bottom: black 3px solid;
+}
+
+.player-counters .col {
+    padding: 0;
+}
+
+.player-counter-card {
+    border-right: black 3px solid;
+    height: 100%;
+    text-align: center;
+}
+
+.player-counter-life {
+    border-right: black 3px solid;
+    height: 100%;
+}
+
+.player-badge {
+    height: 50%;
+}
+
+.player-badge .col {
+    height: 100%;
+    border-bottom: black 3px solid;
+    border-right: black 3px solid;
+    padding: 0;
+}
+
+.player-equipments {
+    height: 50%;
+    margin-top: 13%;
+}
+
+.player-equipments .row {
+    border-top: black 3px solid;
+    height: 20%;
+    text-align: center;
 }

@@ -17,7 +17,7 @@
     <link type="text/css" rel="stylesheet" href="css/game.css" media="screen,projection" />
 </head>
 
-<body>
+<body oncontextmenu="return false">
     <div class="lobby-wrap">
         <!-- Navigation Bar -->
         <nav>
@@ -37,14 +37,7 @@
                 <!-- Current Time -->
                 <div class="row"></div>
             </div>
-            <!-- Player -->
-            <div class="col s2 offset-s3 player-grid">
-                <div class="player-container">
-                    <div class="row player-name">Paul Regret(Luise)</div>
-                    <div class="row player-status"></div>
-                    <div class="row player-equipments"></div>
-                </div>
-            </div>
+            <div class="col s8 player-grid"></div>
         </div>
         <!-- Middle Row -->
         <div class="row middle-row ">
@@ -55,34 +48,6 @@
 
         </div>
     </div>
-    <!-- socket IO Served by the server -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="../js/game.js"></script>
-
-    <script>
-        /**
-         * get room users
-         * author: Qiaoli Wang wangqiao@deakin.edu.au
-         * @type {string}
-         */
-        let idUrl = window.location.search,
-            idArr = idUrl.split('=');
-        let roomId = idArr[1];
-        let roomUsers;
-
-        if (roomId) {
-            socket.emit('startGame', roomId);
-        }
-        socket.on('currentRoom', (room) => {
-
-            if (!room) {
-                socket.emit('startGame', roomId);
-            }
-            roomUsers = room.roomUsers;
-
-            console.log(roomUsers, 'users');
-        })
-    </script>
 
     <script src="/socket.io/socket.io.js "></script>
 
@@ -92,8 +57,43 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js "></script>
 
+    <!-- Socket -->
+    <script src="js/gameSocket.js "></script>
+
     <!-- Game Script -->
     <script src="js/game.js "></script>
 </body>
 
 </html>
+
+<!-- Player -->
+<template id="template-player">
+    <div class="player-container col s2">
+        <div class="row player-name"></div>
+        <div class="row player-status">
+            <!-- Card Counter & Life Counter -->
+            <div class="row player-counters">
+                <div class="col s3 player-counter-card"></div>
+            </div>
+            <!-- Sheriff Badge -->
+            <div class="row player-badge">
+                <div class="col s3">
+                    <img src="assets/sh.jpg" title="Sheriff" style="max-width:100%;max-height:100%;">
+                </div>
+            </div>
+        </div>
+        <!-- Equipments -->
+        <div class="row player-equipments">
+            <div class="row equipment-gun"></div>
+            <div class="row equipment-barrel"></div>
+            <div class="row equipment-mustang"></div>
+            <div class="row equipment-scope"></div>
+        </div>
+    </div>
+</template>
+<!-- Bullet -->
+<template id="template-bullet">
+    <div class="col s1 player-counter-life">
+        <img src="assets/Bullet.png" title="Bullet" style="width:100%;height:auto;">
+    </div>
+</template>
