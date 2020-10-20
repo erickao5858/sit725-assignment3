@@ -130,10 +130,15 @@ const getCards = () => {
     ]
     displayCards()
 }
+
 const displayCards = () => {
     // display cards
 }
 
 const discardCard = (index) => {
     cards[index].isActive = false
+}
+
+const shuffle = () => {
+
 }
