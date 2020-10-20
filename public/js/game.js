@@ -9,7 +9,9 @@ socket.on('chat_message', (msg) => {
     $("#messageTextarea").scrollTop(height);
 })
 
+
 const sendMessage = () => {
     var message = $("#message").val();
     socket.emit("chat_message", message);
 }
+
