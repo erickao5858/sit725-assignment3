@@ -12,6 +12,8 @@ let lastActivityTimeStamp;
 // The maximum time that a room can be idle.
 let idleLimit = 10 * 60 * 1000;
 
+let gameStarted = false;
+
 /**
  * create a room
  * @param id
@@ -32,8 +34,9 @@ const createRoom = (id,owner) =>{
     }
 
     roomUsers = [];
+    gameStarted = false;
 
-    const room = {id,roomNumber,roomUsers};
+    const room = {id,roomNumber,roomUsers,gameStarted};
 
     ownerJoinRoom(room,owner);
 
@@ -47,11 +50,11 @@ const createRoom = (id,owner) =>{
  * @param id
  * @returns {*}
  */
-const removeRoom = (id) =>{
+const removeRoom = (roomList,id) =>{
 
-    const index = rooms.findIndex((room) => room.id === id);
+    const index = roomList.findIndex((room) => room.id === id);
 
-    if (index !== -1) return rooms.splice(index,1)[0];
+    if (index !== -1) return roomList.splice(index,1)[0];
 }
 
 /**

@@ -101,12 +101,20 @@ $(function() {
             M.toast({html: 'Not a room is available, You can create a room!', classes: 'rounded'});
         }
     })
+    /**
+     *  start the game
+     */
+    $('body').on('click','.start-game',function () {
+        let roomId = $(this).data().id;
+        socket.emit('startGame',roomId);
+        location.href =`/room?id=${roomId}`;
+    })
 
     /**
      *  get current room
      */
     socket.on('currentRoom',(room) =>{
-        if (room){
+        if (room && !room.gameStarted){
             $lobbyOperatorBox.hide();
             $roomDetails.show();
             renderRoom(room);
@@ -133,9 +141,14 @@ $(function() {
      */
     socket.on('errNotice',(err)=>{
 
-        if(err.code ==1){
+        switch(err.code) {
 
-            M.toast({html: 'You are already in a Room!', classes: 'rounded'});
+            case 1:
+                M.toast({html: 'You are already in a Room!', classes: 'rounded'});
+                break;
+            case 2:
+                M.toast({html: 'Room is full, Please create a room!', classes: 'rounded'});
+                break;
         }
     })
 
@@ -146,7 +159,7 @@ $(function() {
     renderRooms = (rooms)=>{
 
         const $roomList = document.getElementById("rooms");
-        let roomList = [];
+        let roomList = [] ,gameStatus;
         let userList = [],$userListHtml;
         let userNumber,$joinBtnHtml;
         let $userIcon;
@@ -155,8 +168,9 @@ $(function() {
 
             userList = [];
             userNumber = room.roomUsers.length;
+            gameStatus = room.gameStarted;
 
-            $joinBtnHtml = userNumber >= 7
+            $joinBtnHtml = (userNumber >= 7 || gameStatus)
                 ? `<a class="join-room btn btn-primary" disabled>Full</a>`
                 : `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
 
@@ -198,8 +212,8 @@ $(function() {
         let $startGameBtn;
 
         $startGameBtn = userNumber >=4
-            ? `<a href="/room?id=${room.id}" class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
-            : `<a href="/room?id=${room.id}" class="start-game btn btn-primary" data-id =${room.id} disabled="">start game</a>`
+            ? `<a class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
+            : `<a class="start-game btn btn-primary" data-id =${room.id} disabled="">start game</a>`
 
         $addBotBtn = userNumber >= 7
             ? `<a id="addBot" disabled class="add-bot-btn btn btn-secondary">add a bot</a>`
