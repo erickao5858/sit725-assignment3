@@ -112,12 +112,12 @@ nav .brand-logo {
 }
 
 .player-equipments {
-    height: 50%;
-    margin-top: 13%;
+    height: 40%;
+    margin-top: 49%;
 }
 
 .player-equipments .row {
     border-top: black 3px solid;
-    height: 20%;
+    height: 25%;
     text-align: center;
 }
