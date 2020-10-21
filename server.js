@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const app = express()
-const mongo = require('./services/MongoService')
 const PORT = 3000;
 
 const gameRouter = require('./routers/gameRouter');
@@ -42,7 +41,7 @@ io.on('connection', (socket) => {
         socket.emit('number', parseInt(Math.random()*10));
     }, 1000);
 
-    
+
     /**
      *  users and rooms management
      *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
@@ -184,8 +183,7 @@ io.on('connection', (socket) => {
     /** -----------------------------------------**/
 });
 
-// setup the DB
-mongo.startDB()
+
 
 // liston to the port 3000
 http.listen(PORT,function () {
