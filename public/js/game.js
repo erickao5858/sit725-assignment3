@@ -17,6 +17,28 @@ const sendMessage = () => {
     socket.emit("chat_message", message);
 }
 
+/**
+ * get room users
+ * author: Qiaoli Wang wangqiao@deakin.edu.au
+ * @type {string}
+ */
+let idUrl = window.location.search,
+    idArr = idUrl.split('=');
+let roomId = idArr[1];
+let roomUsers;
+
+if (roomId) {
+    socket.emit('startGame', roomId);
+}
+socket.on('currentRoom', (room) => {
+    if (!room) {
+        socket.emit('startGame', roomId);
+    }
+    roomUsers = room.roomUsers;
+
+    console.log(roomUsers, 'users');
+})
+
 const PLAYER_ABILITY = '1 increased defence distance',
     PLAYER_CARDS = 5,
     GUN_ABILITY = 'Default weapon: range 1',
