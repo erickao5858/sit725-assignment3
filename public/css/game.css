@@ -35,6 +35,27 @@ nav .brand-logo {
     height: 27%;
 }
 
+.middle-row .player-container {
+    margin-left: 3%;
+    width: 11%;
+    padding: 0;
+}
+
+.card-pile {
+    width: 11%;
+    padding: 0;
+    border: black 3px solid;
+    height: 100%;
+}
+
+#draw-pile {
+    font-size: 270%;
+}
+
+#discard-pile {
+    margin-left: 5.5%;
+}
+
 .lower-row {
     margin-top: 3%;
     height: 27%;

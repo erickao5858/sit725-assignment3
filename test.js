@@ -98,7 +98,7 @@ module.exports = (mongoose) => {
     }
     module.read = (res) => {
         testModel.find().select('suit number text').exec((err, records) => {
-            res.send(records)
+            res.json(records)
         })
     }
     return module

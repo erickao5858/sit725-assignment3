@@ -15,16 +15,44 @@ const PLAYER_ABILITY = '1 increased defence distance',
 
 const PLAYER_COUNT = 7
 
+let cards, drawpileCards
+
 // TODO: ADD BUDGE
 const SHERIFF_POSITION = 5
 
 $(() => {　　
     // Disable drag function on image
     $('img').attr('draggable', false);
-    appendPlayer()
+    getCards()
+    appendPlayerUIUpper()
+    appendPlayerUIMiddle()
 })
 
-const appendPlayer = () => {
+const initDrawpile = () => {
+    drawpileCards = cards
+    $('#draw-pile').children().eq(0).text(drawpileCards.length + ' cards')
+}
+
+const getCards = () => {
+    $.get('/readCards', (data) => {
+        cards = data
+        initDrawpile()
+    })
+}
+const appendPlayerUIMiddle = () => {
+    $('.middle-row').prepend($('#template-player').html())
+    let player = $('.middle-row').children().eq(0)
+    player.removeClass('s2')
+
+    appendPlayerInformation(player)
+
+    $('.middle-row').append($('#template-player').html())
+    player = $('.middle-row').children().eq(3)
+    player.removeClass('s2')
+    appendPlayerInformation(player)
+    player.css('margin-left', '20%')
+}
+const appendPlayerUIUpper = () => {
     // s1 s4 s7 s10
     let offsets = []
         // Setup offset for different layout
@@ -50,21 +78,24 @@ const appendPlayer = () => {
         // Get player
         let player = $('.player-grid').children().last()
         player.addClass(offsets[i])
-
-        // Name
-        player.find('.player-name').attr('title', PLAYER_ABILITY).html('<b>Paul Regret(Luise)</b>')
-
-        // Status
-        player.find('.player-counters').append($('#template-bullet').html())
-        player.find('.player-counters').append($('#template-bullet').html())
-        player.find('.player-counter-card').text(i + ' in hand')
-
-        // Equipments
-        player.find('.equipment-gun').attr('title', GUN_ABILITY).html('<b>Colt .45</b>')
-        player.find('.equipment-barrel').attr('title', BARREL).html('<b>Barrel</b>')
-        player.find('.equipment-mustang').attr('title', MUSTANG).html('<b>Mustang</b>')
-        player.find('.equipment-scope').attr('title', SCOPE).html('<b>Scope</b>')
+        appendPlayerInformation(player)
     }
+}
+
+const appendPlayerInformation = (player) => {
+    // Name
+    player.find('.player-name').attr('title', PLAYER_ABILITY).html('<b>Paul Regret(Luise)</b>')
+
+    // Equipments
+    player.find('.equipment-gun').attr('title', GUN_ABILITY).html('<b>Colt .45</b>')
+    player.find('.equipment-barrel').attr('title', BARREL).html('<b>Barrel</b>')
+    player.find('.equipment-mustang').attr('title', MUSTANG).html('<b>Mustang</b>')
+    player.find('.equipment-scope').attr('title', SCOPE).html('<b>Scope</b>')
+    player.find('.player-counter-card').text(5 + ' in hand')
+
+    // Status
+    player.find('.player-counters').append($('#template-bullet').html())
+    player.find('.player-counters').append($('#template-bullet').html())
 }
 
 /**
