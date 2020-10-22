@@ -23,5 +23,3 @@ const players = [{
         "role": "Renegade"
     }
 ]
-
-console.log(players)

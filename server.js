@@ -164,13 +164,19 @@ const options = {
     user: 'sit725',
     pass: 'sit725',
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    dbName: 'Bang'
 }
 mongoose.connect(uri, options, () => {
     console.log('Connected to MongoDB')
 })
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+const Test = require('./test')(mongoose)
+app.get('/readCards', (req, res) => {
+    Test.read(res)
+})
 
 // liston to the port 3000
 http.listen(PORT, function() {

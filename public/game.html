@@ -41,21 +41,38 @@
         </div>
         <!-- Middle Row -->
         <div class="row middle-row ">
-
+            <!-- Drawpile -->
+            <div class="col card-pile offset-s3 valign-wrapper" id="draw-pile"><b></b></div>
+            <!-- Discardpile -->
+            <div class="col card-pile" id="discard-pile"></div>
         </div>
         <!-- Lower Row-->
         <div class="row lower-row ">
-
+            <!-- Hand -->
+            <div class="col s7 hand">
+                <div class="row valign-wrapper" id="tips"><b>Waiting for other players to perform an action</b></div>
+                <div class="row"></div>
+            </div>
+            <!-- Chat Author:Zilin Guo-->
+            <div class="col s3 yellow lighten-4" id="chat">
+                <div class="row m0">
+                    <div class="col s12 m12 l12 m0 p0"><textarea id="messageTextarea" rows="10" class="textarea mt5"></textarea></div>
+                </div>
+                <div class="row m0 mt5 p0 left-align">
+                    <div class="col s9 left"><input id="message" class="input-field" type="text"></div>
+                    <div class="col s2 m2 l2 m0 p0"><input id="sendMessageButton" type="button" value="Submit" class="message left waves-effect waves-light btn-small mt5" /></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js "></script>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js "></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <!-- Socket -->
     <script src="js/gameSocket.js "></script>
@@ -65,7 +82,6 @@
 
     <!-- Temp Script -->
     <script src="js/player.js "></script>
-    <script src="js/card.js "></script>
 </body>
 
 </html>
@@ -79,19 +95,11 @@
             <div class="row player-counters">
                 <div class="col s3 player-counter-card"></div>
             </div>
-            <!-- Sheriff Badge -->
-            <div class="row player-badge">
-                <div class="col s3">
-                    <img src="assets/sh.jpg" title="Sheriff" style="max-width:100%;max-height:100%;">
-                </div>
-            </div>
+
         </div>
         <!-- Equipments -->
         <div class="row player-equipments">
             <div class="row equipment-gun"></div>
-            <div class="row equipment-barrel"></div>
-            <div class="row equipment-mustang"></div>
-            <div class="row equipment-scope"></div>
         </div>
     </div>
 </template>
@@ -99,5 +107,14 @@
 <template id="template-bullet">
     <div class="col s1 player-counter-life">
         <img src="assets/Bullet.png" title="Bullet" style="width:100%;height:auto;">
+    </div>
+</template>
+
+<!-- Sheriff Badge -->
+<template id="template-badge">
+    <div class="row player-badge">
+        <div class="col s3">
+            <img src="assets/sh.jpg" title="Sheriff" style="max-width:100%;max-height:100%;">
+        </div>
     </div>
 </template>

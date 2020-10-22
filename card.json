@@ -1,0 +1,401 @@
+[{
+        "suit": "hearts",
+        "number": 5,
+        "text": "Beer"
+    },
+    {
+        "suit": "clubs",
+        "number": 4,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 9,
+        "text": "Remington"
+    },
+    {
+        "suit": "clubs",
+        "number": 5,
+        "text": "Volcanic"
+    },
+    {
+        "suit": "diamonds",
+        "number": 2,
+        "text": "General store"
+    },
+    {
+        "suit": "hearts",
+        "number": 5,
+        "text": "Beer"
+    },
+    {
+        "suit": "clubs",
+        "number": 5,
+        "text": "Duel"
+    },
+    {
+        "suit": "diamonds",
+        "number": 3,
+        "text": "Missed"
+    },
+    {
+        "suit": "hearts",
+        "number": 7,
+        "text": "Cat Balou"
+    },
+    {
+        "suit": "hearts",
+        "number": 9,
+        "text": "Bang!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 3,
+        "text": "General store"
+    },
+    {
+        "suit": "hearts",
+        "number": 1,
+        "text": "Beer"
+    },
+    {
+        "suit": "diamonds",
+        "number": 8,
+        "text": "Barrel"
+    },
+    {
+        "suit": "spades",
+        "number": 2,
+        "text": "Missed"
+    },
+    {
+        "suit": "clubs",
+        "number": 1,
+        "text": "Saloon"
+    },
+    {
+        "suit": "spades",
+        "number": 1,
+        "text": "Beer"
+    },
+    {
+        "suit": "spades",
+        "number": 6,
+        "text": "Schofield"
+    },
+    {
+        "suit": "clubs",
+        "number": 9,
+        "text": "Barrel"
+    },
+    {
+        "suit": "spades",
+        "number": 6,
+        "text": "Beer"
+    },
+    {
+        "suit": "spades",
+        "number": 2,
+        "text": "Beer"
+    },
+    {
+        "suit": "hearts",
+        "number": 7,
+        "text": "Barrel"
+    },
+    {
+        "suit": "diamonds",
+        "number": 9,
+        "text": "Beer"
+    },
+    {
+        "suit": "diamonds",
+        "number": 8,
+        "text": "Missed"
+    },
+    {
+        "suit": "hearts",
+        "number": 4,
+        "text": "Gatling"
+    },
+    {
+        "suit": "hearts",
+        "number": 7,
+        "text": "Bang!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 3,
+        "text": "Bang!"
+    },
+    {
+        "suit": "clubs",
+        "number": 1,
+        "text": "Winchester"
+    },
+    {
+        "suit": "clubs",
+        "number": 3,
+        "text": "Beer"
+    },
+    {
+        "suit": "diamonds",
+        "number": 9,
+        "text": "Saloon"
+    },
+    {
+        "suit": "hearts",
+        "number": 7,
+        "text": "Gatling"
+    },
+    {
+        "suit": "spades",
+        "number": 9,
+        "text": "Cat Balou"
+    },
+    {
+        "suit": "clubs",
+        "number": 2,
+        "text": "Bang!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 2,
+        "text": "Stagecoach"
+    },
+    {
+        "suit": "spades",
+        "number": 9,
+        "text": "Cat Balou"
+    },
+    {
+        "suit": "diamonds",
+        "number": 9,
+        "text": "Missed"
+    },
+    {
+        "suit": "spades",
+        "number": 6,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 9,
+        "text": "Barrel"
+    },
+    {
+        "suit": "hearts",
+        "number": 6,
+        "text": "Remington"
+    },
+    {
+        "suit": "diamonds",
+        "number": 7,
+        "text": "Indians!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 4,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 4,
+        "text": "Remington"
+    },
+    {
+        "suit": "clubs",
+        "number": 6,
+        "text": "Gatling"
+    },
+    {
+        "suit": "hearts",
+        "number": 6,
+        "text": "Bang!"
+    },
+    {
+        "suit": "hearts",
+        "number": 2,
+        "text": "Bang!"
+    },
+    {
+        "suit": "clubs",
+        "number": 5,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 8,
+        "text": "Barrel"
+    },
+    {
+        "suit": "hearts",
+        "number": 2,
+        "text": "Saloon"
+    },
+    {
+        "suit": "diamonds",
+        "number": 2,
+        "text": "Bang!"
+    },
+    {
+        "suit": "spades",
+        "number": 3,
+        "text": "Missed"
+    },
+    {
+        "suit": "spades",
+        "number": 1,
+        "text": "Cat Balou"
+    },
+    {
+        "suit": "spades",
+        "number": 6,
+        "text": "Gatling"
+    },
+    {
+        "suit": "clubs",
+        "number": 2,
+        "text": "Stagecoach"
+    },
+    {
+        "suit": "diamonds",
+        "number": 6,
+        "text": "Scope"
+    },
+    {
+        "suit": "diamonds",
+        "number": 2,
+        "text": "Bang!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 1,
+        "text": "Volcanic"
+    },
+    {
+        "suit": "hearts",
+        "number": 8,
+        "text": "Missed"
+    },
+    {
+        "suit": "clubs",
+        "number": 3,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 1,
+        "text": "Volcanic"
+    },
+    {
+        "suit": "hearts",
+        "number": 6,
+        "text": "Barrel"
+    },
+    {
+        "suit": "clubs",
+        "number": 5,
+        "text": "Bang!"
+    },
+    {
+        "suit": "clubs",
+        "number": 3,
+        "text": "Gatling"
+    },
+    {
+        "suit": "spades",
+        "number": 1,
+        "text": "Bang!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 5,
+        "text": "Rev. Carabine"
+    },
+    {
+        "suit": "diamonds",
+        "number": 6,
+        "text": "Mustang"
+    },
+    {
+        "suit": "clubs",
+        "number": 3,
+        "text": "Rev. Carabine"
+    },
+    {
+        "suit": "spades",
+        "number": 2,
+        "text": "Beer"
+    },
+    {
+        "suit": "clubs",
+        "number": 6,
+        "text": "Bang!"
+    },
+    {
+        "suit": "hearts",
+        "number": 9,
+        "text": "Rev. Carabine"
+    },
+    {
+        "suit": "diamonds",
+        "number": 1,
+        "text": "General store"
+    },
+    {
+        "suit": "clubs",
+        "number": 4,
+        "text": "Bang!"
+    },
+    {
+        "suit": "clubs",
+        "number": 1,
+        "text": "Volcanic"
+    },
+    {
+        "suit": "spades",
+        "number": 3,
+        "text": "Schofield"
+    },
+    {
+        "suit": "diamonds",
+        "number": 8,
+        "text": "Stagecoach"
+    },
+    {
+        "suit": "hearts",
+        "number": 4,
+        "text": "Mustang"
+    },
+    {
+        "suit": "clubs",
+        "number": 1,
+        "text": "Missed"
+    },
+    {
+        "suit": "spades",
+        "number": 5,
+        "text": "Stagecoach"
+    },
+    {
+        "suit": "hearts",
+        "number": 9,
+        "text": "Missed"
+    },
+    {
+        "suit": "diamonds",
+        "number": 7,
+        "text": "Bang!"
+    },
+    {
+        "suit": "hearts",
+        "number": 7,
+        "text": "Panic!"
+    },
+    {
+        "suit": "diamonds",
+        "number": 7,
+        "text": "Scope"
+    }
+]
