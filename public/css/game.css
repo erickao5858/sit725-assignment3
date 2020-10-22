@@ -31,7 +31,6 @@ nav .brand-logo {
 }
 
 .middle-row {
-    margin-top: 3%;
     height: 27%;
 }
 
@@ -57,9 +56,16 @@ nav .brand-logo {
 }
 
 .lower-row {
-    margin-top: 3%;
     height: 27%;
-    background-color: yellow;
+    margin-top: 4%;
+    margin-bottom: 0;
+    overflow-y: hidden;
+}
+
+.lower-row .player-container {
+    margin-left: 3%;
+    width: 11%;
+    padding: 0;
 }
 
 .extra-info {
@@ -92,13 +98,13 @@ nav .brand-logo {
 }
 
 .player-name {
-    height: 10%;
+    height: 9%;
     border-bottom: black 3px solid;
     text-align: center;
 }
 
 .player-status {
-    height: 40%;
+    height: 35%;
 }
 
 .player-counters {
@@ -134,11 +140,68 @@ nav .brand-logo {
 
 .player-equipments {
     height: 40%;
-    margin-top: 49%;
+    margin-top: 66%;
 }
 
 .player-equipments .row {
     border-top: black 3px solid;
-    height: 25%;
+    height: 22%;
     text-align: center;
+}
+
+.hand {
+    border: black 3px solid;
+    height: 100%;
+    background-color: white;
+    border-left: none;
+}
+
+#chat {
+    border: black 3px solid;
+    border-left: 0;
+    height: 100%;
+    padding: 0;
+}
+
+#tips {
+    border-bottom: black 3px solid;
+    height: 26%;
+}
+
+#tips b {
+    margin: auto;
+}
+
+.textarea {
+    height: 145px;
+    overflow-y: visible;
+    resize: none;
+}
+
+.message {
+    height: 30px;
+}
+
+.width50 {
+    width: 50px;
+}
+
+.m0 {
+    margin: 0px;
+}
+
+.p0 {
+    padding: 0px;
+}
+
+.m-2 {
+    margin: 2px;
+}
+
+.mt5 {
+    margin-top: 5px;
+}
+
+.p2 {
+    padding: 2px;
 }

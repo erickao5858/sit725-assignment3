@@ -13,12 +13,10 @@ const PLAYER_ABILITY = '1 increased defence distance',
     NAME_MUSTANG = 'Mustang',
     NAME_SCOPE = 'Scope'
 
-const PLAYER_COUNT = 7
+const PLAYER_COUNT = 5,
+    SHERIFF_POSITION = 2
 
 let cards, drawpileCards
-
-// TODO: ADD BUDGE
-const SHERIFF_POSITION = 5
 
 $(() => {　　
     // Disable drag function on image
@@ -26,6 +24,13 @@ $(() => {　　
     getCards()
     appendPlayerUIUpper()
     appendPlayerUIMiddle()
+    appendPlayerUILower()
+    appendSheriffBadge()
+
+    /**
+     * @author Zilin Guo
+     */
+    $('#sendMessageButton').click(sendMessage);
 })
 
 const initDrawpile = () => {
@@ -39,6 +44,17 @@ const getCards = () => {
         initDrawpile()
     })
 }
+
+const appendSheriffBadge = () => {
+    $('.player-status').eq(SHERIFF_POSITION).append($('#template-badge').html())
+}
+const appendPlayerUILower = () => {
+    $('.lower-row').prepend($('#template-player').html())
+    let player = $('.lower-row').children().eq(0)
+    player.removeClass('s2')
+    appendPlayerInformation(player)
+}
+
 const appendPlayerUIMiddle = () => {
     $('.middle-row').prepend($('#template-player').html())
     let player = $('.middle-row').children().eq(0)
@@ -55,7 +71,8 @@ const appendPlayerUIMiddle = () => {
 const appendPlayerUIUpper = () => {
     // s1 s4 s7 s10
     let offsets = []
-        // Setup offset for different layout
+
+    // Setup offset for different layout
     switch (PLAYER_COUNT) {
         case 4:
             offsets = ['offset-s5']
@@ -104,15 +121,15 @@ const appendPlayerInformation = (player) => {
  * @param {string} equipmentClass equipment position: 0 - Weapon, 1 - Barrel, 2 - Mustang, 3 - Scope
  */
 const removeEquipment = (playerID, equipmentClass) => {
-    let margin = ['49%', '37%', '25%']
+    let margin = ['66%', '55%', '42%']
     let player = $('.player-grid').children().eq(playerID)
-    player.find(equipmentClass).remove()
+    player.find('.' + equipmentClass).remove()
     let equipmentContainer = player.find('.player-equipments')
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
 }
 
 const addEquipment = (playerID, equipmentClass) => {
-    let margin = ['37%', '25%', '13%']
+    let margin = ['55%', '42%', '29%']
     let player = $('.player-grid').children().eq(playerID)
     let equipmentContainer = player.find('.player-equipments')
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
@@ -120,19 +137,38 @@ const addEquipment = (playerID, equipmentClass) => {
     let equipment = equipmentContainer.children().last()
     let title, name
     switch (equipmentClass) {
-        case '.equipment-barrel':
+        case 'equipment-barrel':
             title = BARREL, name = NAME_BARREL
             break
-        case '.equipment-mustang':
+        case 'equipment-mustang':
             title = MUSTANG, name = NAME_MUSTANG
             break
-        case '.equipment-scope':
+        case 'equipment-scope':
             title = SCOPE, name = NAME_SCOPE
             break
     }
     equipment.attr('title', title).html('<b>' + name + '</b>')
 }
 
-const equipGun = (playerID, gunID) => {
+const equipGun = (playerID) => {
 
+}
+
+/**
+ * Socket module
+ * @author Zilin Guo
+ */
+// connect to the socket
+let socket = io();
+
+//
+socket.on('chat_message', (msg) => {
+    $("#messageTextarea").text($("#messageTextarea").val() + "\n" + msg);
+    var height = $("#messageTextarea")[0].scrollHeight;
+    $("#messageTextarea").scrollTop(height);
+})
+
+const sendMessage = () => {
+    var message = $("#message").val();
+    socket.emit("chat_message", message);
 }
