@@ -5,7 +5,7 @@
  */
 const removeEquipment = (playerID, equipmentClass) => {
     let margin = ['66%', '55%', '42%']
-    let player = $('.player-grid').children().eq(playerID)
+    let player = $('.player-container').eq(playerID)
     player.find('.' + equipmentClass).remove()
     let equipmentContainer = player.find('.player-equipments')
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
@@ -13,7 +13,7 @@ const removeEquipment = (playerID, equipmentClass) => {
 
 const addEquipment = (playerID, equipmentClass) => {
     let margin = ['55%', '42%', '29%']
-    let player = $('.player-grid').children().eq(playerID)
+    let player = $('.player-container').eq(playerID)
     let equipmentContainer = player.find('.player-equipments')
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
     equipmentContainer.append('<div class="row ' + equipmentClass + '"></div>')

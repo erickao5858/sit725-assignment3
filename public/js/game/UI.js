@@ -90,3 +90,25 @@ const appendPlayerInformation = (player) => {
     player.find('.player-counters').append($('#template-bullet').html())
     player.find('.player-counters').append($('#template-bullet').html())
 }
+
+const lostBullet = (playerID) => {
+    let player = $('.player-container').eq(playerID)
+    let bullets = player.find('img')
+    for (let i = bullets.length - 1; i >= 0; i--) {
+        if (bullets.eq(i).attr('src') == 'assets/game/bullet.png') {
+            bullets.eq(i).attr('src', 'assets/game/bullet1.png')
+            break
+        }
+    }
+}
+
+const regainBullet = (playerID) => {
+    let player = $('.player-container').eq(playerID)
+    let bullets = player.find('img')
+    for (let i = bullets.length - 1; i >= 0; i--) {
+        if (bullets.eq(i).attr('src') == 'assets/game/bullet1.png') {
+            bullets.eq(i).attr('src', 'assets/game/bullet.png')
+            break
+        }
+    }
+}
