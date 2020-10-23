@@ -28,7 +28,7 @@ module.exports = (mongoose) => {
 
     let module = {}
     module.insert = () => {
-        const cards = require('./card.json')
+        const cards = require('../card.json')
         let title
         for (let i = 0; i < cards.length; i++) {
             switch (cards[i].text) {
