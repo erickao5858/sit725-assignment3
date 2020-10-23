@@ -166,10 +166,28 @@ nav .brand-logo {
 #tips {
     border-bottom: black 3px solid;
     height: 26%;
+    margin-bottom: 0;
 }
 
 #tips b {
     margin: auto;
+}
+
+#card-wrapper {
+    height: 70%;
+    padding-left: 3%;
+    overflow-y: scroll;
+}
+
+#card-wrapper .col {
+    padding: 0;
+}
+
+.card {
+    border: black 3px solid;
+    height: 74%;
+    margin-right: 3%;
+    margin-top: 1%;
 }
 
 .textarea {

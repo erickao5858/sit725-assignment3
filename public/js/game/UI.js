@@ -95,8 +95,8 @@ const lostBullet = (playerID) => {
     let player = $('.player-container').eq(playerID)
     let bullets = player.find('img')
     for (let i = bullets.length - 1; i >= 0; i--) {
-        if (bullets.eq(i).attr('src') == 'assets/game/bullet.png') {
-            bullets.eq(i).attr('src', 'assets/game/bullet1.png')
+        if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet.png') {
+            bullets.eq(i).attr('src', 'assets/game/misc/bullet1.png')
             break
         }
     }
@@ -106,9 +106,24 @@ const regainBullet = (playerID) => {
     let player = $('.player-container').eq(playerID)
     let bullets = player.find('img')
     for (let i = bullets.length - 1; i >= 0; i--) {
-        if (bullets.eq(i).attr('src') == 'assets/game/bullet1.png') {
-            bullets.eq(i).attr('src', 'assets/game/bullet.png')
+        if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet1.png') {
+            bullets.eq(i).attr('src', 'assets/game/misc/bullet.png')
             break
         }
+    }
+}
+
+const appendCards = () => {
+    let handCards = cards.slice(0, 5)
+    for (let i = 0; i < handCards.length; i++) {
+        $('#card-wrapper').append($('#template-card').html())
+        let card = $('#card-wrapper').children().last().find('img')
+        $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + handCards[i].text + '</div>')
+        card.attr('id', handCards[i]._id)
+        card.attr('src', handCards[i].image)
+        card.attr('title', handCards[i].description)
+        card.on('click', () => {
+            M.toast({ html: 'Card ' + card.attr('id') + ' be clicked!' })
+        })
     }
 }

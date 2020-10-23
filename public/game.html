@@ -51,7 +51,7 @@
             <!-- Hand -->
             <div class="col s7 hand">
                 <div class="row valign-wrapper" id="tips"><b>Waiting for other players to perform an action</b></div>
-                <div class="row"></div>
+                <div class="row" id="card-wrapper"></div>
             </div>
             <!-- Chat Author:Zilin Guo-->
             <div class="col s3 yellow lighten-4" id="chat">
@@ -104,7 +104,7 @@
 <!-- Bullet -->
 <template id="template-bullet">
     <div class="col s1 player-counter-life">
-        <img src="assets/game/bullet.png" title="Bullet" style="width:100%;height:auto;">
+        <img src="assets/game/misc/bullet.png" title="Bullet" style="width:100%;height:auto;">
     </div>
 </template>
 
@@ -112,7 +112,12 @@
 <template id="template-badge">
     <div class="row player-badge">
         <div class="col s3">
-            <img src="assets/game/sheriff.jpg" title="Sheriff" style="max-width:100%;max-height:100%;">
+            <img src="assets/game/roles/sheriff.png" title="Sheriff" style="max-width:100%;max-height:100%;">
         </div>
     </div>
+</template>
+
+<!-- Card -->
+<template id="template-card">
+    <div class="col s1 card"><img style="max-width:100%;max-height:100%;"></div>
 </template>

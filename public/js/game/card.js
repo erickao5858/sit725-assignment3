@@ -13,5 +13,6 @@ const getCards = () => {
     $.get('/readCards', (data) => {
         cards = data
         initDrawpile()
+        appendCards()
     })
 }

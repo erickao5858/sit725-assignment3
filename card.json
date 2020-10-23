@@ -6,7 +6,7 @@
     {
         "suit": "clubs",
         "number": 4,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
@@ -36,7 +36,7 @@
     {
         "suit": "diamonds",
         "number": 3,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "hearts",
@@ -66,7 +66,7 @@
     {
         "suit": "spades",
         "number": 2,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "clubs",
@@ -111,7 +111,7 @@
     {
         "suit": "diamonds",
         "number": 8,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "hearts",
@@ -171,12 +171,12 @@
     {
         "suit": "diamonds",
         "number": 9,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "spades",
         "number": 6,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
@@ -196,7 +196,7 @@
     {
         "suit": "diamonds",
         "number": 4,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
@@ -221,7 +221,7 @@
     {
         "suit": "clubs",
         "number": 5,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
@@ -241,7 +241,7 @@
     {
         "suit": "spades",
         "number": 3,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "spades",
@@ -276,12 +276,12 @@
     {
         "suit": "hearts",
         "number": 8,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "clubs",
         "number": 3,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
@@ -371,7 +371,7 @@
     {
         "suit": "clubs",
         "number": 1,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "spades",
@@ -381,7 +381,7 @@
     {
         "suit": "hearts",
         "number": 9,
-        "text": "Missed"
+        "text": "Missed!"
     },
     {
         "suit": "diamonds",
