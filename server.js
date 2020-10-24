@@ -11,6 +11,7 @@ let io = require('socket.io')(http);
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
 const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
 
+
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
 
@@ -67,7 +68,7 @@ io.on('connection', (socket) => {
 
     })
     socket.on('addBot', (roomId) => {
-        let botId = Math.random() * 1000;
+        let botId = Math.floor(Math.random() * 1000);
         const bot = addUser({ id: `Bot${botId}`, name: 'Bot', isInRoom: false, isBot: true });
         joinRoom(roomId, bot);
     })
@@ -180,10 +181,29 @@ io.on('connection', (socket) => {
                 room.gameStarted = true;
             }
             currentRoom = room;
+            socket.emit('lobbyStart', roomId)
             socket.emit('currentRoom', currentRoom);
         })
         /** -----------------------------------------**/
+
+    /**
+     * @author Eric Kao 
+     * 
+     */
+
+    let GameControl = require('./gameControl')
+
+    socket.on('initGame', (data) => {
+        io.sockets.emit('initGame', data);
+    })
+
+    socket.on('recordGameData', (players, cards) => {
+        let gameControl = new GameControl(players, cards)
+        gameControl.initDraw()
+        socket.emit('updateHandCard', gameControl.players, gameControl.drawpile)
+    })
 });
+
 
 /**
  * Database connection

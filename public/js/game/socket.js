@@ -29,8 +29,7 @@ $(() => {
 let idUrl = window.location.search,
     idArr = idUrl.split('=');
 let roomId = idArr[1].split('&')[0],
-    currentUserId = idArr[2],
-    currentUser
+    currentUserId = idArr[2]
 let roomUsers;
 
 let isInitialized = false
@@ -45,7 +44,6 @@ socket.on('currentRoom', (room) => {
     if (!isInitialized) {
         isInitialized = true
         roomUsers = room.roomUsers;
-        currentUser = roomUsers.find(({ id }) => id === currentUserId)
         if (roomId == currentUserId) {
             isMaster = true
             initializeGame()
@@ -57,9 +55,11 @@ socket.on('currentRoom', (room) => {
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
 let players = []
-let isMaster = false
-const initializeGame = () => {
-    if (!isMaster) return
+let isMaster = false,
+    isDataInitialized = false,
+    me
+
+const preparePlayerData = () => {
     for (let i = 0; i < roomUsers.length; i++) {
         let player = {}
         player.id = roomUsers[i].id
@@ -74,7 +74,41 @@ const initializeGame = () => {
 
     for (let i = 0; i < players.length; i++) {
         players[i].role = ROLE_PRESET[players.length - 4][i]
+        let character = CHARACTER_PRESET[Math.floor(Math.random() * CHARACTER_PRESET.length)]
+        players[i].character = character[0]
+        players[i].ability = character[1]
+        players[i].maxBullet = character[2]
+        players[i].cardCount = 2
+        players[i].cards = []
+        if (players[i].role == 'Sheriff') players[i].maxBullet += 1
     }
-
-    appendUI()
 }
+
+const initializeGame = () => {
+    if (!isMaster) return
+    $.get('/readCards', (data) => {
+        preparePlayerData()
+        setTimeout(() => {
+            socket.emit('initGame', players)
+            socket.emit('recordGameData', players, data)
+        }, 0)
+    })
+}
+
+socket.on('initGame', (data) => {
+    if (!isDataInitialized) {
+        isDataInitialized = true
+        players = data
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].id == currentUserId) {
+                me = players[i]
+            }
+        }
+        appendUI()
+    }
+})
+
+socket.on('updateHandCard', (playersWithCards, cards) => {
+
+    updateDrawpile(cards.length)
+})
