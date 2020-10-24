@@ -34,8 +34,10 @@ io.on('connection', (socket) => {
 
     //function for game chat
     //author:zilin
+    //function for lobby chat
+    //author:sibbi
     socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data);
+        io.sockets.emit('chat_message', data); //author:sibbi changed data.message to data inorder to receive user name.
     });
     setInterval(() => {
         socket.emit('number', parseInt(Math.random() * 10));
