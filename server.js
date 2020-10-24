@@ -34,13 +34,34 @@ io.on('connection', (socket) => {
 
     //function for game chat
     //author:zilin
+    global.timer=new Object();
     socket.on('chat_message', function(data) {
+        
         io.sockets.emit('chat_message', data);
     });
+    socket.on('start_timer', function(roomId) {
+        global.timer[roomId]=0;
+    });
+    socket.on('get_timer', function(roomId) {
+        io.sockets.emit('timer', global.timer[roomId]);
+    });
     setInterval(() => {
-        socket.emit('number', parseInt(Math.random() * 10));
+        setTimer(); 
     }, 1000);
-
+    function setTimer() {
+        for (var k in global.timer) {
+            if (global.timer.hasOwnProperty(k)) {
+                if(global.timer[k]!=-1)
+                {
+                    global.timer[k]+=1;
+                }
+                if(global.timer[k]>=40)
+                {
+                    global.timer[k]=-1;
+                }
+            }
+        }
+      }
 
     /**
      *  users and rooms management
