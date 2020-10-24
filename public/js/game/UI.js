@@ -12,13 +12,17 @@ const PLAYER_ABILITY = '1 increased defence distance',
 const SHERIFF_POSITION = 2
 
 $(() => {
+
+})
+
+const appendUI = () => {
     // Disable drag function on image
     $('img').attr('draggable', false);
     appendPlayerUIUpper()
     appendPlayerUIMiddle()
     appendPlayerUILower()
     appendSheriffBadge()
-})
+}
 
 const appendSheriffBadge = () => {
     $('.player-status').eq(SHERIFF_POSITION).append($('#template-badge').html())
@@ -46,9 +50,9 @@ const appendPlayerUIMiddle = () => {
 const appendPlayerUIUpper = () => {
     // s1 s4 s7 s10
     let offsets = []
-    let PLAYER_COUNT = 4
-        // Setup offset for different layout
-    switch (PLAYER_COUNT) {
+
+    // Setup offset for different layout
+    switch (players.length) {
         case 4:
             offsets = ['offset-s5']
             break
@@ -63,7 +67,7 @@ const appendPlayerUIUpper = () => {
             break
     }
     // Append Player UI
-    for (let i = 0; i <= PLAYER_COUNT - 4; i++) {
+    for (let i = 0; i <= players.length - 4; i++) {
         // Generate UI set using template
         $('.player-grid').append($('#template-player').html())
 

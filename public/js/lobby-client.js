@@ -96,15 +96,16 @@ $(function() {
          *  user match a room
          */
     $matchRoomBtn.on('click', function() {
-            if (roomList.length > 0) {
-                socket.emit('matchRoom');
-            } else {
-                M.toast({ html: 'Not a room is available, You can create a room!', classes: 'rounded' });
-            }
-        })
-        /**
-         *  start the game
-         */
+        if (roomList.length > 0) {
+            socket.emit('matchRoom');
+        } else {
+            M.toast({ html: 'Not a room is available, You can create a room!', classes: 'rounded' });
+        }
+    })
+
+    /**
+     *  start the game
+     */
     $('body').on('click', '.start-game', function() {
         let roomId = $(this).data().id;
         socket.emit('startGame', roomId);

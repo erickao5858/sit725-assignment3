@@ -56,12 +56,25 @@ socket.on('currentRoom', (room) => {
 /**
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
-let players
+let players = []
 let isMaster = false
 const initializeGame = () => {
     if (!isMaster) return
-    let player
     for (let i = 0; i < roomUsers.length; i++) {
-        console.log(roomUsers[i])
+        let player = {}
+        player.id = roomUsers[i].id
+        player.name = roomUsers[i].name
+        player.isBot = roomUsers[i].isBot
+        player.isDead = false
+        players.push(player)
     }
+
+    // Shuffle players
+    players.sort(function() { return Math.random() - 0.5; })
+
+    for (let i = 0; i < players.length; i++) {
+        players[i].role = ROLE_PRESET[players.length - 4][i]
+    }
+
+    appendUI()
 }
