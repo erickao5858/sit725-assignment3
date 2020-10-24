@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,125 +18,125 @@
 </head>
 
 <body>
-<div class="lobby-wrap">
-    <nav>
-        <div class="nav-wrapper">
-            <a href="index.html" class="brand-logo">Bang</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="rules.html">Rules</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="lobby-container">
-        <a class="btn btn-secondary">Back</a>
-        <!-- room list -->
-        <div class="box-wrap">
-            <div class="box-title">Room List</div>
-            <div class="room-list">
-                <div id="rooms"></div>
-                <div class="room-item">
-                    <div class="item-left row">
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">account_circle</i>
-                            <div class="player-name">player 1</div>
-                        </div>
-                        <div class="col s1">
-                            <i class="small material-icons">airplay</i>
-                            <div class="player-name">Bot</div>
-                        </div>
-                    </div>
-                    <div class="item-right">
-                        <span class="room-number">Room No : 1522</span>
-                        <a class="btn disabled">Full</a>
-                    </div>
-                </div>
+    <div class="lobby-wrap">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="index.html" class="brand-logo">Bang</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="rules.html">Rules</a></li>
+                </ul>
             </div>
-        </div>
-        <!-- join a game and send message -->
-        <div class="lobby-bottom-content row">
-            <div class="lobby-bottom-left col s7">
-                <div class="bottom-left-cont">
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <i class="material-icons prefix">account_circle</i>
-                            <input id="userName" type="text" class="validate">
-                            <label for="userName">Your Name</label>
-                        </div>
-                        <div class="input-field link-button col s2">
-                            <input type="button" class="btn btn-secondary" value="Link"/>
-                        </div>
-                    </div>
-                    <div class="room-details" id="room">
-                        <!--<div class="user-operator">-->
-                            <!--<div class="room-users">-->
-                                <!--<div class="user-item owner"> <i class="material-icons medium" >account_box</i> <div class="player-name">player1</div></div>-->
-                                <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player2</div></div>-->
-                                <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player3</div></div>-->
-                                <!--<div class="user-item bot"><i class="material-icons medium">airplay</i> <div class="player-name">Bot</div></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<a class="add-bot-btn btn btn-secondary">add a bot</a>-->
-                        <!--<a class="start-game btn btn-primary">start game</a>-->
-                    </div>
-                    <div class="lobby-operator-box">
-                        <div class="notice-text">Create a room or join a random room.</div>
-                        <div class="bottom-left-btns">
-                            <a id="createRoom" class="btn btn-primary" disabled>create a room</a>
-                            <a id="matchRoom" class="btn btn-primary" disabled>match a room</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="lobby-bottom-right col s5">
-                <div class="box-wrap">
-                    <div class="box-title">History</div>
-                    <!-- chat history box--->
-                    <div class="box-body">
-                        <div class="history-list" id="chatArea">
-                            
-                        </div>
-                        <div class="history-form">
-                            <div class="input-field history-input">
-                                <input id="input_text" type="text" onfocus="this.value=''">
-                                <label for="input_text">Messages</label>
+        </nav>
+        <div class="lobby-container">
+            <a class="btn btn-secondary">Back</a>
+            <!-- room list -->
+            <div class="box-wrap">
+                <div class="box-title">Room List</div>
+                <div class="room-list">
+                    <div id="rooms"></div>
+                    <div class="room-item">
+                        <div class="item-left row">
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
                             </div>
-                            <a class="btn btn-secondary" id="sendMessageButton">send</a>
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
+                            </div>
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
+                            </div>
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
+                            </div>
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
+                            </div>
+                            <div class="col s1">
+                                <i class="small material-icons">account_circle</i>
+                                <div class="player-name">player 1</div>
+                            </div>
+                            <div class="col s1">
+                                <i class="small material-icons">airplay</i>
+                                <div class="player-name">Bot</div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <span class="room-number">Room No : 1522</span>
+                            <a class="btn disabled">Full</a>
                         </div>
                     </div>
-                    <!-- chat history box--->
+                </div>
+            </div>
+            <!-- join a game and send message -->
+            <div class="lobby-bottom-content row">
+                <div class="lobby-bottom-left col s7">
+                    <div class="bottom-left-cont">
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="userName" type="text" class="validate">
+                                <label for="userName">Your Name</label>
+                            </div>
+                            <div class="input-field link-button col s2">
+                                <input type="button" class="btn btn-secondary" value="Link" />
+                            </div>
+                        </div>
+                        <div class="room-details" id="room">
+                            <!--<div class="user-operator">-->
+                            <!--<div class="room-users">-->
+                            <!--<div class="user-item owner"> <i class="material-icons medium" >account_box</i> <div class="player-name">player1</div></div>-->
+                            <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player2</div></div>-->
+                            <!--<div class="user-item player"><i class="material-icons medium">account_box</i> <div class="player-name">player3</div></div>-->
+                            <!--<div class="user-item bot"><i class="material-icons medium">airplay</i> <div class="player-name">Bot</div></div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--<a class="add-bot-btn btn btn-secondary">add a bot</a>-->
+                            <!--<a class="start-game btn btn-primary">start game</a>-->
+                        </div>
+                        <div class="lobby-operator-box">
+                            <div class="notice-text">Create a room or join a random room.</div>
+                            <div class="bottom-left-btns">
+                                <a id="createRoom" class="btn btn-primary" disabled>create a room</a>
+                                <a id="matchRoom" class="btn btn-primary" disabled>match a room</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lobby-bottom-right col s5">
+                    <div class="box-wrap">
+                        <div class="box-title">History</div>
+                        <!-- chat history box--->
+                        <div class="box-body">
+                            <div class="history-list" id="chatArea">
+
+                            </div>
+                            <div class="history-form">
+                                <div class="input-field history-input">
+                                    <input id="input_text" type="text" onfocus="this.value=''">
+                                    <label for="input_text">Messages</label>
+                                </div>
+                                <a class="btn btn-secondary" id="sendMessageButton">send</a>
+                            </div>
+                        </div>
+                        <!-- chat history box--->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- socket IO Served by the server -->
-<script src="/socket.io/socket.io.js"></script>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- socket IO Served by the server -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-<script src="js/lobby-client.js"></script>
+    <script src="js/lobby-client.js"></script>
 
 </body>
 
