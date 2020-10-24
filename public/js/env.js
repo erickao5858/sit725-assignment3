@@ -6,9 +6,9 @@ const testButtonFunction=()=>{
 let socket = io();
 
 
-socket.on('number', (msg) => {
-    console.log('Random number: ' + msg);
-})
+// socket.on('number', (msg) => {
+//     console.log('Random number: ' + msg);
+// })
 
 console.log('test')
 $(document).ready(function(){
@@ -18,9 +18,17 @@ $(document).ready(function(){
   $('#testButton').click(testButtonFunction)
 
   //test get call
-  $.get('/test?user_name="Fantastic User"',(result)=>{
-    console.log(result)
-  })
+  // $.get('/test?user_name="Fantastic User"',(result)=>{
+  //   console.log(result)
+  // })
+
+
+  // $("#rulesbutton").click(function () {
+  //   $.get('/rules',function(result){
+  //     console.log("Button is clicked")
+  //     console.log(result)
+  //   })  
+  // });
 
 
 })

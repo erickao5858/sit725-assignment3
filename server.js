@@ -25,11 +25,13 @@ app.use(bodyParser.json());
 
 //socket connection
 io.on('connection', (socket) => {
+
     console.log('a user connected');
+
     socket.on('disconnect', () => {
-        console.log('user disconnected');
-        
+        console.log('a user disconnected');
     });
+
     //function for game chat
     //author:zilin
     socket.on('chat_message', function(data) {
@@ -58,7 +60,6 @@ io.on('connection', (socket) => {
     }, 1000);
 
     socket.on('newUser', (name) => {
-
         const user = addUser({ id: socket.id, name, isInRoom: false, isBot: false });
         socket.emit('currentUser', user);
 
@@ -116,8 +117,14 @@ io.on('connection', (socket) => {
     socket.on('matchRoom', () => {
 
         let user = getUser(socket.id);
+
+        if (roomList.length == 1 && roomList[0].gameStarted) {
+            err = { code: 2, content: 'Room is full' };
+            socket.emit('errNotice', err);
+        }
+
         roomList.forEach((room) => {
-            if (room.roomUsers.length < 7) {
+            if (room.roomUsers.length < 7 && !room.gameStarted) {
                 if (!user.isInRoom) {
                     joinRoom(room.id);
                 }
@@ -125,29 +132,51 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('leaveRoom', (roomId) => {
-
+    leaveRoom = (roomId) => {
         let room = getRoom(roomId);
         let users = room.roomUsers;
+        let bots = 0;
 
+        // remove current user in this room
         let userIndex = users.findIndex((user) => user.id === socket.id);
 
-        if (userIndex !== -1) {
-            if (users.length == 1) {
-                removeRoom(roomId);
-            }
-            users[userIndex].isInRoom = false;
-            currentRoom = null;
+        users[userIndex].isInRoom = false;
 
-            socket.emit('currentRoom', currentRoom);
+        users.splice(userIndex, 1);
 
-            return users.splice(userIndex, 1)[0];
+        if (socket.id == roomId) {
+            // remove all the bots in this room
+            users.forEach((user) => {
+                if (user.isBot) {
+                    bots++;
+                }
+            })
+            users.splice(0, bots);
         }
+
+        // if no user here, remove current room
+        if (users.length == 0) {
+            removeRoom(roomList, roomId);
+
+        } else {
+            // if users here ,the fist user would be the room owner.
+            room.id = users[0].id;
+        }
+        currentRoom = null;
+
+        socket.emit('currentRoom', currentRoom);
+    }
+
+    socket.on('leaveRoom', (roomId) => {
+
+        leaveRoom(roomId);
     })
 
     socket.on('startGame', (roomId) => {
-
             let room = getRoom(roomId);
+            if (room) {
+                room.gameStarted = true;
+            }
             currentRoom = room;
             socket.emit('currentRoom', currentRoom);
         })
@@ -164,13 +193,19 @@ const options = {
     user: 'sit725',
     pass: 'sit725',
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    dbName: 'Bang'
 }
 mongoose.connect(uri, options, () => {
     console.log('Connected to MongoDB')
 })
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+const Test = require('./test')(mongoose)
+app.get('/readCards', (req, res) => {
+    Test.read(res)
+})
 
 // liston to the port 3000
 http.listen(PORT, function() {
