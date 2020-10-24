@@ -26,10 +26,10 @@ app.use(bodyParser.json());
 //socket connection
 io.on('connection', (socket) => {
 
-    console.log('a user connected');
+    //console.log('a user connected');
 
     socket.on('disconnect', () => {
-        console.log('a user disconnected');
+        //console.log('a user disconnected');
     });
 
     //function for game chat

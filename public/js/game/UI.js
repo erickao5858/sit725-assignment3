@@ -9,8 +9,7 @@ const PLAYER_ABILITY = '1 increased defence distance',
     NAME_MUSTANG = 'Mustang',
     NAME_SCOPE = 'Scope'
 
-const PLAYER_COUNT = 5,
-    SHERIFF_POSITION = 2
+const SHERIFF_POSITION = 2
 
 $(() => {
     // Disable drag function on image
@@ -47,8 +46,8 @@ const appendPlayerUIMiddle = () => {
 const appendPlayerUIUpper = () => {
     // s1 s4 s7 s10
     let offsets = []
-
-    // Setup offset for different layout
+    let PLAYER_COUNT = 4
+        // Setup offset for different layout
     switch (PLAYER_COUNT) {
         case 4:
             offsets = ['offset-s5']
