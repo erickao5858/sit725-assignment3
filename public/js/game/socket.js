@@ -29,8 +29,7 @@ $(() => {
 let idUrl = window.location.search,
     idArr = idUrl.split('=');
 let roomId = idArr[1].split('&')[0],
-    currentUserId = idArr[2],
-    currentUser
+    currentUserId = idArr[2]
 let roomUsers;
 
 let isInitialized = false
@@ -41,14 +40,15 @@ if (roomId) {
 socket.on('currentRoom', (room) => {
     if (!room) {
         socket.emit('startGame', roomId);
+        return
     }
     if (!isInitialized) {
         isInitialized = true
         roomUsers = room.roomUsers;
-        currentUser = roomUsers.find(({ id }) => id === currentUserId)
         if (roomId == currentUserId) {
-            isMaster = true
-            initializeGame()
+            $.get('/readCards', (data) => {
+                socket.emit('initGame', [roomUsers, data])
+            })
         }
     }
 })
@@ -56,25 +56,32 @@ socket.on('currentRoom', (room) => {
 /**
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
-let players = []
-let isMaster = false
-const initializeGame = () => {
-    if (!isMaster) return
-    for (let i = 0; i < roomUsers.length; i++) {
-        let player = {}
-        player.id = roomUsers[i].id
-        player.name = roomUsers[i].name
-        player.isBot = roomUsers[i].isBot
-        player.isDead = false
-        players.push(player)
+let players = [],
+    drawpile = []
+let isUIInitialized = false,
+    me
+
+
+socket.on('initGame', (data) => {
+    if (!isUIInitialized) {
+        isUIInitialized = true
+        players = data[0]
+        drawpile = data[1]
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].id == currentUserId) {
+                me = players[i]
+            }
+        }
+        initUI()
     }
+})
 
-    // Shuffle players
-    players.sort(function() { return Math.random() - 0.5; })
-
-    for (let i = 0; i < players.length; i++) {
-        players[i].role = ROLE_PRESET[players.length - 4][i]
+socket.on('startTurn', (data) => {
+    let player = data[0]
+    drawpile = data[1]
+    updateCardCountUI(player.id, player.cards.length)
+    updateDrawpile()
+    if (me.id == player.id) {
+        updateHandsUI()
     }
-
-    appendUI()
-}
+})

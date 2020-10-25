@@ -1,51 +1,64 @@
-const PLAYER_ABILITY = '1 increased defence distance',
-    PLAYER_CARDS = 5,
-    GUN_ABILITY = 'Default weapon: range 1',
-    BARREL = 'Defence equipment',
-    MUSTANG = '1 increased defence distance',
-    SCOPE = '1 decreased attack distance',
-    NAME_COLT = 'Colt .45',
-    NAME_BARREL = 'Barrel',
-    NAME_MUSTANG = 'Mustang',
-    NAME_SCOPE = 'Scope'
-
-const SHERIFF_POSITION = 2
-
-$(() => {
-
-})
-
-const appendUI = () => {
+const initUI = () => {
     // Disable drag function on image
     $('img').attr('draggable', false);
-    appendPlayerUIUpper()
-    appendPlayerUIMiddle()
+    reorderPlayers()
     appendPlayerUILower()
-    appendSheriffBadge()
+    appendPlayerUIMiddle()
+    appendPlayerUIUpper()
+    appendBadges()
+    updateHandsUI()
+    initCardCountUI()
+    updateDrawpile()
 }
 
-const appendSheriffBadge = () => {
-    $('.player-status').eq(SHERIFF_POSITION).append($('#template-badge').html())
+const updateDrawpile = () => {
+    $('#draw-pile').find('b').html(drawpile.length + ' cards')
+}
+
+const shift = (arr, n) => {
+    let times = n > arr.length ? n % arr.length : n;
+    return arr.concat(arr.splice(0, times));
+}
+
+const reorderPlayers = () => {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].id == currentUserId) {
+            players = shift([...players], i)
+            break
+        }
+    }
+}
+
+const appendBadges = () => {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].role == 'Sheriff') {
+            $('#' + players[i].id).find('.player-status').append($('#template-badge').html())
+            $('#' + players[i].id).find('.player-badge').find('img').attr('src', 'assets/game/roles/' + players[i].role.toLowerCase() + '.png').attr('title', players[i].role)
+        } else if (players[i] == me) {
+            $('#' + players[i].id).find('.player-status').append($('#template-badge').html())
+            $('#' + players[i].id).find('.player-badge').find('img').attr('src', 'assets/game/roles/' + me.role.toLowerCase() + '.png').attr('title', me.role)
+        }
+    }
 }
 const appendPlayerUILower = () => {
     $('.lower-row').prepend($('#template-player').html())
-    let player = $('.lower-row').children().eq(0)
-    player.removeClass('s2')
-    appendPlayerInformation(player)
+    let playerContainer = $('.lower-row').children().eq(0)
+    playerContainer.removeClass('s2')
+    appendPlayerInformation(playerContainer, players[0])
 }
 
 const appendPlayerUIMiddle = () => {
     $('.middle-row').prepend($('#template-player').html())
-    let player = $('.middle-row').children().eq(0)
-    player.removeClass('s2')
+    let playerContainer = $('.middle-row').children().eq(0)
+    playerContainer.removeClass('s2')
 
-    appendPlayerInformation(player)
+    appendPlayerInformation(playerContainer, players[1])
 
     $('.middle-row').append($('#template-player').html())
-    player = $('.middle-row').children().eq(3)
-    player.removeClass('s2')
-    appendPlayerInformation(player)
-    player.css('margin-left', '20%')
+    playerContainer = $('.middle-row').children().eq(3)
+    playerContainer.removeClass('s2')
+    appendPlayerInformation(playerContainer, players[players.length - 1])
+    playerContainer.css('margin-left', '20%')
 }
 const appendPlayerUIUpper = () => {
     // s1 s4 s7 s10
@@ -74,24 +87,38 @@ const appendPlayerUIUpper = () => {
         // Get player
         let player = $('.player-grid').children().last()
         player.addClass(offsets[i])
-        appendPlayerInformation(player)
+        appendPlayerInformation(player, players[i + 2])
     }
 }
 
-const appendPlayerInformation = (player) => {
-    // Name
-    player.find('.player-name').attr('title', PLAYER_ABILITY).html('<b>Paul Regret(Luise)</b>')
+const appendPlayerInformation = (playerContainer, player) => {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i] == player) {
 
-    // Equipments
-    player.find('.equipment-gun').attr('title', GUN_ABILITY).html('<b>Colt .45</b>')
-    player.find('.equipment-barrel').attr('title', BARREL).html('<b>Barrel</b>')
-    player.find('.equipment-mustang').attr('title', MUSTANG).html('<b>Mustang</b>')
-    player.find('.equipment-scope').attr('title', SCOPE).html('<b>Scope</b>')
-    player.find('.player-counter-card').text(5 + ' in hand')
+            playerContainer.attr('id', player.id)
 
-    // Status
-    player.find('.player-counters').append($('#template-bullet').html())
-    player.find('.player-counters').append($('#template-bullet').html())
+            // Name
+            playerContainer.find('.player-name').attr('title', player.ability).html('<b>' + player.character + '(' + player.name + ')' + '</b>')
+
+            // Equipments
+            playerContainer.find('.equipment-gun').attr('title', 'Default weapon: range 1').html('<b>Colt .45</b>')
+
+            // TODO: play card and put equipment
+            /*
+            playerContainer.find('.equipment-barrel').attr('title', BARREL).html('<b>Barrel</b>')
+            playerContainer.find('.equipment-mustang').attr('title', MUSTANG).html('<b>Mustang</b>')
+            playerContainer.find('.equipment-scope').attr('title', SCOPE).html('<b>Scope</b>')
+            */
+
+            // TODO: update hand cards
+            //
+
+            // Status
+            for (let i = 0; i < player.maxBullet; i++)
+                playerContainer.find('.player-counters').append($('#template-bullet').html())
+            break
+        }
+    }
 }
 
 const lostBullet = (playerID) => {
@@ -116,17 +143,27 @@ const regainBullet = (playerID) => {
     }
 }
 
-const appendCards = () => {
-    let handCards = cards.slice(0, 5)
-    for (let i = 0; i < handCards.length; i++) {
+const updateHandsUI = () => {
+    $('#card-wrapper').empty()
+    for (let i = 0; i < me.cards.length; i++) {
         $('#card-wrapper').append($('#template-card').html())
         let card = $('#card-wrapper').children().last().find('img')
-        $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + handCards[i].text + '</div>')
-        card.attr('id', handCards[i]._id)
-        card.attr('src', handCards[i].image)
-        card.attr('title', handCards[i].description)
+        $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + me.cards[i].text + '</div>')
+        card.attr('id', me.cards[i]._id)
+        card.attr('src', me.cards[i].image)
+        card.attr('title', me.cards[i].description)
         card.on('click', () => {
-            M.toast({ html: 'Card ' + card.attr('id') + ' be clicked!' })
+            M.toast({ html: me.cards[i]._id + " cliced!" })
         })
     }
+}
+
+const initCardCountUI = () => {
+    for (let i = 0; i < players.length; i++) {
+        $('#' + players[i].id).find('.player-counter-card').html(players[i].cards.length + ' in hands')
+    }
+}
+
+const updateCardCountUI = (playerID, amount) => {
+    $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
 }
