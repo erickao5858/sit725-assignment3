@@ -40,6 +40,7 @@ if (roomId) {
 socket.on('currentRoom', (room) => {
     if (!room) {
         socket.emit('startGame', roomId);
+        return
     }
     if (!isInitialized) {
         isInitialized = true
