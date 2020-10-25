@@ -6,10 +6,11 @@ const appendUI = () => {
     appendPlayerUIMiddle()
     appendPlayerUIUpper()
     appendBadges()
+    updateDrawpile()
 }
 
-const updateDrawpile = (amount) => {
-    $('#draw-pile').find('b').html(amount + ' cards')
+const updateDrawpile = () => {
+    $('#draw-pile').find('b').html(drawpile.length + ' cards')
 }
 
 const shift = (arr, n) => {
@@ -159,8 +160,4 @@ const updataCardCountUI = (entries) => {
     for (let i = 0; i < entries.length; i++) {
         $('#' + entries[i].id).find('.player-counter-card').html(entries[i].cards.length + ' in hands')
     }
-}
-
-const response = (id) => {
-
 }

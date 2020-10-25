@@ -13,3 +13,8 @@ const CHARACTER_PRESET = [
     ['Rose Doolan', 'Has a scope all the time', 1],
     ['Paul Regret', 'Has a mustang all the time', 1]
 ]
+
+module.exports = {
+    ROLE_PRESET,
+    CHARACTER_PRESET
+}

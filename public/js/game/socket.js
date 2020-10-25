@@ -45,8 +45,9 @@ socket.on('currentRoom', (room) => {
         isInitialized = true
         roomUsers = room.roomUsers;
         if (roomId == currentUserId) {
-            isMaster = true
-            initializeGame()
+            $.get('/readCards', (data) => {
+                socket.emit('initGame', [roomUsers, data])
+            })
         }
     }
 })
@@ -54,51 +55,17 @@ socket.on('currentRoom', (room) => {
 /**
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
-let players = []
-let isMaster = false,
-    isDataInitialized = false,
+let players = [],
+    drawpile = []
+let isUIInitialized = false,
     me
 
-const preparePlayerData = () => {
-    for (let i = 0; i < roomUsers.length; i++) {
-        let player = {}
-        player.id = roomUsers[i].id
-        player.name = roomUsers[i].name
-        player.isBot = roomUsers[i].isBot
-        player.isDead = false
-        players.push(player)
-    }
-
-    // Shuffle players
-    players.sort(function() { return Math.random() - 0.5; })
-
-    for (let i = 0; i < players.length; i++) {
-        players[i].role = ROLE_PRESET[players.length - 4][i]
-        let character = CHARACTER_PRESET[Math.floor(Math.random() * CHARACTER_PRESET.length)]
-        players[i].character = character[0]
-        players[i].ability = character[1]
-        players[i].maxBullet = character[2]
-        players[i].cardCount = 2
-        players[i].cards = []
-        if (players[i].role == 'Sheriff') players[i].maxBullet += 1
-    }
-}
-
-const initializeGame = () => {
-    if (!isMaster) return
-    $.get('/readCards', (data) => {
-        preparePlayerData()
-        setTimeout(() => {
-            socket.emit('initGame', players)
-            socket.emit('recordGameData', players, data)
-        }, 0)
-    })
-}
 
 socket.on('initGame', (data) => {
-    if (!isDataInitialized) {
-        isDataInitialized = true
-        players = data
+    if (!isUIInitialized) {
+        isUIInitialized = true
+        players = data[0]
+        drawpile = data[1]
         for (let i = 0; i < players.length; i++) {
             if (players[i].id == currentUserId) {
                 me = players[i]
@@ -108,6 +75,7 @@ socket.on('initGame', (data) => {
     }
 })
 
+/*
 socket.on('updateHandCard', (playersWithCards, cards) => {
     updataCardCountUI(playersWithCards)
     updateDrawpile(cards.length)
@@ -118,4 +86,4 @@ socket.on('updateHandCard', (playersWithCards, cards) => {
         }
     }
     updateHandsUI()
-})
+})*/
