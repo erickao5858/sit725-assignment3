@@ -5,7 +5,8 @@ const initUI = () => {
     appendPlayerUILower()
     appendPlayerUIMiddle()
     appendPlayerUIUpper()
-    appendBadges()
+    appendSheriffBadge()
+    appendBadge(me.id)
     updateHandsUI()
     initCardCountUI()
     updateDrawpile()
@@ -15,114 +16,18 @@ const updateDrawpile = () => {
     $('#draw-pile').find('b').html(drawpile.length + ' cards')
 }
 
-const shift = (arr, n) => {
-    let times = n > arr.length ? n % arr.length : n;
-    return arr.concat(arr.splice(0, times));
-}
-
-const reorderPlayers = () => {
+const appendBadge = (playerID) => {
     for (let i = 0; i < players.length; i++) {
-        if (players[i].id == currentUserId) {
-            players = shift([...players], i)
-            break
-        }
-    }
-}
-
-const appendBadges = () => {
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].role == 'Sheriff') {
+        if (players[i].role == 'Sheriff') continue
+        if (players[i].id == playerID) {
             $('#' + players[i].id).find('.player-status').append($('#template-badge').html())
             $('#' + players[i].id).find('.player-badge').find('img').attr('src', 'assets/game/roles/' + players[i].role.toLowerCase() + '.png').attr('title', players[i].role)
-        } else if (players[i] == me) {
-            $('#' + players[i].id).find('.player-status').append($('#template-badge').html())
-            $('#' + players[i].id).find('.player-badge').find('img').attr('src', 'assets/game/roles/' + me.role.toLowerCase() + '.png').attr('title', me.role)
-        }
-    }
-}
-const appendPlayerUILower = () => {
-    $('.lower-row').prepend($('#template-player').html())
-    let playerContainer = $('.lower-row').children().eq(0)
-    playerContainer.removeClass('s2')
-    appendPlayerInformation(playerContainer, players[0])
-}
-
-const appendPlayerUIMiddle = () => {
-    $('.middle-row').prepend($('#template-player').html())
-    let playerContainer = $('.middle-row').children().eq(0)
-    playerContainer.removeClass('s2')
-
-    appendPlayerInformation(playerContainer, players[1])
-
-    $('.middle-row').append($('#template-player').html())
-    playerContainer = $('.middle-row').children().eq(3)
-    playerContainer.removeClass('s2')
-    appendPlayerInformation(playerContainer, players[players.length - 1])
-    playerContainer.css('margin-left', '20%')
-}
-const appendPlayerUIUpper = () => {
-    // s1 s4 s7 s10
-    let offsets = []
-
-    // Setup offset for different layout
-    switch (players.length) {
-        case 4:
-            offsets = ['offset-s5']
-            break
-        case 5:
-            offsets = ['offset-s3', 'offset-s2']
-            break
-        case 6:
-            offsets = ['offset-s2', 'offset-s2', 'offset-s2']
-            break
-        case 7:
-            offsets = ['offset-s1', 'offset-s1', 'offset-s1', 'offset-s1']
-            break
-    }
-    // Append Player UI
-    for (let i = 0; i <= players.length - 4; i++) {
-        // Generate UI set using template
-        $('.player-grid').append($('#template-player').html())
-
-        // Get player
-        let player = $('.player-grid').children().last()
-        player.addClass(offsets[i])
-        appendPlayerInformation(player, players[i + 2])
-    }
-}
-
-const appendPlayerInformation = (playerContainer, player) => {
-    for (let i = 0; i < players.length; i++) {
-        if (players[i] == player) {
-
-            playerContainer.attr('id', player.id)
-
-            // Name
-            playerContainer.find('.player-name').attr('title', player.ability).html('<b>' + player.character + '(' + player.name + ')' + '</b>')
-
-            // Equipments
-            playerContainer.find('.equipment-gun').attr('title', 'Default weapon: range 1').html('<b>Colt .45</b>')
-
-            // TODO: play card and put equipment
-            /*
-            playerContainer.find('.equipment-barrel').attr('title', BARREL).html('<b>Barrel</b>')
-            playerContainer.find('.equipment-mustang').attr('title', MUSTANG).html('<b>Mustang</b>')
-            playerContainer.find('.equipment-scope').attr('title', SCOPE).html('<b>Scope</b>')
-            */
-
-            // TODO: update hand cards
-            //
-
-            // Status
-            for (let i = 0; i < player.maxBullet; i++)
-                playerContainer.find('.player-counters').append($('#template-bullet').html())
-            break
         }
     }
 }
 
 const lostBullet = (playerID) => {
-    let player = $('.player-container').eq(playerID)
+    let player = $('#' + playerID).find('.player-counter-life')
     let bullets = player.find('img')
     for (let i = bullets.length - 1; i >= 0; i--) {
         if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet.png') {
@@ -133,7 +38,7 @@ const lostBullet = (playerID) => {
 }
 
 const regainBullet = (playerID) => {
-    let player = $('.player-container').eq(playerID)
+    let player = $('#' + playerID).find('.player-counter-life')
     let bullets = player.find('img')
     for (let i = bullets.length - 1; i >= 0; i--) {
         if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet1.png') {
@@ -144,23 +49,18 @@ const regainBullet = (playerID) => {
 }
 
 const updateHandsUI = () => {
-    $('#card-wrapper').empty()
+    $('#card-wrapper').children().slice(1).remove()
     for (let i = 0; i < me.cards.length; i++) {
         $('#card-wrapper').append($('#template-card').html())
         let card = $('#card-wrapper').children().last().find('img')
         $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + me.cards[i].text + '</div>')
         card.attr('id', me.cards[i]._id)
-        card.attr('src', me.cards[i].image)
-        card.attr('title', me.cards[i].description)
-        card.on('click', { card: me.cards[i] }, cardOnClick)
+            .attr('src', me.cards[i].image)
+            .attr('title', me.cards[i].description)
+            .on('click', { card: me.cards[i] }, cardOnClick)
     }
 }
 
-const initCardCountUI = () => {
-    for (let i = 0; i < players.length; i++) {
-        $('#' + players[i].id).find('.player-counter-card').html(players[i].cards.length + ' in hands')
-    }
-}
 
 const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
@@ -177,11 +77,31 @@ const cardOnClick = (event) => {
                 targetContainer = $('#target-wrapper')
             cardContainer.hide()
             targetContainer.show()
-            updateTargetUI()
+            updateTargetUI(card._id)
+            updateTips(TIPS_CHOOSETARGET)
         }
-        discardPile.push(event.data.card)
     } else
-        M.toast({ html: 'not my turn' })
+        M.toast({ html: 'not your turn' })
+}
+
+let isPassClicked = false
+
+const pass = () => {
+    if (!isMyTurn) {
+        M.toast({ html: 'not your turn' })
+        return
+    }
+    if (!isPassClicked) {
+        M.toast({ html: 'Click pass again to confirm!' })
+        isPassClicked = true
+        setTimeout(() => {
+            isPassClicked = false
+        }, 2000)
+        return
+    }
+    isMyTurn = false
+    updateTips(TIPS_WAITING)
+    socket.emit('endTurn', me.id)
 }
 
 const cancel = () => {
@@ -189,11 +109,56 @@ const cancel = () => {
         targetContainer = $('#target-wrapper')
     cardContainer.show()
     targetContainer.hide()
+    updateTips(TIPS_MYTURN)
 }
 
-const updateTargetUI = () => {
+const updateTargetUI = (cardID) => {
     let targetContainer = $('#target-wrapper')
 
     // clear targets
-    targetContainer.slice(1).remove()
+    targetContainer.children().slice(1).remove()
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].id == me.id || players[i].isDead == true) continue
+        else {
+            $('#target-wrapper').append($('#template-card').html())
+            let target = $('#target-wrapper').children().last()
+            $('#target-wrapper').remove('img')
+
+            target.html(players[i].character + '(' + players[i].name + ')')
+                .css('text-align', 'center')
+                .on('click', () => {
+                    me.cards.splice(me.cards.indexOf(me.cards.find((card) => card._id == cardID)), 1)
+                    cancel()
+                    updateHandsUI()
+                    playCardTo([me.id, players[i].id, cardID])
+                })
+        }
+    }
+}
+
+const playerDie = (player) => {
+    updateCardCountUI(player.id, 0)
+    $('#' + player.id).find('.player-name').css('text-decoration', 'line-through')
+    $('#' + player.id).find('.player-counter-card').css('text-decoration', 'line-through')
+    $('#' + player.id).find('.player-equipments').css('text-decoration', 'line-through')
+    appendBadge(player.id)
+}
+
+const TIPS_MYTURN = 0,
+    TIPS_CHOOSETARGET = 1,
+    TIPS_WAITING = 2
+
+const updateTips = (mode) => {
+    let tips = $('#tips').children().eq(0)
+    switch (mode) {
+        case TIPS_MYTURN:
+            tips.html('Your turn')
+            break
+        case TIPS_CHOOSETARGET:
+            tips.html('Choose a target')
+            break
+        case TIPS_WAITING:
+            tips.html('Waiting for other players to perform an action')
+            break
+    }
 }

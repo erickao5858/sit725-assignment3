@@ -193,10 +193,16 @@ nav .brand-logo {
     padding: 0;
 }
 
-#pass {
-    font-size: xx-large;
+#cancel {
+    font-size: x-large;
     text-align: center;
-    line-height: 400%;
+    line-height: 550%;
+}
+
+#pass {
+    font-size: x-large;
+    text-align: center;
+    line-height: 550%;
 }
 
 .card {

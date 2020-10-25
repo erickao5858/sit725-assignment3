@@ -11,6 +11,7 @@ const CHARACTER_PRESET = [
     ['Suzy Lafayette', 'Draw a card immediately when no cards left in hand', 1],
     ['Willy the kid', 'Can play any number of Bang!', 1],
     ['Rose Doolan', 'Has a scope all the time', 1],
+    ['Paul Regret', 'Has a mustang all the time', 1],
     ['Paul Regret', 'Has a mustang all the time', 1]
 ]
 
