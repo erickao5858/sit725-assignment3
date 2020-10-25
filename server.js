@@ -35,10 +35,13 @@ io.on('connection', (socket) => {
 
     //function for game chat
     //author:zilin
+    socket.on('chat_message', function(data) {
+        io.sockets.emit('chat_message', data);
+    });
     //function for lobby chat
     //author:sibbi
-    socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data); //author:sibbi changed data.message to data inorder to receive user name.
+    socket.on('lobby_chat_message', function(data) {
+        io.sockets.emit('lobby_chat_message', data);
     });
     setInterval(() => {
         socket.emit('number', parseInt(Math.random() * 10));

@@ -14,7 +14,7 @@ socket.on('chat_message', (msg) => {
 
 const sendMessage = () => {
     var message = $("#message").val();
-    socket.emit("chat_message", message);
+    socket.emit("chat_message", me.name + ": " + message);
 }
 
 $(() => {
