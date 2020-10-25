@@ -11,8 +11,7 @@ $(function() {
           $createRoombtn = $('#createRoom'),
           $matchRoomBtn = $('#matchRoom'),
           $lobbyOperatorBox = $('.lobby-operator-box'),
-          $roomDetails = $('.room-details'),
-          $addBot = $(' #addBot');
+          $roomDetails = $('.room-details');
 
     let roomList,currentUser;
     /**
@@ -57,7 +56,6 @@ $(function() {
     $createRoombtn.on('click', function () {
 
         if (userNameVal) {
-
             socket.emit('createRoom');
             $(this).attr("disabled", true);
             $matchRoomBtn.attr('disabled',true);
@@ -79,7 +77,8 @@ $(function() {
     $('body').on('click','.join-room',function () {
         if (userNameVal && currentUser) {
             let roomId = $(this).data().id;
-            socket.emit('joinRoom', roomId);
+
+            socket.emit('joinRoom',{roomId:roomId,bot:false,curUser:currentUser});
         }else {
             M.toast({html: 'Please enter your name! and click Link to connect', classes: 'rounded'});
         }
@@ -88,15 +87,25 @@ $(function() {
      * user leave room
      */
     $('body').on('click','.leave-btn',function () {
+
         let roomId = $(this).data().id;
-        socket.emit('leaveRoom',roomId);
+
+        socket.emit('leaveRoom',roomId,currentUser);
+
+        if(currentUser){
+            $createRoombtn.attr('disabled',false);
+            $matchRoomBtn.attr('disabled',false);
+        }
+        $lobbyOperatorBox.show();
+        $roomDetails.hide();
     })
     /**
      *  user match a room
      */
     $matchRoomBtn.on('click',function () {
+
         if (roomList.length > 0){
-            socket.emit('matchRoom');
+            socket.emit('matchRoom',currentUser);
         }else {
             M.toast({html: 'Not a room is available, You can create a room!', classes: 'rounded'});
         }
@@ -114,19 +123,54 @@ $(function() {
      *  get current room
      */
     socket.on('currentRoom',(room) =>{
-        if (room && !room.gameStarted){
-            $lobbyOperatorBox.hide();
-            $roomDetails.show();
-            renderRoom(room);
-        }else {
+
+        console.log(room,'room');
+
+        let curRoom;
+
+        if(room){
+            curRoom = roomList.find((item) => item.id === room.id);
+        }
+        try {
+            let user;
             if(currentUser){
-                $createRoombtn.attr('disabled',false);
-                $matchRoomBtn.attr('disabled',false);
+                user = currentUser.user ? currentUser.user :currentUser;
             }
-            $lobbyOperatorBox.show();
-            $roomDetails.hide();
+            if (curRoom){
+
+                console.log(curRoom,'curr');
+                if(!curRoom.gameStarted && curRoom.roomUsers){
+
+                    let isUserInRoom = curRoom.roomUsers.find((item) => item.id === user.id);
+                    console.log(user,'user');
+                    console.log(isUserInRoom,userNameVal,'isInroom');
+
+                    if (isUserInRoom){
+                        $lobbyOperatorBox.hide();
+                        $roomDetails.show();
+                        renderRoom(curRoom);
+                    }else {
+                        renderLobbyOperatorBox();
+                    }
+
+                }else {
+                    renderLobbyOperatorBox();
+                }
+            }else {
+                renderLobbyOperatorBox();
+            }
+        }catch (e) {
+            console.log(e);
         }
     })
+    renderLobbyOperatorBox =()=>{
+        if(currentUser){
+            $createRoombtn.attr('disabled',false);
+            $matchRoomBtn.attr('disabled',false);
+        }
+        $lobbyOperatorBox.show();
+        $roomDetails.hide();
+    }
     /**
      *  get room list
      */
@@ -134,6 +178,13 @@ $(function() {
         console.log('rooms: ' + JSON.stringify(rooms));
         roomList = rooms;
         renderRooms(rooms);
+    })
+
+    /**
+     *  get user list
+     */
+    socket.on('listUsers',(users)=>{
+        console.log(users,'users');
     })
 
     /**
@@ -206,10 +257,10 @@ $(function() {
         const $room = document.getElementById("room");
         let playerList = [],$playersHtml;
         let currentRoom =room;
-        let userNumber = currentRoom.roomUsers.length;
         let $userIcon;
         let $addBotBtn;
         let $startGameBtn;
+        let userNumber = currentRoom.roomUsers.length;
 
         $startGameBtn = userNumber >=4
             ? `<a class="start-game btn btn-primary" data-id =${room.id}>start game</a>`

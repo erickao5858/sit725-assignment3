@@ -49,6 +49,8 @@ io.on('connection', (socket) => {
 
     let roomList = listRooms();
     let currentRoom;
+    let userList = listUsers();
+    let currentUser;
     let err ={};
 
     setInterval(()=>{
@@ -56,67 +58,81 @@ io.on('connection', (socket) => {
     }, 1000);
 
     setInterval(()=>{
+        socket.emit('listUsers', userList);
+    }, 1000);
+
+    setInterval(()=>{
         socket.emit('currentRoom',currentRoom);
     }, 1000);
 
+
     socket.on('newUser', (name) => {
+
+        currentUser = null;
         const user = addUser({ id: socket.id,name,isInRoom:false,isBot:false});
-        socket.emit('currentUser',user);
+        currentUser = user;
+        socket.emit('currentUser',currentUser);
 
     })
     socket.on('addBot',(roomId)=>{
-        let botId = Math.random() * 1000;
+        let botId = Math.floor(Math.random() * 1000);
         const bot = addUser({id:`Bot${botId}`,name:'Bot',isInRoom:false,isBot:true});
-        joinRoom(roomId,bot);
+        joinRoom({roomId,bot,curUser:false});
     })
 
     socket.on('createRoom',() =>{
-        const roomOwner = getUser(socket.id);
+
+        let roomOwner = getUser(socket.id);
 
         if (!roomOwner.isInRoom) {
 
-            const room = createRoom(socket.id,roomOwner);
+            let room = createRoom(socket.id,roomOwner);
             currentRoom = room.room;
-
-            socket.emit('currentRoom',currentRoom);
+            roomOwner.isInRoom = true;
+            currentUser = roomOwner;
 
         }else {
             err = {code:1,content:'Existing roomUser'};
             socket.emit('errNotice',err);
         }
     })
-    joinRoom =(roomId,bot)=>{
+
+    joinRoom =({roomId,bot,curUser})=>{
+
+        // console.log(curUser,'joinUserId');
 
         const curRoom = getRoom(roomId);
 
-        let user = bot ? bot.user : getUser(socket.id);
+        let user = bot ? bot.user : curUser.user ? curUser.user: curUser;
         let existingRoomUser;
+
+        // console.log(user,'user join Room');
 
         if (user.isBot){
             existingRoomUser = false;
         } else {
-            existingRoomUser = curRoom.roomUsers.find((user) => user.id === socket.id);
+            existingRoomUser = curRoom.roomUsers.find((item) => item.id == user.id);
         }
 
         if(!existingRoomUser && !user.isInRoom){
 
             user.isInRoom = true;
             curRoom.roomUsers.push(user);
-            currentRoom = curRoom;
 
-            socket.emit('currentRoom',currentRoom);
+            currentRoom = curRoom;
 
         }else {
             err = {code:1,content:'Existing roomUser'};
             socket.emit('errNotice',err);
         }
     }
-    socket.on('joinRoom',(roomId)=>{
-        joinRoom(roomId);
-    })
-    socket.on('matchRoom',()=>{
 
-        let user = getUser(socket.id);
+    socket.on('joinRoom',(data)=>{
+        joinRoom(data);
+    })
+    socket.on('matchRoom',(curUser)=>{
+
+        let user = curUser.user ?curUser.user :curUser;
 
         if (roomList.length == 1 && roomList[0].gameStarted){
             err = {code:2,content:'Room is full'};
@@ -125,51 +141,75 @@ io.on('connection', (socket) => {
 
         roomList.forEach((room)=>{
             if(room.roomUsers.length <7 && !room.gameStarted){
-                if (!user.isInRoom){
-                    joinRoom(room.id);
+                if (user.isInRoom == false){
+                    joinRoom({roomId:room.id,bot:false,curUser:user});
                 }
             }
         })
     })
 
-    leaveRoom =(roomId)=>{
-        let room = getRoom(roomId);
-        let users = room.roomUsers;
-        let bots = 0;
+    leaveRoom =(roomId,curUser)=>{
 
-        // remove current user in this room
-        let userIndex = users.findIndex((user) => user.id === socket.id);
+        try {
+            let room = getRoom(roomId);
+            let users = room.roomUsers;
+            let user = curUser.user ? curUser.user :curUser;
+            let userId = null;
+            let bots = 0;
+            let otherUser = getUser(socket.id);
 
-        users[userIndex].isInRoom = false;
+            // console.log(otherUser.id,roomId,'other user');
 
-        users.splice(userIndex,1);
+            userId = user.id;
 
-        if (socket.id == roomId){
-            // remove all the bots in this room
-            users.forEach((user)=>{
-                if(user.isBot){
-                    bots++;
+            console.log(socket.id,userId,'LeaveUserId');
+
+            // remove current user in this room
+            let userIndex = users.findIndex((item) => item.id === userId);
+
+            users[userIndex].isInRoom = false;
+
+            users.splice(userIndex,1);
+
+            if (userId == roomId){
+                // remove all the bots in this room
+                users.forEach((user)=>{
+                    if(user.isBot){
+                        bots++;
+                    }
+                })
+                users.splice(0,bots);
+
+                // remove current room
+                removeRoom(roomList,roomId);
+
+                if (users.length > 0){
+
+                    // create the new room for new owner
+                    // let newRoom = createRoom(users[0].id,users[0]);
                 }
-            })
-            users.splice(0,bots);
+
+                console.log(users.length,'length');
+
+            }
+
+
+            currentRoom = [];
+
+            currentUser = getUser(userId);
+
+            socket.emit('currentUser',currentUser);
+
+
+        }catch (e) {
+           console.log(e);
         }
-
-        // if no user here, remove current room
-        if(users.length == 0){
-            removeRoom(roomList,roomId);
-
-        }else {
-            // if users here ,the fist user would be the room owner.
-            room.id = users[0].id;
-        }
-        currentRoom = null;
-
-        socket.emit('currentRoom',currentRoom);
     }
 
-    socket.on('leaveRoom',(roomId)=>{
+    socket.on('leaveRoom',(roomId,user)=>{
 
-        leaveRoom(roomId);
+        leaveRoom(roomId,user);
+
     })
 
     socket.on('startGame',(roomId)=>{
@@ -186,6 +226,7 @@ io.on('connection', (socket) => {
 
 
 // liston to the port 3000
-http.listen(PORT,function () {
+http.listen(PORT,function (err) {
+    if (err) console.log(err); 
     console.log(`web server running at: http://localhost:${PORT}`)
 })

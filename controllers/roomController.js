@@ -54,7 +54,10 @@ const removeRoom = (roomList,id) =>{
 
     const index = roomList.findIndex((room) => room.id === id);
 
-    if (index !== -1) return roomList.splice(index,1)[0];
+    if (index !== -1) {
+
+        roomList.splice(index,1)[0];
+    }
 }
 
 /**
