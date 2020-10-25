@@ -147,56 +147,52 @@ io.on('connection', (socket) => {
     leaveRoom =(roomId,curUser)=>{
 
         try {
-            let room = getRoom(roomId);
-            let users = room.roomUsers;
-            let user = curUser.user ? curUser.user :curUser;
-            let userId = null;
-            let bots = 0;
-            let otherUser = getUser(socket.id);
+            if (roomId){
 
-            // console.log(otherUser.id,roomId,'other user');
+                let room = getRoom(roomId);
+                let users = room.roomUsers;
+                let user = curUser.user ? curUser.user :curUser;
+                let userId = null;
+                let bots = 0;
 
-            userId = user.id;
+                userId = user.id;
 
-            console.log(socket.id,userId,'LeaveUserId');
+                console.log(socket.id,userId,'LeaveUserId');
 
-            // remove current user in this room
-            let userIndex = users.findIndex((item) => item.id === userId);
+                // remove current user in this room
+                let userIndex = users.findIndex((item) => item.id === userId);
 
-            users[userIndex].isInRoom = false;
+                user.isInRoom = false;
 
-            users.splice(userIndex,1);
+                currentUser = user;
 
-            if (userId == roomId){
-                // remove all the bots in this room
-                users.forEach((user)=>{
-                    if(user.isBot){
-                        bots++;
+                users.splice(userIndex,1);
+
+                // if current user is room owner
+                if (userId == roomId){
+                    // remove all the bots in this room
+                    users.forEach((user)=>{
+                        if(user.isBot){
+                            bots++;
+                        }
+                    })
+                    users.splice(0,bots);
+
+                    // remove current room
+                    removeRoom(roomList,roomId);
+
+                    if (users.length > 0){
+                        room.id = users[0].id;
+                        // create the new room for new owner
+                        let newRoom = createRoom(room.id,users[0]);
+
+                        currentRoom = newRoom.room;
                     }
-                })
-                users.splice(0,bots);
 
-                // remove current room
-                removeRoom(roomList,roomId);
-
-                if (users.length > 0){
-
-                    // create the new room for new owner
-                    // let newRoom = createRoom(users[0].id,users[0]);
+                }else {
+                    currentRoom = [];
                 }
-
-                console.log(users.length,'length');
-
             }
-
-
-            currentRoom = [];
-
-            currentUser = getUser(userId);
-
-            socket.emit('currentUser',currentUser);
-
-
         }catch (e) {
            console.log(e);
         }

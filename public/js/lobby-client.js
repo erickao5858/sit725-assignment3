@@ -122,9 +122,14 @@ $(function() {
      * @param room
      */
     startGame =(room)=>{
-        let user = currentUser.user ? currentUser.user :currentUser;
-        if (room.gameStarted){
-            location.href =`/room?id=${room.id}?user=${user.id}`;
+
+        if (room){
+            let user = currentUser.user ? currentUser.user :currentUser;
+            let roomUser = room.roomUsers.findIndex((item) => item.id === user.id);
+
+            if (roomUser != -1 && room.gameStarted){
+                location.href =`/room?id=${room.id}?user=${user.id}`;
+            }
         }
     }
 
@@ -133,7 +138,7 @@ $(function() {
      */
     socket.on('currentRoom',(room) =>{
 
-        console.log(room,'room');
+        // console.log(room,'origin room');
 
         let curRoom;
 
@@ -148,17 +153,16 @@ $(function() {
             }
             if (curRoom){
 
-                console.log(curRoom,'curr');
                 if(!curRoom.gameStarted && curRoom.roomUsers){
 
                     let isUserInRoom = curRoom.roomUsers.find((item) => item.id === user.id);
-                    console.log(user,'user');
-                    console.log(isUserInRoom,userNameVal,'isInroom');
 
                     if (isUserInRoom){
+
                         $lobbyOperatorBox.hide();
                         $roomDetails.show();
                         renderRoom(curRoom);
+
                     }else {
                         renderLobbyOperatorBox();
                     }
@@ -166,6 +170,7 @@ $(function() {
                 }else {
                     renderLobbyOperatorBox();
                 }
+
             }else {
                 renderLobbyOperatorBox();
             }
