@@ -257,23 +257,29 @@ let socket = io();
 let username_chat = null;
 
 //funciton to get message and emit to socket
-const sendMessage = () => {
+const sendMessage=()=>{
     let message = $('#input_text').val()
-    let payload = {
-        "msg": message,
-        "sender": username_chat
-    }
-    socket.emit("chat_message", payload);
-}
+        let payload = {
+          "msg" : message,
+          "sender" : username_chat
+        }
+    socket.emit("lobby_chat_message",payload);
+  }
 
-$(document).ready(function() {
-    $("#players").html("<img src=\"assets/test.jpg\" class=\"playerImage\"><img src=\"assets/test.jpg\" class=\"playerImage\">");
+$(document).ready(function(){ 
     //bind the button
-    $('#sendMessageButton').click(sendMessage);
-
-    //socket to listen chat_message
-    socket.on('chat_message', data => {
-        $('#chatArea').append($('<li>').text(data.sender + ': ' + data.msg));
+    $('#sendMessageButton').click(function(){
+        if(username_chat){
+            sendMessage();
+        }
+        else{
+            M.toast({ html: 'Please enter your name! and start typing', classes: 'rounded' });
+        }
     });
 
-});
+    //socket to listen chat_message
+    socket.on('lobby_chat_message',data=>{
+        $('#chatArea').append($('<li>').text(data.sender+': '+data.msg));
+    });
+    
+}); 
