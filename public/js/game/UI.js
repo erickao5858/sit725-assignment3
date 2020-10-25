@@ -1,4 +1,4 @@
-const appendUI = () => {
+const initUI = () => {
     // Disable drag function on image
     $('img').attr('draggable', false);
     reorderPlayers()
@@ -6,6 +6,8 @@ const appendUI = () => {
     appendPlayerUIMiddle()
     appendPlayerUIUpper()
     appendBadges()
+    updateHandsUI()
+    updataCardCountUI()
     updateDrawpile()
 }
 
@@ -142,22 +144,21 @@ const regainBullet = (playerID) => {
 }
 
 const updateHandsUI = () => {
-    let handCards = me.cards
-    for (let i = 0; i < handCards.length; i++) {
+    for (let i = 0; i < me.cards.length; i++) {
         $('#card-wrapper').append($('#template-card').html())
         let card = $('#card-wrapper').children().last().find('img')
-        $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + handCards[i].text + '</div>')
-        card.attr('id', handCards[i]._id)
-        card.attr('src', handCards[i].image)
-        card.attr('title', handCards[i].description)
+        $('#card-wrapper').children().last().append('<div style="font-size:90%;">' + me.cards[i].text + '</div>')
+        card.attr('id', me.cards[i]._id)
+        card.attr('src', me.cards[i].image)
+        card.attr('title', me.cards[i].description)
         card.on('click', () => {
-            response(handCards[i]._id)
+            M.toast({ html: me.cards[i]._id + " cliced!" })
         })
     }
 }
 
-const updataCardCountUI = (entries) => {
-    for (let i = 0; i < entries.length; i++) {
-        $('#' + entries[i].id).find('.player-counter-card').html(entries[i].cards.length + ' in hands')
+const updataCardCountUI = () => {
+    for (let i = 0; i < players.length; i++) {
+        $('#' + players[i].id).find('.player-counter-card').html(players[i].cards.length + ' in hands')
     }
 }

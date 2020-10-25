@@ -71,19 +71,6 @@ socket.on('initGame', (data) => {
                 me = players[i]
             }
         }
-        appendUI()
+        initUI()
     }
 })
-
-/*
-socket.on('updateHandCard', (playersWithCards, cards) => {
-    updataCardCountUI(playersWithCards)
-    updateDrawpile(cards.length)
-    for (let i = 0; i < playersWithCards.length; i++) {
-        if (playersWithCards[i].id == me.id) {
-            me.cards = playersWithCards[i].cards
-            break
-        }
-    }
-    updateHandsUI()
-})*/

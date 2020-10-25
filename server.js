@@ -199,6 +199,7 @@ io.on('connection', (socket) => {
         gameControl = new GameControl(data[1])
         gameControl.preparePlayerData(data[0])
         socket.emit('initGame', [gameControl.players, gameControl.drawpile])
+
     })
 
     /*
@@ -207,7 +208,8 @@ io.on('connection', (socket) => {
             gameControl.initDraw()
             socket.emit('updateHandCard', gameControl.players, gameControl.drawpile)
             socket.emit('')
-        })*/
+        })
+    */
 });
 
 

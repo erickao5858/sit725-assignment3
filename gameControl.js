@@ -7,14 +7,22 @@ class GameControl {
         this.discardpile = []
     }
 
-    initDraw = () => {
+    draw = (playerID, times) => {
         for (let i = 0; i < this.players.length; i++) {
-            let card = this.drawpile.splice(0, 1)[0]
-            this.players[i].cards.push(card)
-            card = this.drawpile.splice(0, 1)[0]
-            this.players[i].cards.push(card)
+            if (this.players[i].id == playerID) {
+                for (let j = 0; j < times; j++) {
+                    this.players[i].cards.push(this.drawpile.splice(Math.floor(Math.random() * this.drawpile.length), 1)[0])
+                }
+            }
         }
     }
+
+    initDraw = () => {
+        for (let i = 0; i < this.players.length; i++) {
+            this.draw(this.players[i].id, 2)
+        }
+    }
+
     preparePlayerData = (roomUsers) => {
         for (let i = 0; i < roomUsers.length; i++) {
             let player = {}
@@ -35,6 +43,8 @@ class GameControl {
             this.players[i].maxBullet = this.players[i].role == 'Sheriff' ? character[2] + 1 : character[2]
             this.players[i].cards = []
         }
+
+        this.initDraw()
     }
 }
 
