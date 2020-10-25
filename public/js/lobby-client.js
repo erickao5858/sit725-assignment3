@@ -116,8 +116,17 @@ $(function() {
     $('body').on('click','.start-game',function () {
         let roomId = $(this).data().id;
         socket.emit('startGame',roomId);
-        location.href =`/room?id=${roomId}`;
     })
+    /**
+     * make every user in the room going to game page
+     * @param room
+     */
+    startGame =(room)=>{
+        let user = currentUser.user ? currentUser.user :currentUser;
+        if (room.gameStarted){
+            location.href =`/room?id=${room.id}?user=${user.id}`;
+        }
+    }
 
     /**
      *  get current room
@@ -130,6 +139,7 @@ $(function() {
 
         if(room){
             curRoom = roomList.find((item) => item.id === room.id);
+            startGame(curRoom);
         }
         try {
             let user;
@@ -257,6 +267,7 @@ $(function() {
         const $room = document.getElementById("room");
         let playerList = [],$playersHtml;
         let currentRoom =room;
+        let user = currentUser.user ? currentUser.user :currentUser;
         let $userIcon;
         let $addBotBtn;
         let $startGameBtn;
@@ -284,8 +295,8 @@ $(function() {
                                 ${$playersHtml}
                             </div>
                         </div>
-                       ${$addBotBtn}
-                       ${$startGameBtn}
+                       ${ room.id == user.id ? $addBotBtn : ''}
+                       ${ room.id == user.id ? $startGameBtn :''}
                        <a class="leave-btn btn btn-secondary" data-id =${room.id}>Leave</a>`
 
         $room.innerHTML = $roomHtml;

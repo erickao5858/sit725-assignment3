@@ -99,14 +99,10 @@ io.on('connection', (socket) => {
 
     joinRoom =({roomId,bot,curUser})=>{
 
-        // console.log(curUser,'joinUserId');
-
         const curRoom = getRoom(roomId);
 
         let user = bot ? bot.user : curUser.user ? curUser.user: curUser;
         let existingRoomUser;
-
-        // console.log(user,'user join Room');
 
         if (user.isBot){
             existingRoomUser = false;
