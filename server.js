@@ -34,17 +34,15 @@ io.on('connection', (socket) => {
     });
     //function for lobby chat
     //author:sibbi
-    socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data); //author:sibbi changed data.message to data inorder to receive user name.
+    socket.on('lobby_chat_message', function(data) {
+        io.sockets.emit('lobby_chat_message', data);
     });
+
     //function for game chat
     //author:zilin
-    global.timer=new Object();
-    socket.on('room_chat_message', function(data) {
-        
+    socket.on('chat_message', function(data) {
         io.sockets.emit('chat_message', data);
-    })
-    
+    });
     socket.on('start_timer', function(roomId) {
         global.timer[roomId]=0;
     });
@@ -250,8 +248,7 @@ io.on('connection', (socket) => {
     let GameControl = require('./gameControl'),
         gameControl
 
-    const TIMES_DRAW_ON_TURN_START = 2
-
+    /*
     // data[0]: users, data[1]: cards
     socket.on('initGame', (data) => {
         gameControl = new GameControl(data[1])
@@ -260,10 +257,20 @@ io.on('connection', (socket) => {
         gameControl.draw(gameControl.players[0].id, TIMES_DRAW_ON_TURN_START)
         io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
     })
+    */
+    // data[0]: users, data[1]: cards
+    socket.on('initGame', (data) => {
+        gameControl = new GameControl(data[1])
+        gameControl.preparePlayerData(data[0])
+        io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
+        io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
+    })
 
-
-    socket.on('draw', (data) => {
-
+    socket.on('drawCards', (data) => {
+        let playerID = data[0],
+            times = data[1]
+        gameControl.draw(playerID, times)
+        io.sockets.emit('drawCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawpile])
     })
 });
 

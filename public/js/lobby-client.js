@@ -319,4 +319,39 @@ $(function() {
 
         $room.innerHTML = $roomHtml;
     }
-});
+})
+
+//author:sibbi
+// connect to the socket
+let socket = io();
+
+//variable used to get username
+let username_chat = null;
+
+//funciton to get message and emit to socket
+const sendMessage=()=>{
+    let message = $('#input_text').val()
+        let payload = {
+          "msg" : message,
+          "sender" : username_chat
+        }
+    socket.emit("lobby_chat_message",payload);
+  }
+
+$(document).ready(function(){ 
+    //bind the button
+    $('#sendMessageButton').click(function(){
+        if(username_chat){
+            sendMessage();
+        }
+        else{
+            M.toast({ html: 'Please enter your name! and start typing', classes: 'rounded' });
+        }
+    });
+
+    //socket to listen chat_message
+    socket.on('lobby_chat_message',data=>{
+        $('#chatArea').append($('<li>').text(data.sender+': '+data.msg));
+    });
+    
+}); 
