@@ -79,14 +79,9 @@ socket.on('initGame', (data) => {
 socket.on('startTurn', (data) => {
     let player = data[0]
     drawpile = data[1]
-
-    if (me.id != player.id) {
-        updateCardCountUI(player.id, player.cards.length)
-        return
-    }
-
-    me.cards = player.cards
-    updateHandsUI()
+    updateCardCountUI(player.id, player.cards.length)
     updateDrawpile()
-    updateCardCountUI(me.id, me.cards.length)
+    if (me.id == player.id) {
+        updateHandsUI()
+    }
 })

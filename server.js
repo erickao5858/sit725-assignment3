@@ -232,9 +232,9 @@ io.on('connection', (socket) => {
     socket.on('initGame', (data) => {
         gameControl = new GameControl(data[1])
         gameControl.preparePlayerData(data[0])
-        socket.emit('initGame', [gameControl.players, gameControl.drawpile])
+        io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
         gameControl.draw(gameControl.players[0].id, TIMES_DRAW_ON_TURN_START)
-        socket.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
+        io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
     })
 
 
