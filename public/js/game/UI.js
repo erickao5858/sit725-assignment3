@@ -7,7 +7,7 @@ const initUI = () => {
     appendPlayerUIUpper()
     appendBadges()
     updateHandsUI()
-    updataCardCountUI()
+    initCardCountUI()
     updateDrawpile()
 }
 
@@ -144,6 +144,7 @@ const regainBullet = (playerID) => {
 }
 
 const updateHandsUI = () => {
+    $('#card-wrapper').empty()
     for (let i = 0; i < me.cards.length; i++) {
         $('#card-wrapper').append($('#template-card').html())
         let card = $('#card-wrapper').children().last().find('img')
@@ -157,8 +158,12 @@ const updateHandsUI = () => {
     }
 }
 
-const updataCardCountUI = () => {
+const initCardCountUI = () => {
     for (let i = 0; i < players.length; i++) {
         $('#' + players[i].id).find('.player-counter-card').html(players[i].cards.length + ' in hands')
     }
+}
+
+const updateCardCountUI = (playerID, amount) => {
+    $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
 }

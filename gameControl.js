@@ -33,7 +33,8 @@ class GameControl {
             this.players.push(player)
         }
 
-        this.players = shuffle(this.players)
+        //let the room owner to be sheriff
+        //this.players = shuffle(this.players)
 
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].role = ROLE_PRESET[this.players.length - 4][i]
@@ -43,9 +44,9 @@ class GameControl {
             this.players[i].maxBullet = this.players[i].role == 'Sheriff' ? character[2] + 1 : character[2]
             this.players[i].cards = []
         }
-
         this.initDraw()
     }
+
 }
 
 module.exports = GameControl
