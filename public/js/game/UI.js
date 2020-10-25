@@ -108,7 +108,7 @@ const appendPlayerInformation = (playerContainer, player) => {
             */
 
             // TODO: update hand cards
-            //playerContainer.find('.player-counter-card').text(5 + ' in hand')
+            //
 
             // Status
             for (let i = 0; i < player.maxBullet; i++)
@@ -140,8 +140,8 @@ const regainBullet = (playerID) => {
     }
 }
 
-const appendCards = () => {
-    let handCards = cards.slice(0, 5)
+const updateHandsUI = () => {
+    let handCards = me.cards
     for (let i = 0; i < handCards.length; i++) {
         $('#card-wrapper').append($('#template-card').html())
         let card = $('#card-wrapper').children().last().find('img')
@@ -150,7 +150,17 @@ const appendCards = () => {
         card.attr('src', handCards[i].image)
         card.attr('title', handCards[i].description)
         card.on('click', () => {
-            M.toast({ html: 'Card ' + card.attr('id') + ' be clicked!' })
+            response(handCards[i]._id)
         })
     }
+}
+
+const updataCardCountUI = (entries) => {
+    for (let i = 0; i < entries.length; i++) {
+        $('#' + entries[i].id).find('.player-counter-card').html(entries[i].cards.length + ' in hands')
+    }
+}
+
+const response = (id) => {
+
 }

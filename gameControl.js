@@ -14,6 +14,7 @@ class GameControl {
             this.players[i].cards.push(card)
         }
     }
+
 }
 
 module.exports = GameControl

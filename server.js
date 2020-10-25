@@ -201,6 +201,7 @@ io.on('connection', (socket) => {
         let gameControl = new GameControl(players, cards)
         gameControl.initDraw()
         socket.emit('updateHandCard', gameControl.players, gameControl.drawpile)
+        socket.emit('')
     })
 });
 
