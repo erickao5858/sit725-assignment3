@@ -152,9 +152,7 @@ const updateHandsUI = () => {
         card.attr('id', me.cards[i]._id)
         card.attr('src', me.cards[i].image)
         card.attr('title', me.cards[i].description)
-        card.on('click', () => {
-            M.toast({ html: me.cards[i]._id + " cliced!" })
-        })
+        card.on('click', { card: me.cards[i] }, cardOnClick)
     }
 }
 
@@ -166,4 +164,14 @@ const initCardCountUI = () => {
 
 const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
+}
+
+let discardPile = []
+
+const cardOnClick = (event) => {
+    if (isMyTurn) {
+        M.toast({ html: event.data.card._id + " clicked!" })
+        discardPile.push(event.data.card)
+    } else
+        M.toast({ html: "not my turn" })
 }

@@ -59,7 +59,7 @@ socket.on('currentRoom', (room) => {
 let players = [],
     drawpile = []
 let isUIInitialized = false,
-    me
+    me, isMyTurn = false
 
 
 socket.on('initGame', (data) => {
@@ -76,12 +76,36 @@ socket.on('initGame', (data) => {
     }
 })
 
+/*
 socket.on('startTurn', (data) => {
     let player = data[0]
     drawpile = data[1]
     updateCardCountUI(player.id, player.cards.length)
     updateDrawpile()
     if (me.id == player.id) {
+        me.cards = player.cards
+        updateHandsUI()
+        isMyTurn = true
+    }
+})
+*/
+
+const TIMES_DRAW_ON_TURN_START = 2
+
+socket.on('startTurn', (data) => {
+    let player = data[0]
+    if (me.id == player.id) {
+        socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
+        isMyTurn = true
+    }
+})
+socket.on('drawCards', (data) => {
+    let player = data[0]
+    drawpile = data[1]
+    updateCardCountUI(player.id, player.cards.length)
+    updateDrawpile()
+    if (me.id == player.id) {
+        me.cards = player.cards
         updateHandsUI()
     }
 })

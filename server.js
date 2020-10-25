@@ -226,8 +226,7 @@ io.on('connection', (socket) => {
     let GameControl = require('./gameControl'),
         gameControl
 
-    const TIMES_DRAW_ON_TURN_START = 2
-
+    /*
     // data[0]: users, data[1]: cards
     socket.on('initGame', (data) => {
         gameControl = new GameControl(data[1])
@@ -236,10 +235,20 @@ io.on('connection', (socket) => {
         gameControl.draw(gameControl.players[0].id, TIMES_DRAW_ON_TURN_START)
         io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
     })
+    */
+    // data[0]: users, data[1]: cards
+    socket.on('initGame', (data) => {
+        gameControl = new GameControl(data[1])
+        gameControl.preparePlayerData(data[0])
+        io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
+        io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
+    })
 
-
-    socket.on('draw', (data) => {
-
+    socket.on('drawCards', (data) => {
+        let playerID = data[0],
+            times = data[1]
+        gameControl.draw(playerID, times)
+        io.sockets.emit('drawCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawpile])
     })
 });
 

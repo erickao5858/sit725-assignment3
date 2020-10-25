@@ -81,7 +81,7 @@ module.exports = (mongoose) => {
                     break;
                 case 'Mustang':
                     title = "Equipment card: increase defence distance";
-                    image = "assets/game/cards/mustand.png"
+                    image = "assets/game/cards/mustang.png"
                     break;
                 case 'Scope':
                     title = "Equipment card: increase attack range";
