@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
     //function for game chat
     //author:zilin
     socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data.message); 
+        io.sockets.emit('chat_message', data);
     });
     //function for lobby chat
     //author:sibbi
