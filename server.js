@@ -14,9 +14,15 @@ const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/ro
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
 
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
 
 app.use('/',cardController);
 
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+
+app.use('/',characters);
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
 

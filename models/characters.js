@@ -1,32 +1,25 @@
-//Setting up the schema for card model.
+//Setting up the schema for character model.
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var cards = Schema({
-    index:{
-        type: Number,
-        required: true,
-        trim: true,
-    },
-    suit:{
+var characters = Schema({
+    name:{
         type: String,
         required: true,
         trim: true,
     },
-    Number:{
+    bullets:{
         type: Number,
         required: true,
         trim: true,
     },
-    isActive:{
-        type: Boolean,
-        required: true,
-    },
-    text:{
+    ability:{
         type: String,
         required: true,
         trim: true,
-    }
+    },
+    
+    
 });
-module.exports = mongoose.model('cards',cards);
+module.exports = mongoose.model('characters',characters);
