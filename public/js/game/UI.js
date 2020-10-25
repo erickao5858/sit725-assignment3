@@ -168,10 +168,32 @@ const updateCardCountUI = (playerID, amount) => {
 
 let discardPile = []
 
+// card: event.data.card
 const cardOnClick = (event) => {
+    let card = event.data.card
     if (isMyTurn) {
-        M.toast({ html: event.data.card._id + " clicked!" })
+        if (card.text == 'Bang!' || card.text == 'Panic!' || card.text == 'Cat Balou' || card.text == 'Duel') {
+            let cardContainer = $('#card-wrapper'),
+                targetContainer = $('#target-wrapper')
+            cardContainer.hide()
+            targetContainer.show()
+            updateTargetUI()
+        }
         discardPile.push(event.data.card)
     } else
-        M.toast({ html: "not my turn" })
+        M.toast({ html: 'not my turn' })
+}
+
+const cancel = () => {
+    let cardContainer = $('#card-wrapper'),
+        targetContainer = $('#target-wrapper')
+    cardContainer.show()
+    targetContainer.hide()
+}
+
+const updateTargetUI = () => {
+    let targetContainer = $('#target-wrapper')
+
+    // clear targets
+    targetContainer.slice(1).remove()
 }

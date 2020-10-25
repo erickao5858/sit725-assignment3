@@ -183,6 +183,22 @@ nav .brand-logo {
     padding: 0;
 }
 
+#target-wrapper {
+    height: 70%;
+    padding-left: 3%;
+    overflow-y: scroll;
+}
+
+#target-wrapper .col {
+    padding: 0;
+}
+
+#pass {
+    font-size: xx-large;
+    text-align: center;
+    line-height: 400%;
+}
+
 .card {
     border: black 3px solid;
     height: 74%;
