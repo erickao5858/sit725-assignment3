@@ -415,7 +415,12 @@ io.on('connection', (socket) => {
     })
 
     updatePlayer = (playerID) => {
-        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+        try{
+            io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile]);
+        }catch (e) {
+           console.log(e);
+        }
+
     }
 });
 
