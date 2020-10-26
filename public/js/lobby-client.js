@@ -12,7 +12,8 @@ $(function() {
         $createRoombtn = $('#createRoom'),
         $matchRoomBtn = $('#matchRoom'),
         $lobbyOperatorBox = $('.lobby-operator-box'),
-        $roomDetails = $('.room-details');
+        $roomDetails = $('.room-details'),
+        $onlineUsers = $('#onlineUsers');
 
     let roomList, currentUser;
     /**
@@ -203,7 +204,11 @@ $(function() {
      *  get user list
      */
     socket.on('listUsers', (users) => {
-        console.log(users, 'users');
+
+        if (users){
+           let userNumber = users.length;
+           $onlineUsers.text(`Online Users: ${userNumber}`);
+        }
     })
 
     /**

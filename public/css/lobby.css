@@ -9,6 +9,15 @@
 .lobby-container{
     padding: 20px 50px;
 }
+.container-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.container-top .online-user{
+    font-size: 16px;
+    margin-right: 20px;
+}
 .box-wrap{
     margin: 20px 0px;
     box-shadow: 0 6px 12px 0 rgba(0,0,0,0.15);
