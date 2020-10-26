@@ -61,7 +61,9 @@ let players = [],
     drawpile = [],
     discardPile = []
 let isUIInitialized = false,
-    me, isMyTurn = false
+    me, isMyTurn = false,
+    isWin = false,
+    isLose = false
 
 
 socket.on('initGame', (data) => {
@@ -91,6 +93,7 @@ socket.on('startTurn', (playerID) => {
         for (let i = 0; i < players.length; i++) {
             // Find player
             if (players[i].id == playerID) {
+                //Game owner takes controlling of bot player
                 if (players[i].isBot) {
                     socket.emit('drawCards', players[i].id)
                     endTurn(players[i].id)
@@ -120,12 +123,33 @@ const discardCard = (data) => {
 socket.on('updatePlayerCards', (data) => {
     let player = data[0]
     drawpile = data[1]
+    discardPile = data[2]
     updateCardCountUI(player.id, player.cards.length)
     updateDrawpile()
     if (player.id == me.id) {
         me.cards = player.cards
         updateHandsUI()
     }
+})
+
+socket.on('botTurn', (data) => {
+    let bot = data[0]
+    discardPile = data[1]
+    updateCardCountUI(bot.id, bot.cards.length)
+})
+
+socket.on('roleWin', (role) => {
+    if (role == 'Sheriff' || me.role == 'Deputy') {
+        isWin = true
+        playerWin()
+        return
+    }
+    if (role == me.role) {
+        isWin = true
+        playerWin()
+    }
+    isLose = true
+    playerLose()
 })
 
 socket.on('updatePlayerInfo', (data) => {
@@ -150,6 +174,7 @@ socket.on('updatePlayerInfo', (data) => {
         case 'add equipment':
             let playerID = data[1],
                 card = data[2]
+            discardPile = data[3]
             addEquipment(playerID, card)
             break
     }

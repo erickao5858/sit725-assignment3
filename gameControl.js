@@ -7,6 +7,7 @@ class GameControl {
         this.players = []
         this.drawPile = [...cards]
         this.discardPile = []
+        this.winnerRole = ''
     }
 
     draw = (playerID, times) => {
@@ -40,7 +41,7 @@ class GameControl {
         }
 
         //let the room owner to be sheriff
-        //this.players = shuffle(this.players)
+        this.players = shuffle(this.players)
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].role = ROLE_PRESET[this.players.length - 4][i]
             let character = CHARACTER_PRESET[i]
@@ -60,11 +61,60 @@ class GameControl {
         if (card.text == 'Bang!') {
             target.bullets -= 1
             if (target.bullets == 0) {
-                target.isDead = true
-                this.discardCards(toPlayer)
+                this.playerDie(target)
                 return true
             }
             return false
+        }
+    }
+
+    playerDie = (player) => {
+        player.isDead = true
+        this.discardCards(player.id)
+        let alivePlayers = this.getAlivePlayers()
+        let isSheriffAlive = false,
+            isAnyOutlawsAlive = false,
+            isRenegadeAlive = false,
+            isAnyDeputyAlive = false
+        for (let i = 0; i < alivePlayers.length; i++) {
+            switch (alivePlayers[i].role) {
+                case 'Sheriff':
+                    isSheriffAlive = true
+                    break
+                case 'Outlaws':
+                    isAnyOutlawsAlive = true
+                    break
+                case 'Renegade':
+                    isRenegadeAlive = true
+                    break
+                case 'Deputy':
+                    isAnyDeputyAlive = true
+                    break
+            }
+        }
+
+        // Sheriff or deputy may win
+        if (isSheriffAlive) {
+            // No win
+            if (isRenegadeAlive) return
+
+            // No win
+            if (isAnyOutlawsAlive) return
+
+            // Both Sheriff and deputy win
+            this.winnerRole = 'Sheriff'
+        }
+        // Renegade or outlaws may win
+        else {
+            // Outlaws win
+            if (isAnyOutlawsAlive) {
+                this.winnerRole = 'Outlaws'
+                return
+            }
+            if (!isAnyDeputyAlive) {
+                this.winnerRole = 'Renegade'
+                return
+            }
         }
     }
 
@@ -72,6 +122,7 @@ class GameControl {
         let player = this.getPlayerById(playerID)
         this.discardPile.push(player.cards.splice(player.cards.indexOf(player.cards.find((card) => card._id == cardID)), 1)[0])
     }
+
     discardCards = (playerID) => {
         let player = this.getPlayerById(playerID)
         let cardsCount = player.cards.length
@@ -92,13 +143,19 @@ class GameControl {
                 return this.players[i]
         }
     }
-    getNextAlivePlayer = (originPlayerID) => {
-        let nextPlayerIndex
+
+    getAlivePlayers = () => {
         let alivePlayers = []
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].isDead) continue
             alivePlayers.push(this.players[i])
         }
+        return alivePlayers
+    }
+
+    getNextAlivePlayer = (originPlayerID) => {
+        let nextPlayerIndex
+        let alivePlayers = this.getAlivePlayers()
         let originPlayerIndex = alivePlayers.indexOf(alivePlayers.find((player) => player.id == originPlayerID))
         if (originPlayerIndex == alivePlayers.length - 1)
             nextPlayerIndex = 0

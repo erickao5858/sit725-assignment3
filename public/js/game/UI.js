@@ -64,6 +64,13 @@ const updateHandsUI = () => {
     }
 }
 
+const playerWin = () => {
+    updateTips(TIPS_WIN)
+}
+
+const playerLose = () => {
+    updateTips(TIPS_LOSE)
+}
 
 const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
@@ -74,6 +81,10 @@ const cardOnClick = (event) => {
     let card = event.data.card
     if (isInDiscardPhase) {
         discardCard([me.id, card._id])
+        return
+    }
+    if (isWin || isLose) {
+        M.toast({ html: 'Game is over' })
         return
     }
     if (isMyTurn) {
@@ -90,12 +101,16 @@ const cardOnClick = (event) => {
             playerEquipmentCard([me.id, card._id])
         }
     } else
-        M.toast({ html: 'not your turn' })
+        M.toast({ html: 'Not your turn' })
 }
 
 const pass = () => {
+    if (isWin || isLose) {
+        M.toast({ html: 'Game is over' })
+        return
+    }
     if (!isMyTurn) {
-        M.toast({ html: 'not your turn' })
+        M.toast({ html: 'Not your turn' })
         return
     }
     if (me.cards.length <= me.bullets) {
@@ -151,7 +166,9 @@ const TIPS_MYTURN = 0,
     TIPS_CHOOSETARGET = 1,
     TIPS_WAITING = 2,
     TIPS_DEAD = 3,
-    TIPS_DISCARD = 4
+    TIPS_DISCARD = 4,
+    TIPS_WIN = 5,
+    TIPS_LOSE = 6
 
 const updateTips = (mode) => {
     let tips = $('#tips').children().eq(0)
@@ -170,6 +187,12 @@ const updateTips = (mode) => {
             break
         case TIPS_DISCARD:
             tips.html('Cards over bullets, please discard cards')
+            break
+        case TIPS_WIN:
+            tips.html('Congratulation, you win!')
+            break
+        case TIPS_LOSE:
+            tips.html('You lose!')
             break
     }
 }
