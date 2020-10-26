@@ -172,6 +172,7 @@ const cardOnClick = (event) => {
     if (isMyTurn) {
         M.toast({ html: event.data.card._id + " clicked!" })
         discardPile.push(event.data.card)
+        updateDiscardPile();
     } else
         M.toast({ html: "not my turn" })
 }

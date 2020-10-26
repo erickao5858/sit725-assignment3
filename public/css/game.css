@@ -194,8 +194,8 @@ nav .brand-logo {
     height: 145px;
     overflow-y: visible;
     resize: none;
+    overflow-y: scroll;
 }
-
 .message {
     height: 30px;
 }

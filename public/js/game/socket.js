@@ -5,22 +5,6 @@
 // connect to the socket
 let socket = io();
 
-//
-socket.on('chat_message', (msg) => {
-    $("#messageTextarea").text($("#messageTextarea").val() + "\n" + msg);
-    var height = $("#messageTextarea")[0].scrollHeight;
-    $("#messageTextarea").scrollTop(height);
-})
-
-const sendMessage = () => {
-    var message = $("#message").val();
-    socket.emit("chat_message", me.name + ": " + message);
-}
-
-$(() => {
-    $('#sendMessageButton').click(sendMessage);
-})
-
 /**
  * get room users
  * author: Qiaoli Wang wangqiao@deakin.edu.au
@@ -109,3 +93,53 @@ socket.on('drawCards', (data) => {
         updateHandsUI()
     }
 })
+
+/**
+ * for room chat
+ * @author Zilin Guo
+ */
+socket.emit("join_room", roomId);
+socket.emit("start_timer", roomId);
+socket.on('chat_message', (msg) => {
+    var color="black";
+    if(msg.isPublicMessage)
+    {
+        color="red";
+    }
+    $("#messageTextarea").html($("#messageTextarea").html() +"<span style='color: "+color+"'>"+ msg.content+ "</span><br>");
+    var height = $("#messageTextarea")[0].scrollHeight;
+    $("#messageTextarea").scrollTop(height);
+})
+socket.on('player_timer', (timer) => {
+    $("#timer").text(timer);
+})
+const sendMessage = () => {
+    var message = $("#message").val();
+    let msg={
+        isPublicMessage:false,
+        content:me.name+" : "+message
+    }
+    socket.emit("chat_message", msg);
+}
+
+setInterval(() => {
+    updateRoles();
+}, 1000);
+$(() => {
+    $('#sendMessageButton').click(sendMessage);
+})
+function updateRoles()
+{
+    var rolesHtml="";
+    players.forEach(p=>{
+        if(!p.isDead)
+        {
+            rolesHtml+="<img class='valign' src='assets/game/roles/" + p.role.toLowerCase() + ".png' height='100%'>";
+        }
+    })
+    $("#roles").html(rolesHtml);
+}
+function updateDiscardPile()
+{
+    $("#discardpile").html("<img src='"+discardPile[discardPile.length-1].image+"' height='100%'>");
+}
