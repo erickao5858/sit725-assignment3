@@ -374,12 +374,17 @@ mongoose.connect(uri, options, () => {
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-<<<<<<< HEAD
-const Test = require('./controllers/test')(mongoose)
 app.get('/readCards', (req, res) => {
     Test.read(res)
 })
 
+/** -----------------------------------------**/
+
+/**
+ * roomchat, player timer
+ * @author Zilin Guo 
+ * 
+ */
 setInterval(() => {
     setTimer(); 
 }, 1000);
@@ -397,8 +402,6 @@ function setTimer() {
         }
     }
   }
-=======
->>>>>>> 5329152720b34156fdd3f9a30d2f9ccc8917bfaa
 // liston to the port 3000
 http.listen(PORT, function() {
     console.log(`web server running at: http://localhost:${PORT}`)

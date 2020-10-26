@@ -30,11 +30,7 @@
     "socket.io": "^2.3.0",
     "typescript": "^4.0.3"
   },
-<<<<<<< HEAD
   "devDependencies": {
     "nodemon": "^2.0.6"
   }
-=======
-  "devDependencies": {}
->>>>>>> 5329152720b34156fdd3f9a30d2f9ccc8917bfaa
 }
