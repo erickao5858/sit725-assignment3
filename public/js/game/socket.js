@@ -71,6 +71,7 @@ socket.on('startTurn', (playerID) => {
         socket.emit('drawCards', me.id)
         isMyTurn = true
         updateTips(TIPS_MYTURN)
+        startTimer();
         return
     }
     // Game owner
@@ -246,4 +247,8 @@ function updateRoles() {
 function updateDiscardPile() {
     if (discardPile.length != 0)
         $("#discardpile").html("<img src='" + discardPile[discardPile.length - 1].image + "' height='100%'>");
+}
+function startTimer()
+{
+    socket.emit("start_timer", roomId);
 }
