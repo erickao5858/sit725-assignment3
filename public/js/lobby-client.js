@@ -128,7 +128,7 @@ $(function() {
             let roomUser = room.roomUsers.findIndex((item) => item.id === user.id);
 
             if (roomUser != -1 && room.gameStarted){
-                location.href =`/room?id=${room.id}?user=${user.id}`;
+                location.href =`/room?id=${room.id}&user=${user.id}`;
             }
         }
     }
