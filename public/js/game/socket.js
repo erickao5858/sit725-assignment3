@@ -79,26 +79,31 @@ socket.on('initGame', (data) => {
     }
 })
 
-
-const TIMES_DRAW_ON_TURN_START = 2
-
 socket.on('startTurn', (playerID) => {
     if (me.id == playerID) {
-        socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
+        socket.emit('drawCards', me.id)
         isMyTurn = true
         updateTips(TIPS_MYTURN)
+        return
+    }
+    // Game owner
+    if (roomId == currentUserId) {
+        for (let i = 0; i < players.length; i++) {
+            // Find player
+            if (players[i].id == playerID) {
+                if (players[i].isBot) {
+                    socket.emit('drawCards', players[i].id)
+                    endTurn(players[i].id)
+                    return
+                }
+            }
+        }
     }
 })
-socket.on('drawCards', (data) => {
-    let player = data[0]
-    drawpile = data[1]
-    updateCardCountUI(player.id, player.cards.length)
-    updateDrawpile()
-    if (me.id == player.id) {
-        me.cards = player.cards
-        updateHandsUI()
-    }
-})
+
+const endTurn = (playerID) => {
+    socket.emit('endTurn', playerID)
+}
 
 const playCardTo = (data) => {
     socket.emit('playCardTo', data)
@@ -108,13 +113,19 @@ const playerEquipmentCard = (data) => {
     socket.emit('playEquipmentCard', data)
 }
 
+const discardCard = (data) => {
+    socket.emit('discardCard', data)
+}
+
 socket.on('updatePlayerCards', (data) => {
-    let player = data
+    let player = data[0]
+    drawpile = data[1]
+    updateCardCountUI(player.id, player.cards.length)
+    updateDrawpile()
     if (player.id == me.id) {
         me.cards = player.cards
         updateHandsUI()
     }
-    updateCardCountUI(player.id, player.cards.length)
 })
 
 socket.on('updatePlayerInfo', (data) => {
@@ -134,8 +145,6 @@ socket.on('updatePlayerInfo', (data) => {
                     updateTips(TIPS_DEAD)
                 }
                 playerDie(targetPlayer)
-                if (fromPlayerID == me.id)
-                    socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
             }
             break
         case 'add equipment':
