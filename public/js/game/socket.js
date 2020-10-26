@@ -46,7 +46,9 @@ let players = [],
     drawpile = [],
     discardPile = []
 let isUIInitialized = false,
-    me, isMyTurn = false
+    me, isMyTurn = false,
+    isWin = false,
+    isLose = false
 
 
 socket.on('initGame', (data) => {
@@ -76,6 +78,7 @@ socket.on('startTurn', (playerID) => {
         for (let i = 0; i < players.length; i++) {
             // Find player
             if (players[i].id == playerID) {
+                //Game owner takes controlling of bot player
                 if (players[i].isBot) {
                     socket.emit('drawCards', players[i].id)
                     endTurn(players[i].id)
@@ -105,6 +108,7 @@ const discardCard = (data) => {
 socket.on('updatePlayerCards', (data) => {
     let player = data[0]
     drawpile = data[1]
+    discardPile = data[2]
     updateCardCountUI(player.id, player.cards.length)
     updateDrawpile()
     if (player.id == me.id) {
@@ -112,6 +116,27 @@ socket.on('updatePlayerCards', (data) => {
         updateHandsUI()
     }
 })
+
+socket.on('botTurn', (data) => {
+    let bot = data[0]
+    discardPile = data[1]
+    updateCardCountUI(bot.id, bot.cards.length)
+})
+
+socket.on('roleWin', (role) => {
+    if (role == 'Sheriff' || me.role == 'Deputy') {
+        isWin = true
+        playerWin()
+        return
+    }
+    if (role == me.role) {
+        isWin = true
+        playerWin()
+    }
+    isLose = true
+    playerLose()
+})
+
 socket.on('updatePlayerInfo', (data) => {
     let mode = data[0]
     switch (mode) {
@@ -134,6 +159,7 @@ socket.on('updatePlayerInfo', (data) => {
         case 'add equipment':
             let playerID = data[1],
                 card = data[2]
+            discardPile = data[3]
             addEquipment(playerID, card)
             break
     }
@@ -146,12 +172,11 @@ socket.on('updatePlayerInfo', (data) => {
 socket.emit("join_room", roomId);
 socket.emit("start_timer", roomId);
 socket.on('chat_message', (msg) => {
-    var color="black";
-    if(msg.isPublicMessage)
-    {
-        color="red";
+    var color = "black";
+    if (msg.isPublicMessage) {
+        color = "red";
     }
-    $("#messageTextarea").html($("#messageTextarea").html() +"<span style='color: "+color+"'>"+ msg.content+ "</span><br>");
+    $("#messageTextarea").html($("#messageTextarea").html() + "<span style='color: " + color + "'>" + msg.content + "</span><br>");
     var height = $("#messageTextarea")[0].scrollHeight;
     $("#messageTextarea").scrollTop(height);
 })
@@ -160,9 +185,9 @@ socket.on('player_timer', (timer) => {
 })
 const sendMessage = () => {
     var message = $("#message").val();
-    let msg={
-        isPublicMessage:false,
-        content:me.name+" : "+message
+    let msg = {
+        isPublicMessage: false,
+        content: me.name + " : " + message
     }
     socket.emit("chat_message", msg);
 }
@@ -173,20 +198,17 @@ setInterval(() => {
 $(() => {
     $('#sendMessageButton').click(sendMessage);
 })
-function updateRoles()
-{
-    var rolesHtml="";
-    players.forEach(p=>{
-        if(!p.isDead)
-        {
-            rolesHtml+="<img class='valign' src='assets/game/roles/" + p.role.toLowerCase() + ".png' height='100%'>";
+
+function updateRoles() {
+    var rolesHtml = "";
+    players.forEach(p => {
+        if (!p.isDead) {
+            rolesHtml += "<img class='valign' src='assets/game/roles/" + p.role.toLowerCase() + ".png' height='100%'>";
         }
     })
     $("#roles").html(rolesHtml);
 }
-function updateDiscardPile()
-{
-    $("#discardpile").html("<img src='"+discardPile[discardPile.length-1].image+"' height='100%'>");
+
+function updateDiscardPile() {
+    $("#discardpile").html("<img src='" + discardPile[discardPile.length - 1].image + "' height='100%'>");
 }
-
-

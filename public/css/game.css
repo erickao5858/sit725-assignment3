@@ -76,7 +76,6 @@ nav .brand-logo {
 /*TODO*/
 
 .extra-info .row {
-    background-color: aqua;
     height: 20%;
 }
 
@@ -218,6 +217,7 @@ nav .brand-logo {
     resize: none;
     overflow-y: scroll;
 }
+
 .message {
     height: 30px;
 }

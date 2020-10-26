@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
      * @author Zilin Guo 
      * 
      */
-    global.timer=new Object();
+    global.timer = new Object();
     socket.on('chat_message', function(message) {
         //get current room
         var room = Object.keys(socket.rooms)[1];
@@ -81,16 +81,16 @@ io.on('connection', (socket) => {
         socket.join(roomId);
     });
     socket.on('start_timer', function(roomId) {
-        global.timer[roomId]=0;
+        global.timer[roomId] = 0;
     });
     // socket.on('get_timer', function(roomId) {
     //     io.sockets.emit('timer', global.timer[roomId]);
     // });
     setInterval(() => {
-        if(currentRoom)
-        socket.emit('player_timer', global.timer[currentRoom.id]);
+        if (currentRoom)
+            socket.emit('player_timer', global.timer[currentRoom.id]);
     }, 1000);
-    
+
     /** -----------------------------------------**/
 
     /**
@@ -297,7 +297,7 @@ io.on('connection', (socket) => {
     socket.on('drawCards', (data) => {
         let playerID = data
         gameControl.draw(playerID, TIMES_DRAW_ON_TURN_START)
-        io.sockets.emit('updatePlayerCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawPile])
+        io.sockets.emit('updatePlayerCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('playCardTo', (data) => {
@@ -307,11 +307,14 @@ io.on('connection', (socket) => {
         let isTargetDie = gameControl.playCardTo(originPlayerID, targetPlayerID, cardID)
         io.sockets.emit('updatePlayerInfo', ['lose bullet', originPlayerID, targetPlayerID, gameControl.discardPile])
         if (isTargetDie) {
-            io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile])
+            io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile, gameControl.discardPile])
             gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
+            if (gameControl.winnerRole != '') {
+                io.sockets.emit('roleWin', gameControl.winnerRole)
+            }
         }
 
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile])
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile, gameControl.discardPile])
 
         /**
          *  send player action message to public
@@ -322,29 +325,39 @@ io.on('connection', (socket) => {
             cardName = gameControl.getCardById(cardID).text;
 
         let message = {
-            isPublicMessage:true,
-            content:`${playerName} played a ${cardName} targeting ${targetName}.`
+            isPublicMessage: true,
+            content: `${playerName} played a ${cardName} targeting ${targetName}.`
         };
 
-        io.sockets.emit('chat_message',message);
+        io.sockets.emit('chat_message', message);
+
     })
 
     socket.on('playEquipmentCard', (data) => {
         let playerID = data[0],
             cardID = data[1]
         gameControl.discardCard(playerID, cardID)
-        io.sockets.emit('updatePlayerInfo', ['add equipment', playerID, gameControl.getCardById(cardID)])
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile])
+        io.sockets.emit('updatePlayerInfo', ['add equipment', playerID, gameControl.getCardById(cardID), gameControl.discardPile])
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('discardCard', (data) => {
         let playerID = data[0],
             cardID = data[1]
         gameControl.discardCard(playerID, cardID)
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile])
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('endTurn', (playerID) => {
+        if (gameControl.getPlayerById(playerID).isBot) {
+            let bot = gameControl.getPlayerById(playerID)
+            if (bot.cards.length > bot.bullets) {
+                gameControl.discardCard(bot.id, bot.cards.length - bot.bullets)
+                for (let i = 0; i < bot.cards.length - bot.bullets; i++)
+                    gameControl.discardPile.push(bot.cards.splice(0, 1)[0])
+                io.sockets.emit('botTurn', [bot, gameControl.discardPile])
+            }
+        }
         let nextPlayerID = gameControl.getNextAlivePlayer(playerID)
         io.sockets.emit('startTurn', nextPlayerID)
     })
@@ -386,22 +399,21 @@ app.get('/readCards', (req, res) => {
  * 
  */
 setInterval(() => {
-    setTimer(); 
+    setTimer();
 }, 1000);
+
 function setTimer() {
     for (var k in global.timer) {
         if (global.timer.hasOwnProperty(k)) {
-            if(global.timer[k]!=-1)
-            {
-                global.timer[k]+=1;
+            if (global.timer[k] != -1) {
+                global.timer[k] += 1;
             }
-            if(global.timer[k]>=40)
-            {
-                global.timer[k]=-1;
+            if (global.timer[k] >= 40) {
+                global.timer[k] = -1;
             }
         }
     }
-  }
+}
 // liston to the port 3000
 http.listen(PORT, function() {
     console.log(`web server running at: http://localhost:${PORT}`)

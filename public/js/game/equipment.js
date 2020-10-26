@@ -6,7 +6,7 @@
 
 //TODO: rewrite
 const removeEquipment = (playerID, equipmentClass) => {
-    let margin = ['66%', '54%', '42%']
+    let margin = ['66%', '54%', '41%']
     let player = $('.player-container').eq(playerID)
     player.find('.' + equipmentClass).remove()
     let equipmentContainer = player.find('.player-equipments')
@@ -16,7 +16,7 @@ const removeEquipment = (playerID, equipmentClass) => {
 //card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield'
 
 const addEquipment = (playerID, card) => {
-    let margin = ['54%', '42%', '29%']
+    let margin = ['54%', '41%', '29%']
     let player = $('#' + playerID)
 
     // Gun
