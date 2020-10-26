@@ -30,6 +30,11 @@ class GameControl {
         }
     }
 
+    regainBullet = (playerID, cardID) => {
+        this.getPlayerById(playerID).bullets += 1
+        this.discardCard(playerID, cardID)
+    }
+
     preparePlayerData = (roomUsers) => {
         for (let i = 0; i < roomUsers.length; i++) {
             let player = {}
@@ -54,19 +59,22 @@ class GameControl {
         this.initDraw()
     }
 
-    playCardTo = (fromPlayer, toPlayer, cardID) => {
+    playBang = (fromPlayer, toPlayer, cardID) => {
         let card = this.getCardById(cardID)
         let target = this.getPlayerById(toPlayer)
         this.discardCard(fromPlayer, cardID)
-        if (card.text == 'Bang!') {
-            target.bullets -= 1
-            if (target.bullets == 0) {
-                this.playerDie(target)
-                return true
-            }
-            return false
-        }
     }
+
+    loseBullet = (playerID) => {
+        let player = this.getPlayerById(playerID)
+        player.bullets -= 1
+        if (player.bullets == 0) {
+            this.playerDie(player)
+            return true
+        }
+        return false
+    }
+
 
     playerDie = (player) => {
         player.isDead = true
@@ -117,6 +125,7 @@ class GameControl {
             }
         }
     }
+
 
     discardCard = (playerID, cardID) => {
         let player = this.getPlayerById(playerID)

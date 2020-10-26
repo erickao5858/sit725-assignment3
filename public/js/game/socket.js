@@ -93,34 +93,42 @@ const endTurn = (playerID) => {
     socket.emit('endTurn', playerID)
 }
 
-const playCardTo = (data) => {
-    socket.emit('playCardTo', data)
-}
-
-const playerEquipmentCard = (data) => {
-    socket.emit('playEquipmentCard', data)
+const playEquipment = (data) => {
+    socket.emit('playEquipment', data)
 }
 
 const discardCard = (data) => {
     socket.emit('discardCard', data)
 }
 
-socket.on('updatePlayerCards', (data) => {
-    let player = data[0]
-    drawpile = data[1]
-    discardPile = data[2]
-    updateCardCountUI(player.id, player.cards.length)
-    updateDrawpile()
-    if (player.id == me.id) {
-        me.cards = player.cards
-        updateHandsUI()
+const playBang = (data) => {
+    socket.emit('playBang', data)
+    isInWaitingResponsePhase = true
+}
+
+const endResponse = (isCardRepelled) => {
+    socket.emit('endResponse', [responsePlayerID, me.id, isCardRepelled])
+    responsePlayerID = ''
+}
+
+const playBeer = (data) => {
+    socket.emit('playBeer', data)
+}
+
+socket.on('endResponse', (data) => {
+    let originPlayerID = data[0]
+    if (originPlayerID == me.id) {
+        isInWaitingResponsePhase = false
     }
 })
 
-socket.on('botTurn', (data) => {
-    let bot = data[0]
-    discardPile = data[1]
-    updateCardCountUI(bot.id, bot.cards.length)
+socket.on('responseBang', (data) => {
+    let targetPlayerID = data[1]
+    responsePlayerID = data[0]
+    if (targetPlayerID == me.id) {
+        isInResponsePhase = true
+        updateTips(TIPS_BANG)
+    }
 })
 
 socket.on('roleWin', (role) => {
@@ -137,32 +145,35 @@ socket.on('roleWin', (role) => {
     playerLose()
 })
 
-socket.on('updatePlayerInfo', (data) => {
-    let mode = data[0]
-    switch (mode) {
-        case 'lose bullet':
-            let fromPlayerID = data[1],
-                toPlayerID = data[2]
-            discardPile = data[3]
-            let targetPlayer = players.find((player) => player.id == toPlayerID)
-            targetPlayer.bullets -= 1
-            lostBullet(targetPlayer.id)
-            if (targetPlayer.bullets == 0) {
-                targetPlayer.isDead = true
-                if (toPlayerID == me.id) {
-                    emptyHandsUI()
-                    updateTips(TIPS_DEAD)
-                }
-                playerDie(targetPlayer)
-            }
-            break
-        case 'add equipment':
-            let playerID = data[1],
-                card = data[2]
-            discardPile = data[3]
-            addEquipment(playerID, card)
-            break
+socket.on('playerDie', (data) => {
+    let targetPlayerID = data
+    playerDie(targetPlayerID)
+})
+
+socket.on('botTurn', (data) => {
+    let bot = data[0]
+    discardPile = data[1]
+    updateCardCountUI(bot.id, bot.cards.length)
+})
+
+socket.on('updatePlayer', (data) => {
+    let player = data[0]
+    drawpile = data[1]
+    discardPile = data[2]
+    updateCardCountUI(player.id, player.cards.length)
+    updateDrawpile()
+    updateDiscardPile()
+    updateBullet(player.id, player.maxBullet, player.bullets)
+    if (player.id == me.id) {
+        me = player
+        updateHandsUI()
     }
+})
+
+socket.on('updatePlayerEquipment', (data) => {
+    let player = data[0],
+        card = data[1]
+    addEquipment(player.id, card)
 })
 
 /**
@@ -195,6 +206,7 @@ const sendMessage = () => {
 setInterval(() => {
     updateRoles();
 }, 1000);
+
 $(() => {
     $('#sendMessageButton').click(sendMessage);
 })
@@ -210,5 +222,6 @@ function updateRoles() {
 }
 
 function updateDiscardPile() {
-    $("#discardpile").html("<img src='" + discardPile[discardPile.length - 1].image + "' height='100%'>");
+    if (discardPile.length != 0)
+        $("#discardpile").html("<img src='" + discardPile[discardPile.length - 1].image + "' height='100%'>");
 }

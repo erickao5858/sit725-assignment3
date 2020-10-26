@@ -26,25 +26,15 @@ const appendBadge = (playerID) => {
     }
 }
 
-const lostBullet = (playerID) => {
-    let player = $('#' + playerID).find('.player-counter-life')
-    let bullets = player.find('img')
-    for (let i = bullets.length - 1; i >= 0; i--) {
-        if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet.png') {
-            bullets.eq(i).attr('src', 'assets/game/misc/bullet1.png')
-            break
-        }
+const updateBullet = (playerID, maxBullet, currentBullet) => {
+    let player = $('#' + playerID).find('.player-counters')
+    player.children().slice(1).remove()
+    for (let i = 0; i < currentBullet; i++) {
+        player.append($('#template-bullet').html())
     }
-}
-
-const regainBullet = (playerID) => {
-    let player = $('#' + playerID).find('.player-counter-life')
-    let bullets = player.find('img')
-    for (let i = bullets.length - 1; i >= 0; i--) {
-        if (bullets.eq(i).attr('src') == 'assets/game/misc/bullet1.png') {
-            bullets.eq(i).attr('src', 'assets/game/misc/bullet.png')
-            break
-        }
+    for (let i = currentBullet; i < maxBullet; i++) {
+        player.append($('#template-bullet').html())
+        player.children().last().children().attr('src', 'assets/game/misc/bullet1.png')
     }
 }
 
@@ -76,9 +66,21 @@ const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
 }
 
-let isInDiscardPhase = false
+let isInDiscardPhase = false,
+    isInResponsePhase = false,
+    isInWaitingResponsePhase = false,
+    responsePlayerID
+
 const cardOnClick = (event) => {
     let card = event.data.card
+    if (isInResponsePhase) {
+        responseBang(card)
+        return
+    }
+    if (isInWaitingResponsePhase) {
+        M.toast({ html: 'Someone is responsing to your action, please wait' })
+        return
+    }
     if (isInDiscardPhase) {
         discardCard([me.id, card._id])
         return
@@ -87,29 +89,47 @@ const cardOnClick = (event) => {
         M.toast({ html: 'Game is over' })
         return
     }
+    if (!isMyTurn) {
+        M.toast({ html: 'Not your turn' })
+        return
+    }
     if (isMyTurn) {
-        M.toast({ html: event.data.card._id + " clicked!" })
-        discardPile.push(event.data.card)
-        updateDiscardPile();
-        if (card.text == 'Bang!' || card.text == 'Panic!' || card.text == 'Cat Balou' || card.text == 'Duel') {
+        if (card.text == 'Bang!') {
             let cardContainer = $('#card-wrapper'),
                 targetContainer = $('#target-wrapper')
             cardContainer.hide()
             targetContainer.show()
-            updateTargetUI(card._id)
+            updateTargetUI(card)
             updateTips(TIPS_CHOOSETARGET)
             return
         }
-        if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
-            playerEquipmentCard([me.id, card._id])
+        if (card.text == "Beer") {
+            if (me.bullets == me.maxBullet) {
+                M.toast({ html: 'Your health is full' })
+                return
+            }
+            playBeer([me.id, card._id])
         }
-    } else
-        M.toast({ html: 'Not your turn' })
+        if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
+            playEquipment([me.id, card._id])
+            return
+        }
+    }
 }
 
 const pass = () => {
     if (isWin || isLose) {
         M.toast({ html: 'Game is over' })
+        return
+    }
+    if (isInWaitingResponsePhase) {
+        M.toast({ html: 'Someone is responsing to your action, please wait' })
+        return
+    }
+    if (isInResponsePhase) {
+        isInResponsePhase = false
+        updateTips(TIPS_WAITING)
+        endResponse(false)
         return
     }
     if (!isMyTurn) {
@@ -135,11 +155,7 @@ const cancel = () => {
     updateTips(TIPS_MYTURN)
 }
 
-const updateTargetUI = (cardID) => {
-    let targetContainer = $('#target-wrapper')
-
-    // clear targets
-    targetContainer.children().slice(1).remove()
+const updateTargetUIBang = (card) => {
     for (let i = 0; i < players.length; i++) {
         if (players[i].id == me.id || players[i].isDead == true) continue
         else {
@@ -151,51 +167,40 @@ const updateTargetUI = (cardID) => {
                 .css('text-align', 'center')
                 .on('click', () => {
                     cancel()
-                    playCardTo([me.id, players[i].id, cardID])
+                    playBang([me.id, players[i].id, card._id])
                 })
         }
     }
 }
 
-const playerDie = (player) => {
-    $('#' + player.id).find('.player-name').css('text-decoration', 'line-through')
-    $('#' + player.id).find('.player-counter-card').css('text-decoration', 'line-through')
-    $('#' + player.id).find('.player-equipments').css('text-decoration', 'line-through')
-    if (player.id != me.id)
-        appendBadge(player.id)
+const updateTargetUI = (card) => {
+    let targetContainer = $('#target-wrapper')
+
+    // clear targets
+    targetContainer.children().slice(1).remove()
+    switch (card.text) {
+        case 'Bang!':
+            updateTargetUIBang(card)
+            break
+    }
 }
 
-const TIPS_MYTURN = 0,
-    TIPS_CHOOSETARGET = 1,
-    TIPS_WAITING = 2,
-    TIPS_DEAD = 3,
-    TIPS_DISCARD = 4,
-    TIPS_WIN = 5,
-    TIPS_LOSE = 6
+const playerDie = (playerID) => {
+    $('#' + playerID).find('.player-name').css('text-decoration', 'line-through')
+    $('#' + playerID).find('.player-counter-card').css('text-decoration', 'line-through').html('')
+    $('#' + playerID).find('.player-equipments').css('text-decoration', 'line-through')
 
-const updateTips = (mode) => {
-    let tips = $('#tips').children().eq(0)
-    switch (mode) {
-        case TIPS_MYTURN:
-            tips.html('Your turn')
-            break
-        case TIPS_CHOOSETARGET:
-            tips.html('Choose a target')
-            break
-        case TIPS_WAITING:
-            tips.html('Waiting for other players to perform an action')
-            break
-        case TIPS_DEAD:
-            tips.html('Game Over')
-            break
-        case TIPS_DISCARD:
-            tips.html('Cards over bullets, please discard cards')
-            break
-        case TIPS_WIN:
-            tips.html('Congratulation, you win!')
-            break
-        case TIPS_LOSE:
-            tips.html('You lose!')
-            break
+    if (playerID != me.id)
+        appendBadge(playerID)
+}
+
+const responseBang = (card) => {
+    if (card.text == 'Missed!') {
+        isInResponsePhase = false
+        updateTips(TIPS_WAITING)
+        discardCard([me.id, card._id])
+        endResponse(true)
+    } else {
+        M.toast({ html: 'You must discard a Missed! to repel a Bang!' })
     }
 }

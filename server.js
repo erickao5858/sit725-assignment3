@@ -274,7 +274,6 @@ io.on('connection', (socket) => {
     const TIMES_DRAW_ON_TURN_START = 2
     const TIMES_DRAW_ON_TARGET_DIE = 2
 
-
     // data[0]: users, data[1]: cards
     socket.on('initGame', (data) => {
         let isMaster = data[2],
@@ -286,66 +285,98 @@ io.on('connection', (socket) => {
             setTimeout(() => {
                 io.sockets.emit('initGame', [gameControl.players, gameControl.drawPile])
                 io.sockets.emit('startTurn', gameControl.players[0].id)
-            }, 1000);
+            }, 1000)
         } else {
             setTimeout(() => {
                 gameControl = gameControls[roomId]
-            }, 1000)
+            }, 2000)
         }
     })
 
     socket.on('drawCards', (data) => {
         let playerID = data
         gameControl.draw(playerID, TIMES_DRAW_ON_TURN_START)
-        io.sockets.emit('updatePlayerCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawPile, gameControl.discardPile])
+        updatePlayer(playerID)
     })
 
-    socket.on('playCardTo', (data) => {
+    socket.on('endResponse', (data) => {
+        let originPlayerID = data[0],
+            targetPlayerID = data[1],
+            isCardRepelled = data[2],
+            targetPlayer = gameControl.getPlayerById(targetPlayerID),
+            message
+
+        if (!isCardRepelled) {
+            let isTargetDie = gameControl.loseBullet(targetPlayerID)
+            if (isTargetDie) {
+                io.sockets.emit('playerDie', [targetPlayerID])
+                originPlayer(targetPlayerID)
+                gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
+                if (gameControl.winnerRole != '') {
+                    io.sockets.emit('roleWin', gameControl.winnerRole)
+                }
+            }
+            message = {
+                isPublicMessage: true,
+                content: targetPlayer.character + '(' + targetPlayer.name + ')' + ' losed one bullet'
+            }
+        } else {
+            message = {
+                isPublicMessage: true,
+                content: targetPlayer.character + '(' + targetPlayer.name + ')' + ' repelled the attack'
+            }
+        }
+        io.sockets.emit('chat_message', message)
+
+        updatePlayer(targetPlayerID)
+        io.sockets.emit('endResponse', [originPlayerID])
+    })
+
+    socket.on('playBang', (data) => {
         let originPlayerID = data[0],
             targetPlayerID = data[1],
             cardID = data[2]
-        let isTargetDie = gameControl.playCardTo(originPlayerID, targetPlayerID, cardID)
-        io.sockets.emit('updatePlayerInfo', ['lose bullet', originPlayerID, targetPlayerID, gameControl.discardPile])
-        if (isTargetDie) {
-            io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile, gameControl.discardPile])
-            gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
-            if (gameControl.winnerRole != '') {
-                io.sockets.emit('roleWin', gameControl.winnerRole)
-            }
-        }
-
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile, gameControl.discardPile])
+        gameControl.discardCard(originPlayerID, cardID)
+        io.sockets.emit('responseBang', [originPlayerID, targetPlayerID])
 
         /**
          *  send player action message to public
          *  added by qiaoli wang (wangqiao@deakin.edu.au)
          */
-        let playerName = gameControl.getPlayerById(originPlayerID).name,
-            targetName = gameControl.getPlayerById(targetPlayerID).name,
-            cardName = gameControl.getCardById(cardID).text;
+
+        let originPlayer = gameControl.getPlayerById(originPlayerID),
+            targetPlayer = gameControl.getPlayerById(targetPlayerID),
+            cardName = gameControl.getCardById(cardID).text
 
         let message = {
             isPublicMessage: true,
-            content: `${playerName} played a ${cardName} targeting ${targetName}.`
-        };
+            content: originPlayer.character + '(' + originPlayer.name + ') played a ' + cardName + ', targeting ' + targetPlayer.character + '(' + targetPlayer.name + ')'
+        }
 
-        io.sockets.emit('chat_message', message);
-
-    })
-
-    socket.on('playEquipmentCard', (data) => {
-        let playerID = data[0],
-            cardID = data[1]
-        gameControl.discardCard(playerID, cardID)
-        io.sockets.emit('updatePlayerInfo', ['add equipment', playerID, gameControl.getCardById(cardID), gameControl.discardPile])
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+        io.sockets.emit('chat_message', message)
+        updatePlayer(originPlayerID)
     })
 
     socket.on('discardCard', (data) => {
         let playerID = data[0],
             cardID = data[1]
         gameControl.discardCard(playerID, cardID)
-        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+        updatePlayer(playerID)
+    })
+
+    socket.on('playEquipment', (data) => {
+        let playerID = data[0],
+            cardID = data[1]
+        gameControl.discardCard(playerID, cardID)
+        io.sockets.emit('updatePlayerEquipment', [gameControl.getPlayerById(playerID), gameControl.getCardById(cardID)])
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+    })
+
+    socket.on('playBeer', (data) => {
+        let playerID = data[0],
+            cardID = data[1]
+        gameControl.regainBullet(playerID, cardID)
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('endTurn', (playerID) => {
@@ -361,6 +392,10 @@ io.on('connection', (socket) => {
         let nextPlayerID = gameControl.getNextAlivePlayer(playerID)
         io.sockets.emit('startTurn', nextPlayerID)
     })
+
+    updatePlayer = (playerID) => {
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+    }
 });
 
 
