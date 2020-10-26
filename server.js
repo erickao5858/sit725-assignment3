@@ -16,13 +16,14 @@ app.use(express.static(__dirname + '/public'));
 
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-
+const cardController = require("./routers/cardController")
 app.use('/',cardController);
 
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-
+const characters = require("./routers/characters")
 app.use('/',characters);
+
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
 

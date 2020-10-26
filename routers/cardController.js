@@ -1,14 +1,10 @@
 //Adding route using card controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-const Express = require('express')
-const path = require('path');
-let router = Express.Router()
+const express = require('express')
+var router = express.Router()
 
+const {cardController} =require("../controllers/cardController")
 
-router.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname+'../controllers/cardController'));
-})
+router.get('/cardController',cardController)
 
-module.exports = {
-    gameRouter:router
-}
+module.exports = router;
