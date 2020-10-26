@@ -289,14 +289,14 @@ io.on('connection', (socket) => {
         } else {
             setTimeout(() => {
                 gameControl = gameControls[roomId]
-            }, 2000)
+            }, 1000)
         }
     })
 
     socket.on('drawCards', (data) => {
         let playerID = data
         gameControl.draw(playerID, TIMES_DRAW_ON_TURN_START)
-        updatePlayer(playerID)
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('endResponse', (data) => {
@@ -309,10 +309,10 @@ io.on('connection', (socket) => {
         if (!isCardRepelled) {
             let isTargetDie = gameControl.loseBullet(targetPlayerID)
             if (isTargetDie) {
-                updatePlayer(targetPlayerID)
+                io.sockets.emit('updatePlayer', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile, gameControl.discardPile])
                 io.sockets.emit('playerDie', [targetPlayerID])
                 gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
-                updatePlayer(originPlayerID)
+                io.sockets.emit('updatePlayer', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile, gameControl.discardPile])
                 if (gameControl.winnerRole != '') {
                     io.sockets.emit('roleWin', gameControl.winnerRole)
                 }
@@ -329,7 +329,10 @@ io.on('connection', (socket) => {
         }
         io.sockets.emit('chat_message', message)
 
-        updatePlayer(targetPlayerID)
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile, gameControl.discardPile])
+
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile, gameControl.discardPile])
+
         io.sockets.emit('endResponse', [originPlayerID])
     })
 
@@ -356,14 +359,14 @@ io.on('connection', (socket) => {
         }
 
         io.sockets.emit('chat_message', message)
-        updatePlayer(originPlayerID)
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(originPlayer), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('discardCard', (data) => {
         let playerID = data[0],
             cardID = data[1]
         gameControl.discardCard(playerID, cardID)
-        updatePlayer(playerID)
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('playEquipment', (data) => {
@@ -378,6 +381,14 @@ io.on('connection', (socket) => {
         let playerID = data[0],
             cardID = data[1]
         gameControl.regainBullet(playerID, cardID)
+
+        let originPlayer = gameControl.getPlayerById(playerID)
+        let message = {
+            isPublicMessage: true,
+            content: originPlayer.character + '(' + originPlayer.name + ') played a Beer and regain a bullet'
+        }
+
+        io.sockets.emit('chat_message', message)
         io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 
@@ -413,6 +424,7 @@ io.on('connection', (socket) => {
         let nextPlayerID = gameControl.getNextAlivePlayer(playerID)
         io.sockets.emit('startTurn', nextPlayerID)
     })
+<<<<<<< HEAD
 
     updatePlayer = (playerID) => {
         try{
@@ -422,6 +434,8 @@ io.on('connection', (socket) => {
         }
 
     }
+=======
+>>>>>>> eric
 });
 
 
@@ -447,10 +461,6 @@ mongoose.connect(uri, options, () => {
 })
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
-app.get('/readCards', (req, res) => {
-    Test.read(res)
-})
 
 /** -----------------------------------------**/
 
