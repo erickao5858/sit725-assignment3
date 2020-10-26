@@ -309,6 +309,7 @@ io.on('connection', (socket) => {
         if (!isCardRepelled) {
             let isTargetDie = gameControl.loseBullet(targetPlayerID)
             if (isTargetDie) {
+                updatePlayer(targetPlayerID)
                 io.sockets.emit('playerDie', [targetPlayerID])
                 gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
                 updatePlayer(originPlayerID)
@@ -337,6 +338,7 @@ io.on('connection', (socket) => {
             targetPlayerID = data[1],
             cardID = data[2]
         gameControl.discardCard(originPlayerID, cardID)
+
         io.sockets.emit('responseBang', [originPlayerID, targetPlayerID])
 
         /**
