@@ -148,11 +148,13 @@ socket.on('responseBang', (data) => {
 })
 
 socket.on('roleWin', (role) => {
-    if (role == 'Sheriff' || me.role == 'Deputy') {
+    // Sheriff win and role of self is deputy
+    if (role == 'Sheriff' && (me.role == 'Deputy' || me.role == 'Sheriff')) {
         isWin = true
         playerWin()
         return
     }
+    // Sheriff die
     if (role == me.role) {
         isWin = true
         playerWin()
