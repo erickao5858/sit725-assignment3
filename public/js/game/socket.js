@@ -115,6 +115,10 @@ const playBeer = (data) => {
     socket.emit('playBeer', data)
 }
 
+const playSaloon = (data) => {
+    socket.emit('playSaloon', data)
+}
+
 socket.on('endResponse', (data) => {
     let originPlayerID = data[0]
     if (originPlayerID == me.id) {
@@ -125,6 +129,18 @@ socket.on('endResponse', (data) => {
 socket.on('responseBang', (data) => {
     let targetPlayerID = data[1]
     responsePlayerID = data[0]
+
+    // Room owner
+    if (roomId == currentUserId) {
+        for (let i = 0; i < players.length; i++) {
+            // Bot response to bang
+            if (players[i].id == targetPlayerID && players[i].isBot) {
+                socket.emit('endResponse', [responsePlayerID, targetPlayerID, false])
+                break
+            }
+        }
+    }
+
     if (targetPlayerID == me.id) {
         isInResponsePhase = true
         updateTips(TIPS_BANG)
@@ -146,7 +162,7 @@ socket.on('roleWin', (role) => {
 })
 
 socket.on('playerDie', (data) => {
-    let targetPlayerID = data
+    let targetPlayerID = data[0]
     playerDie(targetPlayerID)
 })
 
@@ -164,6 +180,12 @@ socket.on('updatePlayer', (data) => {
     updateDrawpile()
     updateDiscardPile()
     updateBullet(player.id, player.maxBullet, player.bullets)
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].id == player.id) {
+            players[i] = player
+        }
+    }
+
     if (player.id == me.id) {
         me = player
         updateHandsUI()

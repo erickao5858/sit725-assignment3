@@ -310,8 +310,8 @@ io.on('connection', (socket) => {
             let isTargetDie = gameControl.loseBullet(targetPlayerID)
             if (isTargetDie) {
                 io.sockets.emit('playerDie', [targetPlayerID])
-                originPlayer(targetPlayerID)
                 gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
+                updatePlayer(originPlayerID)
                 if (gameControl.winnerRole != '') {
                     io.sockets.emit('roleWin', gameControl.winnerRole)
                 }
@@ -377,6 +377,25 @@ io.on('connection', (socket) => {
             cardID = data[1]
         gameControl.regainBullet(playerID, cardID)
         io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
+    })
+
+    socket.on('playSaloon', (data) => {
+        let playerID = data[0],
+            cardID = data[1],
+            alivePlayers = gameControl.getAlivePlayers()
+        gameControl.saloon(playerID, cardID)
+        for (let i = 0; i < alivePlayers.length; i++) {
+            io.sockets.emit('updatePlayer', [alivePlayers[i], gameControl.drawPile, gameControl.discardPile])
+        }
+
+        let originPlayer = gameControl.getPlayerById(playerID)
+
+        let message = {
+            isPublicMessage: true,
+            content: originPlayer.character + '(' + originPlayer.name + ') played a Saloon, everyone regain a bullet!'
+        }
+
+        io.sockets.emit('chat_message', message)
     })
 
     socket.on('endTurn', (playerID) => {

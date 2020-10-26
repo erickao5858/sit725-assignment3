@@ -110,6 +110,9 @@ const cardOnClick = (event) => {
             }
             playBeer([me.id, card._id])
         }
+        if (card.text == "Saloon") {
+            playSaloon([me.id, card._id])
+        }
         if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
             playEquipment([me.id, card._id])
             return

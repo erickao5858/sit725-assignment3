@@ -35,6 +35,15 @@ class GameControl {
         this.discardCard(playerID, cardID)
     }
 
+    saloon = (playerID, cardID) => {
+        let alivePlayers = this.getAlivePlayers()
+        this.discardCard(playerID, cardID)
+        for (let i = 0; i < alivePlayers.length; i++) {
+            if (alivePlayers[i].bullets != alivePlayers[i].maxBullet)
+                alivePlayers[i].bullets++
+        }
+    }
+
     preparePlayerData = (roomUsers) => {
         for (let i = 0; i < roomUsers.length; i++) {
             let player = {}
@@ -59,12 +68,6 @@ class GameControl {
         this.initDraw()
     }
 
-    playBang = (fromPlayer, toPlayer, cardID) => {
-        let card = this.getCardById(cardID)
-        let target = this.getPlayerById(toPlayer)
-        this.discardCard(fromPlayer, cardID)
-    }
-
     loseBullet = (playerID) => {
         let player = this.getPlayerById(playerID)
         player.bullets -= 1
@@ -74,7 +77,6 @@ class GameControl {
         }
         return false
     }
-
 
     playerDie = (player) => {
         player.isDead = true
