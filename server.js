@@ -18,13 +18,13 @@ app.use(express.static(__dirname + '/public'));
 
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-const cardController = require("./routers/cardController")
-app.use('/',cardController);
+const cardController = require("./routers/cardRouter")
+app.use('/', cardController);
 
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
 const characters = require("./routers/characters")
-app.use('/',characters);
+app.use('/', characters);
 
 
 /**
@@ -32,11 +32,11 @@ app.use('/',characters);
  *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
  */
 
-app.get('/cards',(req,res)=>{
-    cardData.cardController(req,res);
+app.get('/cards', (req, res) => {
+    cardData.cardController(req, res);
 })
-app.get('/characters',(req,res)=>{
-    characterData.characters(req,res);
+app.get('/characters', (req, res) => {
+    characterData.characters(req, res);
 })
 
 
@@ -337,11 +337,6 @@ mongoose.connect(uri, options, () => {
 })
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
-const Test = require('./controllers/test')(mongoose)
-app.get('/readCards', (req, res) => {
-    Test.read(res)
-})
 
 // liston to the port 3000
 http.listen(PORT, function() {

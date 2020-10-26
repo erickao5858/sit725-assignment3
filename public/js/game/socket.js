@@ -46,7 +46,7 @@ socket.on('currentRoom', (room) => {
         isInitialized = true
         roomUsers = room.roomUsers;
         if (roomId == currentUserId) {
-            $.get('/readCards', (data) => {
+            $.get('/cards', (data) => {
                 socket.emit('initGame', [roomUsers, data, true, roomId])
             })
         } else
