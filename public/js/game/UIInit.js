@@ -79,7 +79,7 @@ const appendPlayerInformation = (playerContainer, player) => {
 
 const initCardCountUI = () => {
     for (let i = 0; i < players.length; i++) {
-        $('#' + players[i].id).find('.player-counter-card').html(players[i].cards.length + ' in hands')
+        $('#' + players[i].id).find('.player-counter-card').html('2 in hands')
     }
 }
 

@@ -58,7 +58,8 @@ socket.on('currentRoom', (room) => {
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
 let players = [],
-    drawpile = []
+    drawpile = [],
+    discardPile = []
 let isUIInitialized = false,
     me, isMyTurn = false
 
@@ -71,7 +72,8 @@ socket.on('initGame', (data) => {
         for (let i = 0; i < players.length; i++) {
             if (players[i].id == currentUserId) {
                 me = players[i]
-            }
+            } else
+                players[i].cards = []
         }
         initUI()
     }
@@ -102,22 +104,44 @@ const playCardTo = (data) => {
     socket.emit('playCardTo', data)
 }
 
+const playerEquipmentCard = (data) => {
+    socket.emit('playEquipmentCard', data)
+}
+
+socket.on('updatePlayerCards', (data) => {
+    let player = data
+    if (player.id == me.id) {
+        me.cards = player.cards
+        updateHandsUI()
+    }
+    updateCardCountUI(player.id, player.cards.length)
+})
+
 socket.on('updatePlayerInfo', (data) => {
-    let fromPlayerID = data[0]
-    toPlayerID = data[1],
-        mode = data[2],
-        discardPile = data[3]
+    let mode = data[0]
     switch (mode) {
         case 'lose bullet':
+            let fromPlayerID = data[1],
+                toPlayerID = data[2]
+            discardPile = data[3]
             let targetPlayer = players.find((player) => player.id == toPlayerID)
             targetPlayer.bullets -= 1
             lostBullet(targetPlayer.id)
             if (targetPlayer.bullets == 0) {
                 targetPlayer.isDead = true
+                if (toPlayerID == me.id) {
+                    emptyHandsUI()
+                    updateTips(TIPS_DEAD)
+                }
                 playerDie(targetPlayer)
                 if (fromPlayerID == me.id)
                     socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
             }
+            break
+        case 'add equipment':
+            let playerID = data[1],
+                card = data[2]
+            addEquipment(playerID, card)
             break
     }
 })

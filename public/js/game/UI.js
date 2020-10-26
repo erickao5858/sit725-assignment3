@@ -48,6 +48,9 @@ const regainBullet = (playerID) => {
     }
 }
 
+const emptyHandsUI = () => {
+    $('#card-wrapper').empty()
+}
 const updateHandsUI = () => {
     $('#card-wrapper').children().slice(1).remove()
     for (let i = 0; i < me.cards.length; i++) {
@@ -66,9 +69,6 @@ const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
 }
 
-let discardPile = []
-
-// card: event.data.card
 const cardOnClick = (event) => {
     let card = event.data.card
     if (isMyTurn) {
@@ -79,6 +79,10 @@ const cardOnClick = (event) => {
             targetContainer.show()
             updateTargetUI(card._id)
             updateTips(TIPS_CHOOSETARGET)
+            return
+        }
+        if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel') {
+            playerEquipmentCard([me.id, card._id])
         }
     } else
         M.toast({ html: 'not your turn' })
@@ -127,9 +131,7 @@ const updateTargetUI = (cardID) => {
             target.html(players[i].character + '(' + players[i].name + ')')
                 .css('text-align', 'center')
                 .on('click', () => {
-                    me.cards.splice(me.cards.indexOf(me.cards.find((card) => card._id == cardID)), 1)
                     cancel()
-                    updateHandsUI()
                     playCardTo([me.id, players[i].id, cardID])
                 })
         }
@@ -137,16 +139,17 @@ const updateTargetUI = (cardID) => {
 }
 
 const playerDie = (player) => {
-    updateCardCountUI(player.id, 0)
     $('#' + player.id).find('.player-name').css('text-decoration', 'line-through')
     $('#' + player.id).find('.player-counter-card').css('text-decoration', 'line-through')
     $('#' + player.id).find('.player-equipments').css('text-decoration', 'line-through')
-    appendBadge(player.id)
+    if (player.id != me.id)
+        appendBadge(player.id)
 }
 
 const TIPS_MYTURN = 0,
     TIPS_CHOOSETARGET = 1,
-    TIPS_WAITING = 2
+    TIPS_WAITING = 2,
+    TIPS_DEAD = 3
 
 const updateTips = (mode) => {
     let tips = $('#tips').children().eq(0)
@@ -159,6 +162,9 @@ const updateTips = (mode) => {
             break
         case TIPS_WAITING:
             tips.html('Waiting for other players to perform an action')
+            break
+        case TIPS_DEAD:
+            tips.html('Game Over')
             break
     }
 }

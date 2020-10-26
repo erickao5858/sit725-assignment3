@@ -5,7 +5,7 @@ class GameControl {
     constructor(cards) {
         this.cards = cards
         this.players = []
-        this.drawpile = [...cards]
+        this.drawPile = [...cards]
         this.discardPile = []
     }
 
@@ -13,7 +13,11 @@ class GameControl {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].id == playerID) {
                 for (let j = 0; j < times; j++) {
-                    this.players[i].cards.push(this.drawpile.splice(Math.floor(Math.random() * this.drawpile.length), 1)[0])
+                    if (this.drawPile.length == 0) {
+                        this.drawPile = [...this.discardPile]
+                        this.drawPile = shuffle(this.drawPile)
+                    }
+                    this.players[i].cards.push(this.drawPile.splice(Math.floor(Math.random() * this.drawPile.length), 1)[0])
                 }
             }
         }
@@ -49,20 +53,30 @@ class GameControl {
         this.initDraw()
     }
 
-    playCard = (fromPlayer, toPlayer, cardID) => {
+    playCardTo = (fromPlayer, toPlayer, cardID) => {
         let card = this.getCardById(cardID)
         let target = this.getPlayerById(toPlayer)
-        let origin = this.getPlayerById(fromPlayer)
+        this.discardCard(fromPlayer, cardID)
         if (card.text == 'Bang!') {
             target.bullets -= 1
             if (target.bullets == 0) {
                 target.isDead = true
-                let cardsCount = target.cards.length
-                for (let i = 0; i < cardsCount; i++) {
-                    this.discardPile.push(target.cards.splice(0, 1)[0])
-                }
+                this.discardCards(toPlayer)
+                return true
             }
-            this.discardPile.push(origin.cards.splice(origin.cards.indexOf(origin.cards.find((card) => card._id == cardID)), 1))
+            return false
+        }
+    }
+
+    discardCard = (playerID, cardID) => {
+        let player = this.getPlayerById(playerID)
+        this.discardPile.push(player.cards.splice(player.cards.indexOf(player.cards.find((card) => card._id == cardID)), 1)[0])
+    }
+    discardCards = (playerID) => {
+        let player = this.getPlayerById(playerID)
+        let cardsCount = player.cards.length
+        for (let i = 0; i < cardsCount; i++) {
+            this.discardPile.push(player.cards.splice(0, 1)[0])
         }
     }
 

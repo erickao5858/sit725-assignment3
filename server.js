@@ -236,10 +236,8 @@ io.on('connection', (socket) => {
             gameControl = new GameControl(data[1])
             gameControl.preparePlayerData(data[0])
             gameControls[roomId] = gameControl
-
-
             setTimeout(() => {
-                io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
+                io.sockets.emit('initGame', [gameControl.players, gameControl.drawPile])
                 io.sockets.emit('startTurn', gameControl.players[0].id)
             }, 1000);
         } else {
@@ -253,18 +251,27 @@ io.on('connection', (socket) => {
         let playerID = data[0],
             times = data[1]
         gameControl.draw(playerID, times)
-        io.sockets.emit('drawCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawpile])
+        io.sockets.emit('drawCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawPile])
     })
 
     socket.on('playCardTo', (data) => {
-        let fromPlayer = data[0],
-            toPlayer = data[1],
+        let originPlayerID = data[0],
+            targetPlayerID = data[1],
             cardID = data[2]
-        gameControl.playCard(fromPlayer, toPlayer, cardID)
-        io.sockets.emit('updatePlayerInfo', [fromPlayer, toPlayer, 'lose bullet', gameControl.discardPile])
+        let isTargetDie = gameControl.playCardTo(originPlayerID, targetPlayerID, cardID)
+        io.sockets.emit('updatePlayerInfo', ['lose bullet', originPlayerID, targetPlayerID, gameControl.discardPile])
+        if (isTargetDie) io.sockets.emit('updatePlayerCards', gameControl.getPlayerById(targetPlayerID))
+        io.sockets.emit('updatePlayerCards', gameControl.getPlayerById(originPlayerID))
     })
 
-    //origin.cards.indexOf(origin.cards.find((card) => card._id == cardID)
+    socket.on('playEquipmentCard', (data) => {
+        let playerID = data[0],
+            cardID = data[1]
+        gameControl.discardCard(playerID, cardID)
+        io.sockets.emit('updatePlayerInfo', ['add equipment', playerID, gameControl.getCardById(cardID)])
+        io.sockets.emit('updatePlayerCards', gameControl.getPlayerById(playerID))
+    })
+
     socket.on('endTurn', (playerID) => {
         let nextPlayerID = gameControl.getNextAlivePlayer(playerID)
         io.sockets.emit('startTurn', nextPlayerID)

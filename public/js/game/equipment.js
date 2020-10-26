@@ -3,6 +3,8 @@
  * @param {string} playerID 
  * @param {string} equipmentClass equipment position: 0 - Weapon, 1 - Barrel, 2 - Mustang, 3 - Scope
  */
+
+//TODO: rewrite
 const removeEquipment = (playerID, equipmentClass) => {
     let margin = ['66%', '55%', '42%']
     let player = $('.player-container').eq(playerID)
@@ -11,24 +13,13 @@ const removeEquipment = (playerID, equipmentClass) => {
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
 }
 
-const addEquipment = (playerID, equipmentClass) => {
+const addEquipment = (playerID, card) => {
     let margin = ['55%', '42%', '29%']
-    let player = $('.player-container').eq(playerID)
+    let player = $('#' + playerID)
     let equipmentContainer = player.find('.player-equipments')
+    if (equipmentContainer.find('.' + card.text.toLowerCase()).length) return
     equipmentContainer.css('margin-top', margin[equipmentContainer.children().length - 1])
-    equipmentContainer.append('<div class="row ' + equipmentClass + '"></div>')
+    equipmentContainer.append('<div class="row ' + card.text.toLowerCase() + '"></div>')
     let equipment = equipmentContainer.children().last()
-    let title, name
-    switch (equipmentClass) {
-        case 'equipment-barrel':
-            title = BARREL, name = NAME_BARREL
-            break
-        case 'equipment-mustang':
-            title = MUSTANG, name = NAME_MUSTANG
-            break
-        case 'equipment-scope':
-            title = SCOPE, name = NAME_SCOPE
-            break
-    }
-    equipment.attr('title', title).html('<b>' + name + '</b>')
+    equipment.attr('title', card.description).html('<b>' + card.text + '</b>')
 }
