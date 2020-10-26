@@ -29,4 +29,7 @@ var cards = Schema({
         trim: true,
     }
 });
-module.exports = mongoose.model('cards',cards);
+const cardsData =  mongoose.model('cards',cards);
+
+module.exports = cardsData;
+// module.exports = mongoose.model('cards',cards);

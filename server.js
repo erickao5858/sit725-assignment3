@@ -11,19 +11,22 @@ let io = require('socket.io')(http);
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
 const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
 
-
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
 
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-
-app.use('/',cardController);
-
+const cardController = require('./controllers/cardController');
+app.get('/cards',(req,res)=>{
+    cardController.cardController(req,res);
+})
 //setup the controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+const characters = require('./controllers/characters');
+app.get('/characters',(req,res)=>{
+    characters.characters(req,res);
+})
 
-app.use('/',characters);
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
 

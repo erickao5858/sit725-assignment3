@@ -22,4 +22,7 @@ var characters = Schema({
     
     
 });
-module.exports = mongoose.model('characters',characters);
+const charactersData =  mongoose.model('characters',characters);
+
+module.exports = charactersData;
+// module.exports = mongoose.model('characters',characters);
