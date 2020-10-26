@@ -10,10 +10,35 @@ let io = require('socket.io')(http);
 
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
 const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
-
+const cardData = require('./controllers/cardController');
+const characterData = require('./controllers/characters');
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
+
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+const cardController = require("./routers/cardController")
+app.use('/',cardController);
+
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+const characters = require("./routers/characters")
+app.use('/',characters);
+
+
+/**
+ *  get the card data
+ *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+ */
+
+app.get('/cards',(req,res)=>{
+    cardData.cardController(req,res);
+})
+app.get('/characters',(req,res)=>{
+    characterData.characters(req,res);
+})
+
 
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
