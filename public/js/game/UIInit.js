@@ -67,7 +67,7 @@ const appendPlayerInformation = (playerContainer, player) => {
             playerContainer.find('.player-name').attr('title', player.ability).html('<b>' + player.character + '(' + player.name + ')' + '</b>')
 
             // Equipments
-            playerContainer.find('.equipment-gun').attr('title', 'Default weapon: range 1').html('<b>Colt .45</b>')
+            playerContainer.find('.equipment-gun').attr('title', 'Default weapon: range 1').html('<b>Colt .45</b><b> (1)</b>')
 
             // Status
             for (let i = 0; i < player.maxBullet; i++)

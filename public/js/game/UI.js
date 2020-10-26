@@ -69,8 +69,13 @@ const updateCardCountUI = (playerID, amount) => {
     $('#' + playerID).find('.player-counter-card').html(amount + ' in hands')
 }
 
+let isInDiscardPhase = false
 const cardOnClick = (event) => {
     let card = event.data.card
+    if (isInDiscardPhase) {
+        discardCard([me.id, card._id])
+        return
+    }
     if (isMyTurn) {
         if (card.text == 'Bang!' || card.text == 'Panic!' || card.text == 'Cat Balou' || card.text == 'Duel') {
             let cardContainer = $('#card-wrapper'),
@@ -81,31 +86,27 @@ const cardOnClick = (event) => {
             updateTips(TIPS_CHOOSETARGET)
             return
         }
-        if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel') {
+        if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
             playerEquipmentCard([me.id, card._id])
         }
     } else
         M.toast({ html: 'not your turn' })
 }
 
-let isPassClicked = false
-
 const pass = () => {
     if (!isMyTurn) {
         M.toast({ html: 'not your turn' })
         return
     }
-    if (!isPassClicked) {
-        M.toast({ html: 'Click pass again to confirm!' })
-        isPassClicked = true
-        setTimeout(() => {
-            isPassClicked = false
-        }, 2000)
-        return
+    if (me.cards.length <= me.bullets) {
+        isMyTurn = false
+        isInDiscardPhase = false
+        updateTips(TIPS_WAITING)
+        endTurn(me.id)
+    } else {
+        updateTips(TIPS_DISCARD)
+        isInDiscardPhase = true
     }
-    isMyTurn = false
-    updateTips(TIPS_WAITING)
-    socket.emit('endTurn', me.id)
 }
 
 const cancel = () => {
@@ -149,7 +150,8 @@ const playerDie = (player) => {
 const TIPS_MYTURN = 0,
     TIPS_CHOOSETARGET = 1,
     TIPS_WAITING = 2,
-    TIPS_DEAD = 3
+    TIPS_DEAD = 3,
+    TIPS_DISCARD = 4
 
 const updateTips = (mode) => {
     let tips = $('#tips').children().eq(0)
@@ -165,6 +167,9 @@ const updateTips = (mode) => {
             break
         case TIPS_DEAD:
             tips.html('Game Over')
+            break
+        case TIPS_DISCARD:
+            tips.html('Cards over bullets, please discard cards')
             break
     }
 }
