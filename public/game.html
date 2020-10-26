@@ -51,7 +51,12 @@
             <!-- Hand -->
             <div class="col s7 hand">
                 <div class="row valign-wrapper" id="tips"><b>Waiting for other players to perform an action</b></div>
-                <div class="row" id="card-wrapper"></div>
+                <div class="row" id="card-wrapper">
+                    <div class="col s1 card" id="pass" onclick="pass()">Pass</div>
+                </div>
+                <div class="row" id="target-wrapper" style="display: none;">
+                    <div class="col s1 card" id="cancel" onclick="cancel()">Cancel</div>
+                </div>
             </div>
             <!-- Chat Author:Zilin Guo-->
             <div class="col s3 yellow lighten-4" id="chat">
@@ -77,6 +82,7 @@
     <!-- Game Script -->
     <script src="js/game/socket.js"></script>
     <script src="js/game/equipment.js"></script>
+    <script src="js/game/UIInit.js"></script>
     <script src="js/game/UI.js"></script>
 </body>
 
