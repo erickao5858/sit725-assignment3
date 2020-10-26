@@ -10,10 +10,35 @@ let io = require('socket.io')(http);
 
 const { addUser, removeUser, getUser, listUsers } = require('./controllers/userController');
 const { createRoom, removeRoom, getRoom, listRooms } = require('./controllers/roomController');
-
+const cardData = require('./controllers/cardController');
+const characterData = require('./controllers/characters');
 
 // for hosting static files (html)
 app.use(express.static(__dirname + '/public'));
+
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+const cardController = require("./routers/cardRouter")
+app.use('/', cardController);
+
+//setup the controller
+//@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
+const characters = require("./routers/characters")
+app.use('/', characters);
+
+
+/**
+ *  get the card data
+ *  @Author: Qiaoli wang (wangqiao@deakin.edu.au)
+ */
+
+app.get('/cards', (req, res) => {
+    cardData.cardController(req, res);
+})
+app.get('/characters', (req, res) => {
+    characterData.characters(req, res);
+})
+
 
 // setup the routes
 app.use('/room', gameRouter.gameRouter);
@@ -231,47 +256,97 @@ io.on('connection', (socket) => {
     })
 
     socket.on('startGame', (roomId) => {
-        let room = getRoom(roomId);
-        if (room) {
-            room.gameStarted = true;
-        }
-        currentRoom = room;
-        socket.emit('currentRoom', currentRoom);
-    })
-
-    /** -----------------------------------------**/
+            let room = getRoom(roomId);
+            if (room) {
+                room.gameStarted = true;
+            }
+            currentRoom = room;
+            socket.emit('currentRoom', currentRoom);
+        })
+        /** -----------------------------------------**/
 
     /**
      * @author Eric Kao 
      * 
      */
 
-    let GameControl = require('./gameControl'),
-        gameControl
+    let gameControl
+    const TIMES_DRAW_ON_TURN_START = 2
+    const TIMES_DRAW_ON_TARGET_DIE = 2
 
-    /*
+
     // data[0]: users, data[1]: cards
     socket.on('initGame', (data) => {
-        gameControl = new GameControl(data[1])
-        gameControl.preparePlayerData(data[0])
-        io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
-        gameControl.draw(gameControl.players[0].id, TIMES_DRAW_ON_TURN_START)
-        io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
-    })
-    */
-    // data[0]: users, data[1]: cards
-    socket.on('initGame', (data) => {
-        gameControl = new GameControl(data[1])
-        gameControl.preparePlayerData(data[0])
-        io.sockets.emit('initGame', [gameControl.players, gameControl.drawpile])
-        io.sockets.emit('startTurn', [gameControl.players[0], gameControl.drawpile])
+        let isMaster = data[2],
+            roomId = data[3]
+        if (isMaster) {
+            gameControl = new GameControl(data[1])
+            gameControl.preparePlayerData(data[0])
+            gameControls[roomId] = gameControl
+            setTimeout(() => {
+                io.sockets.emit('initGame', [gameControl.players, gameControl.drawPile])
+                io.sockets.emit('startTurn', gameControl.players[0].id)
+            }, 1000);
+        } else {
+            setTimeout(() => {
+                gameControl = gameControls[roomId]
+            }, 1000)
+        }
     })
 
     socket.on('drawCards', (data) => {
+        let playerID = data
+        gameControl.draw(playerID, TIMES_DRAW_ON_TURN_START)
+        io.sockets.emit('updatePlayerCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawPile])
+    })
+
+    socket.on('playCardTo', (data) => {
+        let originPlayerID = data[0],
+            targetPlayerID = data[1],
+            cardID = data[2]
+        let isTargetDie = gameControl.playCardTo(originPlayerID, targetPlayerID, cardID)
+        io.sockets.emit('updatePlayerInfo', ['lose bullet', originPlayerID, targetPlayerID, gameControl.discardPile])
+        if (isTargetDie) {
+            io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile])
+            gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
+        }
+
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile])
+
+        /**
+         *  send player action message to public
+         *  added by qiaoli wang (wangqiao@deakin.edu.au)
+         */
+        let playerName = gameControl.getPlayerById(originPlayerID).name,
+            targetName = gameControl.getPlayerById(targetPlayerID).name,
+            cardName = gameControl.getCardById(cardID).text;
+
+        let message = {
+            isPublicMessage:true,
+            content:`${playerName} played a ${cardName} targeting ${targetName}.`
+        };
+
+        io.sockets.emit('chat_message',message);
+    })
+
+    socket.on('playEquipmentCard', (data) => {
         let playerID = data[0],
-            times = data[1]
-        gameControl.draw(playerID, times)
-        io.sockets.emit('drawCards', [gameControl.players.find((element) => element.id == playerID), gameControl.drawpile])
+            cardID = data[1]
+        gameControl.discardCard(playerID, cardID)
+        io.sockets.emit('updatePlayerInfo', ['add equipment', playerID, gameControl.getCardById(cardID)])
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile])
+    })
+
+    socket.on('discardCard', (data) => {
+        let playerID = data[0],
+            cardID = data[1]
+        gameControl.discardCard(playerID, cardID)
+        io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(playerID), gameControl.drawPile])
+    })
+
+    socket.on('endTurn', (playerID) => {
+        let nextPlayerID = gameControl.getNextAlivePlayer(playerID)
+        io.sockets.emit('startTurn', nextPlayerID)
     })
 });
 
@@ -280,6 +355,10 @@ io.on('connection', (socket) => {
  * Database connection
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
+
+const GameControl = require('./gameControl')
+let gameControls = {}
+
 const mongoose = require('mongoose')
 const uri = "mongodb+srv://user:pass@sit725.facdb.mongodb.net/<dbname>?retryWrites=true&w=majority";
 const options = {
@@ -295,6 +374,7 @@ mongoose.connect(uri, options, () => {
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
+<<<<<<< HEAD
 const Test = require('./controllers/test')(mongoose)
 app.get('/readCards', (req, res) => {
     Test.read(res)
@@ -317,6 +397,8 @@ function setTimer() {
         }
     }
   }
+=======
+>>>>>>> 5329152720b34156fdd3f9a30d2f9ccc8917bfaa
 // liston to the port 3000
 http.listen(PORT, function() {
     console.log(`web server running at: http://localhost:${PORT}`)

@@ -12,8 +12,7 @@ $(function() {
         $createRoombtn = $('#createRoom'),
         $matchRoomBtn = $('#matchRoom'),
         $lobbyOperatorBox = $('.lobby-operator-box'),
-        $roomDetails = $('.room-details'),
-        $addBot = $(' #addBot');
+        $roomDetails = $('.room-details');
 
     let roomList, currentUser;
     /**
@@ -60,78 +59,74 @@ $(function() {
      */
     $createRoombtn.on('click', function() {
 
-        if (userNameVal) {
+            if (userNameVal) {
+                socket.emit('createRoom');
+                $(this).attr("disabled", true);
+                $matchRoomBtn.attr('disabled', true);
 
-            socket.emit('createRoom');
-            $(this).attr("disabled", true);
-            $matchRoomBtn.attr('disabled', true);
-
-        } else {
-            M.toast({ html: 'Please enter your name!', classes: 'rounded' });
-        }
-    })
-
-    /**
-     * add a bot
-     */
+            } else {
+                M.toast({ html: 'Please enter your name!', classes: 'rounded' });
+            }
+        })
+        /**
+         * add a bot
+         */
     $('body').on('click', '.add-bot-btn', function() {
-        let roomId = $(this).data().id;
-        socket.emit('addBot', roomId);
-    })
-
-    /**
-     *  user join a room
-     */
-    $('body').on('click', '.join-room', function() {
-        if (userNameVal && currentUser) {
             let roomId = $(this).data().id;
-            socket.emit('joinRoom', { roomId: roomId, bot: false, curUser: currentUser });
-        } else {
-            M.toast({ html: 'Please enter your name! and click Link to connect', classes: 'rounded' });
-        }
-    })
+            socket.emit('addBot', roomId);
+        })
+        /**
+         *  user join a room
+         */
+    $('body').on('click', '.join-room', function() {
+            if (userNameVal && currentUser) {
+                let roomId = $(this).data().id;
 
-    /**
-     * user leave room
-     */
+                socket.emit('joinRoom', { roomId: roomId, bot: false, curUser: currentUser });
+            } else {
+                M.toast({ html: 'Please enter your name! and click Link to connect', classes: 'rounded' });
+            }
+        })
+        /**
+         * user leave room
+         */
     $('body').on('click', '.leave-btn', function() {
 
-        let roomId = $(this).data().id;
+            let roomId = $(this).data().id;
 
-        socket.emit('leaveRoom', roomId, currentUser);
+            socket.emit('leaveRoom', roomId, currentUser);
 
-        if (currentUser) {
-            $createRoombtn.attr('disabled', false);
-            $matchRoomBtn.attr('disabled', false);
-        }
-        $lobbyOperatorBox.show();
-        $roomDetails.hide();
-    })
-
-    /**
-     *  user match a room
-     */
+            if (currentUser) {
+                $createRoombtn.attr('disabled', false);
+                $matchRoomBtn.attr('disabled', false);
+            }
+            $lobbyOperatorBox.show();
+            $roomDetails.hide();
+        })
+        /**
+         *  user match a room
+         */
     $matchRoomBtn.on('click', function() {
-        if (roomList.length > 0) {
-            socket.emit('matchRoom');
-        } else {
-            M.toast({ html: 'Not a room is available, You can create a room!', classes: 'rounded' });
-        }
-    })
 
-    /**
-     *  start the game
-     */
+            if (roomList.length > 0) {
+                socket.emit('matchRoom', currentUser);
+            } else {
+                M.toast({ html: 'Not a room is available, You can create a room!', classes: 'rounded' });
+            }
+        })
+        /**
+         *  start the game
+         */
     $('body').on('click', '.start-game', function() {
-        let roomId = $(this).data().id;
-        socket.emit('startGame', roomId);
-    })
-
-    /**
-     * make every user in the room going to game page
-     * @param room
-     */
+            let roomId = $(this).data().id;
+            socket.emit('startGame', roomId);
+        })
+        /**
+         * make every user in the room going to game page
+         * @param room
+         */
     startGame = (room) => {
+
         if (room) {
             let user = currentUser.user ? currentUser.user : currentUser;
             let roomUser = room.roomUsers.findIndex((item) => item.id === user.id);
@@ -233,52 +228,51 @@ $(function() {
      */
     renderRooms = (rooms) => {
 
-        const $roomList = document.getElementById("rooms");
-        let roomList = [],
-            gameStatus;
-        let userList = [],
-            $userListHtml;
-        let userNumber, $joinBtnHtml;
-        let $userIcon;
+            const $roomList = document.getElementById("rooms");
+            let roomList = [],
+                gameStatus;
+            let userList = [],
+                $userListHtml;
+            let userNumber, $joinBtnHtml;
+            let $userIcon;
 
-        rooms.forEach((room) => {
+            rooms.forEach((room) => {
 
-            userList = [];
-            userNumber = room.roomUsers.length;
-            gameStatus = room.gameStarted;
+                userList = [];
+                userNumber = room.roomUsers.length;
+                gameStatus = room.gameStarted;
 
-            $joinBtnHtml = (userNumber >= 7 || gameStatus) ?
-                `<a class="join-room btn btn-primary" disabled>Full</a>` :
-                `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
+                $joinBtnHtml = (userNumber >= 7 || gameStatus) ?
+                    `<a class="join-room btn btn-primary" disabled>Full</a>` :
+                    `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
 
-            room.roomUsers.forEach((user) => {
+                room.roomUsers.forEach((user) => {
 
-                $userIcon = user.isBot ? `<i class="small material-icons">airplay</i>` : `<i class="material-icons small">account_circle</i>`;
-                userList.push(`<div class="col s1">
+                    $userIcon = user.isBot ? `<i class="small material-icons">airplay</i>` : `<i class="material-icons small">account_circle</i>`;
+                    userList.push(`<div class="col s1">
                             ${$userIcon}
                             <div class="player-name">${user.name}</div>
                         </div>`)
-            })
+                })
 
-            $userListHtml = userList.join('');
+                $userListHtml = userList.join('');
 
-            roomList.push(`<div class="room-item">
+                roomList.push(`<div class="room-item">
                     <div class="item-left row" id="players">${$userListHtml}</div>
                     <div class="item-right">
                         <span class="room-number">Room No : ${room.roomNumber}</span>
                         ${$joinBtnHtml}
                     </div>
                 </div>`)
-        })
+            })
 
 
-        $roomList.innerHTML = roomList.join(" ");
-    }
-
-    /**
-     * display room
-     * @param room
-     */
+            $roomList.innerHTML = roomList.join(" ");
+        }
+        /**
+         * display room
+         * @param room
+         */
     renderRoom = (room) => {
 
         const $room = document.getElementById("room");
@@ -329,29 +323,28 @@ let socket = io();
 let username_chat = null;
 
 //funciton to get message and emit to socket
-const sendMessage=()=>{
+const sendMessage = () => {
     let message = $('#input_text').val()
-        let payload = {
-          "msg" : message,
-          "sender" : username_chat
-        }
-    socket.emit("lobby_chat_message",payload);
-  }
+    let payload = {
+        "msg": message,
+        "sender": username_chat
+    }
+    socket.emit("lobby_chat_message", payload);
+}
 
-$(document).ready(function(){ 
+$(document).ready(function() {
     //bind the button
-    $('#sendMessageButton').click(function(){
-        if(username_chat){
+    $('#sendMessageButton').click(function() {
+        if (username_chat) {
             sendMessage();
-        }
-        else{
+        } else {
             M.toast({ html: 'Please enter your name! and start typing', classes: 'rounded' });
         }
     });
 
     //socket to listen chat_message
-    socket.on('lobby_chat_message',data=>{
-        $('#chatArea').append($('<li>').text(data.sender+': '+data.msg));
+    socket.on('lobby_chat_message', data => {
+        $('#chatArea').append($('<li>').text(data.sender + ': ' + data.msg));
     });
-    
-}); 
+
+});
