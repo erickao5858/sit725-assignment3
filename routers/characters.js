@@ -1,14 +1,10 @@
-//Adding route using characters controller
+//Adding route using card controller
 //@Author: Jasdeep kaur (kaurjasdee@deakin.edu.au)
-const Express = require('express')
-const path = require('path');
-let router = Express.Router()
+const express = require('express')
+var router = express.Router()
 
+const {characters} =require("../controllers/characters")
 
-router.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname+'../controllers/characters'));
-})
+router.get('/characters',characters)
 
-module.exports = {
-    gameRouter:router
-}
+module.exports = router;
