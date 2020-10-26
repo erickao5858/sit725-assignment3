@@ -47,9 +47,10 @@ socket.on('currentRoom', (room) => {
         roomUsers = room.roomUsers;
         if (roomId == currentUserId) {
             $.get('/readCards', (data) => {
-                socket.emit('initGame', [roomUsers, data])
+                socket.emit('initGame', [roomUsers, data, true, roomId])
             })
-        }
+        } else
+            socket.emit('initGame', [roomUsers, [], false, roomId])
     }
 })
 
@@ -57,7 +58,8 @@ socket.on('currentRoom', (room) => {
  * @author Eric Kao <eric.kao5858@gmail.com>
  */
 let players = [],
-    drawpile = []
+    drawpile = [],
+    discardPile = []
 let isUIInitialized = false,
     me, isMyTurn = false
 
@@ -70,33 +72,21 @@ socket.on('initGame', (data) => {
         for (let i = 0; i < players.length; i++) {
             if (players[i].id == currentUserId) {
                 me = players[i]
-            }
+            } else
+                players[i].cards = []
         }
         initUI()
     }
 })
 
-/*
-socket.on('startTurn', (data) => {
-    let player = data[0]
-    drawpile = data[1]
-    updateCardCountUI(player.id, player.cards.length)
-    updateDrawpile()
-    if (me.id == player.id) {
-        me.cards = player.cards
-        updateHandsUI()
-        isMyTurn = true
-    }
-})
-*/
 
 const TIMES_DRAW_ON_TURN_START = 2
 
-socket.on('startTurn', (data) => {
-    let player = data[0]
-    if (me.id == player.id) {
+socket.on('startTurn', (playerID) => {
+    if (me.id == playerID) {
         socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
         isMyTurn = true
+        updateTips(TIPS_MYTURN)
     }
 })
 socket.on('drawCards', (data) => {
@@ -107,5 +97,51 @@ socket.on('drawCards', (data) => {
     if (me.id == player.id) {
         me.cards = player.cards
         updateHandsUI()
+    }
+})
+
+const playCardTo = (data) => {
+    socket.emit('playCardTo', data)
+}
+
+const playerEquipmentCard = (data) => {
+    socket.emit('playEquipmentCard', data)
+}
+
+socket.on('updatePlayerCards', (data) => {
+    let player = data
+    if (player.id == me.id) {
+        me.cards = player.cards
+        updateHandsUI()
+    }
+    updateCardCountUI(player.id, player.cards.length)
+})
+
+socket.on('updatePlayerInfo', (data) => {
+    let mode = data[0]
+    switch (mode) {
+        case 'lose bullet':
+            let fromPlayerID = data[1],
+                toPlayerID = data[2]
+            discardPile = data[3]
+            let targetPlayer = players.find((player) => player.id == toPlayerID)
+            targetPlayer.bullets -= 1
+            lostBullet(targetPlayer.id)
+            if (targetPlayer.bullets == 0) {
+                targetPlayer.isDead = true
+                if (toPlayerID == me.id) {
+                    emptyHandsUI()
+                    updateTips(TIPS_DEAD)
+                }
+                playerDie(targetPlayer)
+                if (fromPlayerID == me.id)
+                    socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
+            }
+            break
+        case 'add equipment':
+            let playerID = data[1],
+                card = data[2]
+            addEquipment(playerID, card)
+            break
     }
 })

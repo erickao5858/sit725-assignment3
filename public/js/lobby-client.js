@@ -4,41 +4,39 @@
 $(function() {
 
     // connect to the socket
-    let socket;
-    socket = io();
+    let socket; socket = io();
 
     const $userName = $('#userName'),
         $linkBtn = $('.link-button .btn'),
         $createRoombtn = $('#createRoom'),
         $matchRoomBtn = $('#matchRoom'),
         $lobbyOperatorBox = $('.lobby-operator-box'),
-        $roomDetails = $('.room-details'),
-        $addBot = $(' #addBot');
+        $roomDetails = $('.room-details');
 
-    let roomList, currentUser;
+    let roomList,currentUser;
     /**
      * get user name
      */
     let userNameVal;
 
-    $userName.blur(function() {
+    $userName.blur(function(){
 
-        userNameVal = $(this).val();
+        userNameVal =$(this).val();
     })
 
     /**
      *  link the user to socket
      */
-    $linkBtn.on('click', function() {
+    $linkBtn.on('click', function () {
 
-        if (userNameVal) {
+        if (userNameVal){
 
             socket.emit('newUser', userNameVal);
 
             $(this).attr('disabled', true);
             $userName.attr('disabled', true);
             $createRoombtn.attr('disabled', false);
-            $matchRoomBtn.attr('disabled', false);
+            $matchRoomBtn.attr('disabled',false);
 
             socket.on('currentUser', (user) => {
                 currentUser = user;
@@ -50,7 +48,7 @@ $(function() {
 
         } else {
 
-            M.toast({ html: 'Please enter your name!', classes: 'rounded' });
+            M.toast({html: 'Please enter your name!', classes: 'rounded'});
         }
 
     })
@@ -58,86 +56,82 @@ $(function() {
     /**
      * user create a room
      */
-    $createRoombtn.on('click', function() {
+    $createRoombtn.on('click', function () {
 
         if (userNameVal) {
-
             socket.emit('createRoom');
             $(this).attr("disabled", true);
-            $matchRoomBtn.attr('disabled', true);
+            $matchRoomBtn.attr('disabled',true);
 
         } else {
-            M.toast({ html: 'Please enter your name!', classes: 'rounded' });
+            M.toast({html: 'Please enter your name!', classes: 'rounded'});
         }
     })
-
     /**
      * add a bot
      */
-    $('body').on('click', '.add-bot-btn', function() {
+    $('body').on('click','.add-bot-btn',function(){
         let roomId = $(this).data().id;
-        socket.emit('addBot', roomId);
+        socket.emit('addBot',roomId);
     })
-
     /**
      *  user join a room
      */
-    $('body').on('click', '.join-room', function() {
+    $('body').on('click','.join-room',function () {
         if (userNameVal && currentUser) {
             let roomId = $(this).data().id;
-            socket.emit('joinRoom', { roomId: roomId, bot: false, curUser: currentUser });
-        } else {
-            M.toast({ html: 'Please enter your name! and click Link to connect', classes: 'rounded' });
+
+            socket.emit('joinRoom',{roomId:roomId,bot:false,curUser:currentUser});
+        }else {
+            M.toast({html: 'Please enter your name! and click Link to connect', classes: 'rounded'});
         }
     })
-
     /**
      * user leave room
      */
-    $('body').on('click', '.leave-btn', function() {
+    $('body').on('click','.leave-btn',function () {
 
         let roomId = $(this).data().id;
 
-        socket.emit('leaveRoom', roomId, currentUser);
+        socket.emit('leaveRoom',roomId,currentUser);
 
-        if (currentUser) {
-            $createRoombtn.attr('disabled', false);
-            $matchRoomBtn.attr('disabled', false);
+        if(currentUser){
+            $createRoombtn.attr('disabled',false);
+            $matchRoomBtn.attr('disabled',false);
         }
         $lobbyOperatorBox.show();
         $roomDetails.hide();
     })
-
     /**
      *  user match a room
      */
-    $matchRoomBtn.on('click', function() {
-        if (roomList.length > 0) {
-            socket.emit('matchRoom');
-        } else {
-            M.toast({ html: 'Not a room is available, You can create a room!', classes: 'rounded' });
+    $matchRoomBtn.on('click',function () {
+
+        if (roomList.length > 0){
+            socket.emit('matchRoom',currentUser);
+        }else {
+            M.toast({html: 'Not a room is available, You can create a room!', classes: 'rounded'});
         }
     })
-
     /**
      *  start the game
      */
-    $('body').on('click', '.start-game', function() {
+    $('body').on('click','.start-game',function () {
         let roomId = $(this).data().id;
-        socket.emit('startGame', roomId);
+        socket.emit('startGame',roomId);
     })
-
     /**
      * make every user in the room going to game page
      * @param room
      */
-    startGame = (room) => {
-        if (room) {
-            let user = currentUser.user ? currentUser.user : currentUser;
+    startGame =(room)=>{
+
+        if (room){
+            let user = currentUser.user ? currentUser.user :currentUser;
             let roomUser = room.roomUsers.findIndex((item) => item.id === user.id);
 
-            if (roomUser != -1 && room.gameStarted) {
-                location.href = `/room?id=${room.id}&user=${user.id}`;
+            if (roomUser != -1 && room.gameStarted){
+                location.href =`/room?id=${room.id}?user=${user.id}`;
             }
         }
     }
@@ -145,59 +139,59 @@ $(function() {
     /**
      *  get current room
      */
-    socket.on('currentRoom', (room) => {
+    socket.on('currentRoom',(room) =>{
 
         // console.log(room,'origin room');
 
         let curRoom;
 
-        if (room) {
+        if(room){
             curRoom = roomList.find((item) => item.id === room.id);
             startGame(curRoom);
         }
         try {
             let user;
-            if (currentUser) {
-                user = currentUser.user ? currentUser.user : currentUser;
+            if(currentUser){
+                user = currentUser.user ? currentUser.user :currentUser;
             }
-            if (curRoom) {
+            if (curRoom){
 
-                if (!curRoom.gameStarted && curRoom.roomUsers) {
+                if(!curRoom.gameStarted && curRoom.roomUsers){
 
                     let isUserInRoom = curRoom.roomUsers.find((item) => item.id === user.id);
 
-                    if (isUserInRoom) {
+                    if (isUserInRoom){
 
                         $lobbyOperatorBox.hide();
                         $roomDetails.show();
                         renderRoom(curRoom);
 
-                    } else {
+                    }else {
                         renderLobbyOperatorBox();
                     }
 
-                } else {
+                }else {
                     renderLobbyOperatorBox();
                 }
 
-            } else {
+            }else {
                 renderLobbyOperatorBox();
             }
-        } catch (e) {
+        }catch (e) {
             console.log(e);
         }
     })
-    renderLobbyOperatorBox = () => {
-            if (currentUser) {
-                $createRoombtn.attr('disabled', false);
-                $matchRoomBtn.attr('disabled', false);
-            }
-            $lobbyOperatorBox.show();
-            $roomDetails.hide();
+    renderLobbyOperatorBox =()=>{
+        if(currentUser){
+            $createRoombtn.attr('disabled',false);
+            $matchRoomBtn.attr('disabled',false);
         }
-        /**
-         *  get room list
-         */
+        $lobbyOperatorBox.show();
+        $roomDetails.hide();
+    }
+    /**
+     *  get room list
+     */
     socket.on('listRooms', (rooms) => {
         console.log('rooms: ' + JSON.stringify(rooms));
         roomList = rooms;
@@ -207,22 +201,22 @@ $(function() {
     /**
      *  get user list
      */
-    socket.on('listUsers', (users) => {
-        console.log(users, 'users');
+    socket.on('listUsers',(users)=>{
+        console.log(users,'users');
     })
 
     /**
      *  get error content
      */
-    socket.on('errNotice', (err) => {
+    socket.on('errNotice',(err)=>{
 
-        switch (err.code) {
+        switch(err.code) {
 
             case 1:
-                M.toast({ html: 'You are already in a Room!', classes: 'rounded' });
+                M.toast({html: 'You are already in a Room!', classes: 'rounded'});
                 break;
             case 2:
-                M.toast({ html: 'Room is full, Please create a room!', classes: 'rounded' });
+                M.toast({html: 'Room is full, Please create a room!', classes: 'rounded'});
                 break;
         }
     })
@@ -231,27 +225,25 @@ $(function() {
      * render rooms
      * @param rooms
      */
-    renderRooms = (rooms) => {
+    renderRooms = (rooms)=>{
 
         const $roomList = document.getElementById("rooms");
-        let roomList = [],
-            gameStatus;
-        let userList = [],
-            $userListHtml;
-        let userNumber, $joinBtnHtml;
+        let roomList = [] ,gameStatus;
+        let userList = [],$userListHtml;
+        let userNumber,$joinBtnHtml;
         let $userIcon;
 
-        rooms.forEach((room) => {
+        rooms.forEach((room) =>{
 
             userList = [];
             userNumber = room.roomUsers.length;
             gameStatus = room.gameStarted;
 
-            $joinBtnHtml = (userNumber >= 7 || gameStatus) ?
-                `<a class="join-room btn btn-primary" disabled>Full</a>` :
-                `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
+            $joinBtnHtml = (userNumber >= 7 || gameStatus)
+                ? `<a class="join-room btn btn-primary" disabled>Full</a>`
+                : `<a class="join-room btn btn-primary" data-id=${room.id}>Join</a>`;
 
-            room.roomUsers.forEach((user) => {
+            room.roomUsers.forEach((user)=>{
 
                 $userIcon = user.isBot ? `<i class="small material-icons">airplay</i>` : `<i class="material-icons small">account_circle</i>`;
                 userList.push(`<div class="col s1">
@@ -274,32 +266,30 @@ $(function() {
 
         $roomList.innerHTML = roomList.join(" ");
     }
-
     /**
      * display room
      * @param room
      */
-    renderRoom = (room) => {
+    renderRoom = (room) =>{
 
         const $room = document.getElementById("room");
-        let playerList = [],
-            $playersHtml;
-        let currentRoom = room;
-        let user = currentUser.user ? currentUser.user : currentUser;
+        let playerList = [],$playersHtml;
+        let currentRoom =room;
+        let user = currentUser.user ? currentUser.user :currentUser;
         let $userIcon;
         let $addBotBtn;
         let $startGameBtn;
         let userNumber = currentRoom.roomUsers.length;
 
-        $startGameBtn = userNumber >= 4 ?
-            `<a class="start-game btn btn-primary" data-id =${room.id}>start game</a>` :
-            `<a class="start-game btn btn-primary" data-id =${room.id} disabled="">start game</a>`
+        $startGameBtn = userNumber >=4
+            ? `<a class="start-game btn btn-primary" data-id =${room.id}>start game</a>`
+            : `<a class="start-game btn btn-primary" data-id =${room.id} disabled="">start game</a>`
 
-        $addBotBtn = userNumber >= 7 ?
-            `<a id="addBot" disabled class="add-bot-btn btn btn-secondary">add a bot</a>` :
-            `<a id="addBot" class="add-bot-btn btn btn-secondary" data-id =${room.id}>add a bot</a>`;
+        $addBotBtn = userNumber >= 7
+            ? `<a id="addBot" disabled class="add-bot-btn btn btn-secondary">add a bot</a>`
+            : `<a id="addBot" class="add-bot-btn btn btn-secondary" data-id =${room.id}>add a bot</a>`;
 
-        currentRoom.roomUsers.forEach((user) => {
+        currentRoom.roomUsers.forEach((user)=>{
             $userIcon = user.isBot ? `<i class="medium material-icons">airplay</i>` : `<i class="material-icons medium">account_box</i>`;
             playerList.push(`<div class="user-item player">${$userIcon} <div class="player-name">${user.name}</div></div>`)
 
@@ -331,14 +321,14 @@ let username_chat = null;
 //funciton to get message and emit to socket
 const sendMessage=()=>{
     let message = $('#input_text').val()
-        let payload = {
-          "msg" : message,
-          "sender" : username_chat
-        }
+    let payload = {
+        "msg" : message,
+        "sender" : username_chat
+    }
     socket.emit("lobby_chat_message",payload);
-  }
+}
 
-$(document).ready(function(){ 
+$(document).ready(function(){
     //bind the button
     $('#sendMessageButton').click(function(){
         if(username_chat){
@@ -353,5 +343,5 @@ $(document).ready(function(){
     socket.on('lobby_chat_message',data=>{
         $('#chatArea').append($('<li>').text(data.sender+': '+data.msg));
     });
-    
-}); 
+
+});
