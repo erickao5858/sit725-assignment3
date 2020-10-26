@@ -290,7 +290,23 @@ io.on('connection', (socket) => {
             io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(targetPlayerID), gameControl.drawPile])
             gameControl.draw(originPlayerID, TIMES_DRAW_ON_TARGET_DIE)
         }
+
         io.sockets.emit('updatePlayerCards', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile])
+
+        /**
+         *  send player action message to public
+         *  added by qiaoli wang (wangqiao@deakin.edu.au)
+         */
+        let playerName = gameControl.getPlayerById(originPlayerID).name,
+            targetName = gameControl.getPlayerById(targetPlayerID).name,
+            cardName = gameControl.getCardById(cardID).text;
+
+        let message = {
+            isPublicMessage:true,
+            content:`${playerName} played a ${cardName} targeting ${targetName}.`
+        };
+
+        io.sockets.emit('chat_message',message);
     })
 
     socket.on('playEquipmentCard', (data) => {

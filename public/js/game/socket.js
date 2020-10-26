@@ -7,7 +7,14 @@ let socket = io();
 
 //
 socket.on('chat_message', (msg) => {
-    $("#messageTextarea").text($("#messageTextarea").val() + "\n" + msg);
+
+    // send message to public
+    if (msg.isPublicMessage) {
+        $("#messageTextarea").text(msg.content)
+    }else {
+        $("#messageTextarea").text($("#messageTextarea").val() + "\n" + msg);
+    }
+
     var height = $("#messageTextarea")[0].scrollHeight;
     $("#messageTextarea").scrollTop(height);
 })
