@@ -77,6 +77,9 @@ const cardOnClick = (event) => {
         return
     }
     if (isMyTurn) {
+        M.toast({ html: event.data.card._id + " clicked!" })
+        discardPile.push(event.data.card)
+        updateDiscardPile();
         if (card.text == 'Bang!' || card.text == 'Panic!' || card.text == 'Cat Balou' || card.text == 'Duel') {
             let cardContainer = $('#card-wrapper'),
                 targetContainer = $('#target-wrapper')

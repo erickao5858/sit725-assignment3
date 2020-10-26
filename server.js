@@ -52,26 +52,46 @@ app.use(bodyParser.json());
 //socket connection
 io.on('connection', (socket) => {
 
-    //console.log('a user connected');
+    //console.log(socket.id);
 
     socket.on('disconnect', () => {
         //console.log('a user disconnected');
-    });
-
-    //function for game chat
-    //author:zilin
-    socket.on('chat_message', function(data) {
-        io.sockets.emit('chat_message', data);
     });
     //function for lobby chat
     //author:sibbi
     socket.on('lobby_chat_message', function(data) {
         io.sockets.emit('lobby_chat_message', data);
     });
-    setInterval(() => {
-        socket.emit('number', parseInt(Math.random() * 10));
-    }, 1000);
 
+    /** -----------------------------------------**/
+
+    /**
+     * roomchat, player timer
+     * @author Zilin Guo 
+     * 
+     */
+    global.timer=new Object();
+    socket.on('chat_message', function(message) {
+        //get current room
+        var room = Object.keys(socket.rooms)[1];
+        io.sockets.in(room).emit('chat_message', message);
+    });
+    //join chat room
+    socket.on('join_room', function(roomId) {
+        socket.join(roomId);
+    });
+    socket.on('start_timer', function(roomId) {
+        global.timer[roomId]=0;
+    });
+    // socket.on('get_timer', function(roomId) {
+    //     io.sockets.emit('timer', global.timer[roomId]);
+    // });
+    setInterval(() => {
+        if(currentRoom)
+        socket.emit('player_timer', global.timer[currentRoom.id]);
+    }, 1000);
+    
+    /** -----------------------------------------**/
 
     /**
      *  users and rooms management
@@ -354,6 +374,34 @@ mongoose.connect(uri, options, () => {
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
+app.get('/readCards', (req, res) => {
+    Test.read(res)
+})
+
+/** -----------------------------------------**/
+
+/**
+ * roomchat, player timer
+ * @author Zilin Guo 
+ * 
+ */
+setInterval(() => {
+    setTimer(); 
+}, 1000);
+function setTimer() {
+    for (var k in global.timer) {
+        if (global.timer.hasOwnProperty(k)) {
+            if(global.timer[k]!=-1)
+            {
+                global.timer[k]+=1;
+            }
+            if(global.timer[k]>=40)
+            {
+                global.timer[k]=-1;
+            }
+        }
+    }
+  }
 // liston to the port 3000
 http.listen(PORT, function() {
     console.log(`web server running at: http://localhost:${PORT}`)
