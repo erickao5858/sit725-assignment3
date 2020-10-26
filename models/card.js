@@ -29,4 +29,4 @@ var cards = Schema({
         trim: true,
     }
 });
-module.exports = mongoose.model('cards',cards);
+module.exports = mongoose.model('card',card);
