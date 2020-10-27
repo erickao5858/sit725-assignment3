@@ -110,7 +110,6 @@ const cardOnClick = (event) => {
             targetContainer.show()
             updateTargetUI(card)
             updateTips(TIPS_CHOOSETARGET)
-            return
         }
         if (card.text == "Beer") {
             if (me.bullets == me.maxBullet) {
@@ -124,16 +123,18 @@ const cardOnClick = (event) => {
         }
         if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
             playEquipment([me.id, card._id])
-            return
         }
         if (card.text == "Stagecoach") {
             playStagecoach([me.id, card._id])
-            return
         }
         if (card.text == "General store") {
             playGeneralStore([me.id, card._id])
-            return
         }
+        setTimeout(() => {
+            if (me.cards.length == 0 && me.character == 'Suzy Lafayette') {
+                socket.emit('drawCards', [me.id, 1])
+            }
+        }, 500)
     }
 }
 
@@ -218,6 +219,9 @@ const responseBang = (card) => {
     if (card.text == 'Missed!') {
         isInResponsePhase = false
         updateTips(TIPS_WAITING)
+        if (me.cards.length == 1 && me.character == 'Suzy Lafayette') {
+            socket.emit('drawCards', [me.id, 1])
+        }
         discardCard([me.id, card._id])
         endResponse(true)
     } else {

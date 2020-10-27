@@ -50,6 +50,7 @@ let isUIInitialized = false,
     isWin = false,
     isLose = false
 
+const TIMES_DRAW_ON_TURN_START = 2
 
 socket.on('initGame', (data) => {
     if (!isUIInitialized) {
@@ -68,7 +69,7 @@ socket.on('initGame', (data) => {
 
 socket.on('startTurn', (playerID) => {
     if (me.id == playerID) {
-        socket.emit('drawCards', me.id)
+        socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
         isMyTurn = true
         isPlayedBang = false
         updateTips(TIPS_MYTURN)
@@ -81,7 +82,7 @@ socket.on('startTurn', (playerID) => {
             if (players[i].id == playerID) {
                 //Game owner takes controlling of bot player
                 if (players[i].isBot) {
-                    socket.emit('drawCards', players[i].id)
+                    socket.emit('drawCards', [players[i].id, TIMES_DRAW_ON_TURN_START])
                     endTurn(players[i].id)
                     return
                 }
@@ -111,7 +112,7 @@ const playBang = (data) => {
 const playStagecoach = (data) => {
     let playerID = data[0],
         cardID = data[1]
-    socket.emit('drawCards', playerID)
+    socket.emit('drawCards', [playerID, 2])
     socket.emit('discardCard', [playerID, cardID])
 }
 

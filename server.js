@@ -271,7 +271,6 @@ io.on('connection', (socket) => {
      */
 
     let gameControl
-    const TIMES_DRAW_ON_TURN_START = 2
     const TIMES_DRAW_ON_TARGET_DIE = 2
 
     // data[0]: users, data[1]: cards
@@ -294,8 +293,9 @@ io.on('connection', (socket) => {
     })
 
     socket.on('drawCards', (data) => {
-        let playerID = data
-        gameControl.draw(playerID, TIMES_DRAW_ON_TURN_START)
+        let playerID = data[0],
+            times = data[1]
+        gameControl.draw(playerID, times)
         io.sockets.emit('updatePlayer', [gameControl.getPlayerById(playerID), gameControl.drawPile, gameControl.discardPile])
     })
 

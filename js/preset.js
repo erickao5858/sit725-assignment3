@@ -6,8 +6,8 @@ const ROLE_PRESET = [
 ]
 
 const CHARACTER_PRESET = [
-    ['Bart Cassidy', 'Draw a card immediately after losing a bullet', 2],
-    ['Calamity Janet', 'Can use Bang! as Missed!, vice versa', 2],
+    ['Rose Doolan', 'Has a scope all the time', 2],
+    ['Willy the kid', 'Can play any number of Bang!', 2],
     ['Suzy Lafayette', 'Draw a card immediately when no cards left in hand', 2],
     ['Willy the kid', 'Can play any number of Bang!', 2],
     ['Rose Doolan', 'Has a scope all the time', 2],
