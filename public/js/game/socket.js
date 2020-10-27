@@ -70,6 +70,7 @@ socket.on('startTurn', (playerID) => {
     if (me.id == playerID) {
         socket.emit('drawCards', me.id)
         isMyTurn = true
+        isPlayedBang = false
         updateTips(TIPS_MYTURN)
         return
     }
@@ -104,6 +105,18 @@ const discardCard = (data) => {
 const playBang = (data) => {
     socket.emit('playBang', data)
     isInWaitingResponsePhase = true
+    isPlayedBang = true
+}
+
+const playStagecoach = (data) => {
+    let playerID = data[0],
+        cardID = data[1]
+    socket.emit('drawCards', playerID)
+    socket.emit('discardCard', [playerID, cardID])
+}
+
+const playGeneralStore = (data) => {
+    socket.emit('playGeneralStore', data)
 }
 
 const endResponse = (isCardRepelled) => {
@@ -158,6 +171,7 @@ socket.on('roleWin', (role) => {
     if (role == me.role) {
         isWin = true
         playerWin()
+        return
     }
     isLose = true
     playerLose()

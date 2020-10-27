@@ -359,7 +359,7 @@ io.on('connection', (socket) => {
         }
 
         io.sockets.emit('chat_message', message)
-        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(originPlayer), gameControl.drawPile, gameControl.discardPile])
+        io.sockets.emit('updatePlayer', [gameControl.getPlayerById(originPlayerID), gameControl.drawPile, gameControl.discardPile])
     })
 
     socket.on('discardCard', (data) => {
@@ -411,6 +411,29 @@ io.on('connection', (socket) => {
         io.sockets.emit('chat_message', message)
     })
 
+    socket.on('playGeneralStore', (data) => {
+        let originPlayerID = data[0],
+            cardID = data[1]
+        alivePlayers = gameControl.getAlivePlayers()
+
+        gameControl.discardCard(originPlayerID, cardID)
+
+        for (let i = 0; i < alivePlayers.length; i++) {
+            gameControl.draw(alivePlayers[i].id, 1)
+            io.sockets.emit('updatePlayer', [alivePlayers[i], gameControl.drawPile, gameControl.discardPile])
+        }
+
+        let originPlayer = gameControl.getPlayerById(originPlayerID)
+
+        let message = {
+            isPublicMessage: true,
+            content: originPlayer.character + '(' + originPlayer.name + ') played a General Store, everyone draw a card!'
+        }
+
+        io.sockets.emit('chat_message', message)
+
+    })
+
     socket.on('endTurn', (playerID) => {
         if (gameControl.getPlayerById(playerID).isBot) {
             let bot = gameControl.getPlayerById(playerID)
@@ -447,6 +470,7 @@ const options = {
 mongoose.connect(uri, options, () => {
     console.log('Connected to MongoDB')
 })
+
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 

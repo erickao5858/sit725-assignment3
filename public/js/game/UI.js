@@ -69,7 +69,7 @@ const updateCardCountUI = (playerID, amount) => {
 let isInDiscardPhase = false,
     isInResponsePhase = false,
     isInWaitingResponsePhase = false,
-    responsePlayerID
+    responsePlayerID, isPlayedBang = false
 
 const cardOnClick = (event) => {
     let card = event.data.card
@@ -95,6 +95,15 @@ const cardOnClick = (event) => {
     }
     if (isMyTurn) {
         if (card.text == 'Bang!') {
+            if (isPlayedBang) {
+                if (me.character == 'Willy the kid' || $('#' + me.id).find('.equipment-gun').find('b').html() == 'Volcanic') {
+
+                } else {
+                    M.toast({ html: 'Cannot play Bang! in this turn anymore unless you play a Volcanic' })
+                    return
+                }
+            }
+            isPlayedBang = true
             let cardContainer = $('#card-wrapper'),
                 targetContainer = $('#target-wrapper')
             cardContainer.hide()
@@ -115,6 +124,14 @@ const cardOnClick = (event) => {
         }
         if (card.text == 'Scope' || card.text == 'Mustang' || card.text == 'Barrel' || card.text == 'Remington' || card.text == 'Rev. Carabine' || card.text == 'Winchester' || card.text == 'Volcanic' || card.text == 'Schofield') {
             playEquipment([me.id, card._id])
+            return
+        }
+        if (card.text == "Stagecoach") {
+            playStagecoach([me.id, card._id])
+            return
+        }
+        if (card.text == "General store") {
+            playGeneralStore([me.id, card._id])
             return
         }
     }
