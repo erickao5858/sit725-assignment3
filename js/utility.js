@@ -1,4 +1,5 @@
 /**
+ * @author Eric Kao <eric.kao5858@gmail.com>
  * Shuffle an array
  * @param {Array} a array
  */

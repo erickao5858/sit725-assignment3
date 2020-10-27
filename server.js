@@ -266,17 +266,17 @@ io.on('connection', (socket) => {
         /** -----------------------------------------**/
 
     /**
-     * @author Eric Kao 
-     * 
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Socket events handling data flow
      */
-
     let gameControl
     const TIMES_DRAW_ON_TARGET_DIE = 2
 
-    // data[0]: users, data[1]: cards
     socket.on('initGame', (data) => {
         let isMaster = data[2],
             roomId = data[3]
+
+        // Room owner initialize the data
         if (isMaster) {
             gameControl = new GameControl(data[1])
             gameControl.preparePlayerData(data[0])
@@ -306,6 +306,7 @@ io.on('connection', (socket) => {
             targetPlayer = gameControl.getPlayerById(targetPlayerID),
             message
 
+        // Whether target player discard a Missed!
         if (!isCardRepelled) {
             let isTargetDie = gameControl.loseBullet(targetPlayerID)
             if (isTargetDie) {

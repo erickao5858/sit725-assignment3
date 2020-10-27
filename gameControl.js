@@ -10,6 +10,12 @@ class GameControl {
         this.winnerRole = ''
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Player draw times cards
+     * @param {string} playerID ID of target player
+     * @param {number} times Times of drawing
+     */
     draw = (playerID, times) => {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].id == playerID) {
@@ -24,16 +30,33 @@ class GameControl {
         }
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Each player draw two cards at the beginning of the game
+     */
     initDraw = () => {
         for (let i = 0; i < this.players.length; i++) {
             this.draw(this.players[i].id, 2)
         }
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Regain a bullet
+     * @param {string} playerID ID of target player
+     * @param {string} cardID ID of card used
+     */
     regainBullet = (playerID, cardID) => {
         this.getPlayerById(playerID).bullets += 1
         this.discardCard(playerID, cardID)
     }
+
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Every alive player regain a bullet
+     * @param {string} playerID ID of player who played a saloon
+     * @param {string} cardID ID of card used
+     */
 
     saloon = (playerID, cardID) => {
         let alivePlayers = this.getAlivePlayers()
@@ -43,6 +66,12 @@ class GameControl {
                 alivePlayers[i].bullets++
         }
     }
+
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Initialize game data
+     * @param {object} roomUsers players
+     */
 
     preparePlayerData = (roomUsers) => {
         for (let i = 0; i < roomUsers.length; i++) {
@@ -68,6 +97,11 @@ class GameControl {
         this.initDraw()
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Get a bullet out of a player
+     * @param {string} playerID ID of target player
+     */
     loseBullet = (playerID) => {
         let player = this.getPlayerById(playerID)
         player.bullets -= 1
@@ -78,6 +112,12 @@ class GameControl {
         return false
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Determine whether the game has winner
+     * @param {object} player Player who loses all the bullets
+     * @returns {string} role who win the game 
+     */
     playerDie = (player) => {
         player.isDead = true
         this.discardCards(player.id)
@@ -128,12 +168,22 @@ class GameControl {
         }
     }
 
-
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Discard a card from a player
+     * @param {string} playerID ID of target player
+     * @param {string} cardID ID of used card
+     */
     discardCard = (playerID, cardID) => {
         let player = this.getPlayerById(playerID)
         this.discardPile.push(player.cards.splice(player.cards.indexOf(player.cards.find((card) => card._id == cardID)), 1)[0])
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Discard all cards from a player
+     * @param {string} playerID ID of target player
+     */
     discardCards = (playerID) => {
         let player = this.getPlayerById(playerID)
         let cardsCount = player.cards.length
@@ -142,12 +192,25 @@ class GameControl {
         }
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Get card object by its id
+     * @param {string} id ID of target card
+     * @return {object} card
+     */
     getCardById = (id) => {
         for (let i = 0; i < this.cards.length; i++) {
             if (this.cards[i]._id == id)
                 return this.cards[i]
         }
     }
+
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Get player object by its id
+     * @param {string} id ID of target player
+     * @return {object} player
+     */
     getPlayerById = (id) => {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].id == id)
@@ -155,6 +218,11 @@ class GameControl {
         }
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Get all alive players
+     * @returns {object} alive players
+     */
     getAlivePlayers = () => {
         let alivePlayers = []
         for (let i = 0; i < this.players.length; i++) {
@@ -164,6 +232,11 @@ class GameControl {
         return alivePlayers
     }
 
+    /**
+     * @author Eric Kao <eric.kao5858@gmail.com>
+     * Get next alive player
+     * @param {string} originPlayerID IF of current player
+     */
     getNextAlivePlayer = (originPlayerID) => {
         let nextPlayerIndex
         let alivePlayers = this.getAlivePlayers()

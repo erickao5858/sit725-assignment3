@@ -39,9 +39,6 @@ socket.on('currentRoom', (room) => {
     }
 })
 
-/**
- * @author Eric Kao <eric.kao5858@gmail.com>
- */
 let players = [],
     drawpile = [],
     discardPile = []
@@ -91,24 +88,49 @@ socket.on('startTurn', (playerID) => {
     }
 })
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for end turn
+ * @param {string} playerID ID of current player 
+ */
 const endTurn = (playerID) => {
     socket.emit('endTurn', playerID)
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for adding equipment
+ * @param {object} data [ID of target player, ID of used card]
+ */
 const playEquipment = (data) => {
     socket.emit('playEquipment', data)
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for discard a card
+ * @param {object} data [ID of target player, ID of card be discarded]
+ */
 const discardCard = (data) => {
     socket.emit('discardCard', data)
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for attack another player
+ * @param {object} data [ID of player initiate attack, ID of target player, ID of card be discarded]
+ */
 const playBang = (data) => {
     socket.emit('playBang', data)
     isInWaitingResponsePhase = true
     isPlayedBang = true
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for draw two cards
+ * @param {object} data [ID of target player, ID of used card]
+ */
 const playStagecoach = (data) => {
     let playerID = data[0],
         cardID = data[1]
@@ -116,19 +138,39 @@ const playStagecoach = (data) => {
     socket.emit('discardCard', [playerID, cardID])
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for every alive playerdraw a card
+ * @param {object} data [ID of origin player, ID of used card]
+ */
 const playGeneralStore = (data) => {
     socket.emit('playGeneralStore', data)
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for reply attack
+ * @param {boolean} isCardRepelled whether a missed! is discarded 
+ */
 const endResponse = (isCardRepelled) => {
     socket.emit('endResponse', [responsePlayerID, me.id, isCardRepelled])
     responsePlayerID = ''
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for regain a bullet
+ * @param {object} data [ID of origin player, ID of used card]
+ */
 const playBeer = (data) => {
     socket.emit('playBeer', data)
 }
 
+/**
+ * @author Eric Kao <eric.kao5858@gmail.com>
+ * Send socket message for every alive player regain a bullet
+ * @param {object} data [ID of origin player, ID of used card]
+ */
 const playSaloon = (data) => {
     socket.emit('playSaloon', data)
 }
