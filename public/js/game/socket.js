@@ -66,6 +66,7 @@ socket.on('initGame', (data) => {
 
 socket.on('startTurn', (playerID) => {
     if (me.id == playerID) {
+        socket.emit("start_timer", roomId)
         socket.emit('drawCards', [me.id, TIMES_DRAW_ON_TURN_START])
         isMyTurn = true
         isPlayedBang = false
